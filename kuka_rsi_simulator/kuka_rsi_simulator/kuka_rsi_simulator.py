@@ -34,28 +34,35 @@ def parse_rsi_xml_sen(data):
     IPOC = root.find('IPOC').text
     return desired_joint_correction, int(IPOC)
 
-node_name = 'kuka_rsi_simulation'
+
+# if __name__ == '__main__':
+def main():
+    node_name = 'kuka_rsi_simulation'
 # rsi_act_pub = rospy.Publisher(node_name + '/rsi/state', String, queue_size=1)
 # rsi_cmd_pub = rospy.Publisher(node_name + '/rsi/command', String, queue_size=1)
 
-cycle_time = 0.004
-act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
-cmd_joint_pos = act_joint_pos.copy()
-des_joint_correction_absolute = np.zeros(6)
-timeout_count = 0
-ipoc = 0
+    cycle_time = 0.004
+    act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
+    cmd_joint_pos = act_joint_pos.copy()
+    des_joint_correction_absolute = np.zeros(6)
+    timeout_count = 0
+    ipoc = 0
 
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='KUKA RSI Simulation')
-    parser.add_argument('--rsi_hw_iface_ip', default="127.0.0.1", help='The ip address of the RSI control interface (default=127.0.0.1)')
-    parser.add_argument('--rsi_hw_iface_port', default=49152, help='The port of the RSI control interface (default=49152)')
-    parser.add_argument('--sen', default='ImFree', help='Type attribute in RSI XML doc. E.g. <Sen Type:"ImFree">')
-    # Only parse known arguments
-    args, _ = parser.parse_known_args()
-    host = args.rsi_hw_iface_ip
-    port = int(args.rsi_hw_iface_port)
-    sen_type = args.sen
+    # import argparse
+    # parser = argparse.ArgumentParser(description='KUKA RSI Simulation')
+    # parser.add_argument('--rsi_hw_iface_ip', default="127.0.0.1", help='The ip address of the RSI control interface (default=127.0.0.1)')
+    # parser.add_argument('--rsi_hw_iface_port', default=49152, help='The port of the RSI control interface (default=49152)')
+    # parser.add_argument('--sen', default='ImFree', help='Type attribute in RSI XML doc. E.g. <Sen Type:"ImFree">')
+    # # Only parse known arguments
+    # args, _ = parser.parse_known_args()
+    # host = args.rsi_hw_iface_ip
+    # port = int(args.rsi_hw_iface_port)
+    # sen_type = args.sen
+
+    host = "127.0.0.1"
+    port = 49152
+    sen_type = 'ImFree'
+
 
     # rospy.init_node(node_name)
     # rospy.loginfo('{}: Started'.format(node_name))
@@ -98,3 +105,6 @@ if __name__ == '__main__':
             if e.errno != errno.EINTR:
                 raise
 
+
+if __name__ == '__main__':
+    main()
