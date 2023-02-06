@@ -1,9 +1,17 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(kuka_resources)
+cmake_minimum_required(VERSION 3.16)
 
-find_package(catkin REQUIRED)
+project(kuka_resources LANGUAGES CXX)
 
-catkin_package()
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-Wall -Wextra)
+endif()
 
-install(DIRECTORY urdf
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+find_package(ament_cmake REQUIRED)
+
+
+install(
+  DIRECTORY urdf config
+  DESTINATION share/${PROJECT_NAME}
+  )
+
+  ament_package()
