@@ -6,7 +6,7 @@
   <xacro:include filename="$(find kuka_kr5_support)/urdf/kr5_arc_macro.xacro" />
   <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
 
-  <xacro:kr5_arc_macro name="kr5_arc_mock" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)" use_mock_sensor_commands="$(arg use_mock_sensor_commands)"/>
+  <xacro:kr5_arc_macro name="kr5_arc_mock" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)"/>
 
   <xacro:kuka_kr5_arc prefix=""/>
 </robot>
