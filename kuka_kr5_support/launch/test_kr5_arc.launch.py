@@ -1,118 +1,57 @@
-import os
-
-from ament_index_python.packages import get_package_share_directory
+# Copyright 2023 Stogl Robotics Consulting UG (haftungsbeschränkt)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-import xacro
-
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "prefix",
-            default_value="",
-            description="Prefix of the joint names, useful for \
-        multi-robot setup. If changed than also joint names in the controllers' configuration \
-        have to be updated.",
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "use_mock_hw",
-            default_value="true",
-            description="Start robot with fake hardware mirroring command to its states."
-        )
-    )
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "use_mock_sensor_commands",
-            default_value="false",
-            description="Enable fake command interfaces for sensors used for simple simulations. \
-            Used only if 'use_mock_hardware' parameter is true.",
-        )
-    )
-
-    # initialize arguments
-    prefix = LaunchConfiguration("prefix")
-    use_mock_hw = LaunchConfiguration("use_mock_hw")
-    use_mock_sensor_commands = LaunchConfiguration("use_mock_sensor_commands")
-
+    # Get URDF via xacro
     robot_description_content = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("kuka_kr5_support"),
-                 "urdf", "kr5_arc.xacro"]
+                [FindPackageShare("kuka_kr5_support"), "urdf",
+                 "kr5_arc.xacro"]
             ),
-            " ",
-            "prefix:=",
-            prefix,
-            " ",
-            "use_mock_hw:=",
-            use_mock_hw,
-            " ",
-            "use_mock_sensor_commands:=",
-            use_mock_sensor_commands,
-            " ",
         ]
     )
 
     robot_description = {"robot_description": robot_description_content}
 
-    robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"), "config",
-         "kuka_6dof_controllers.yaml"]
+    joint_state_publisher_node = Node(
+        package="joint_state_publisher_gui",
+        executable="joint_state_publisher_gui",
     )
 
-    control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        output="both",
-        parameters=[robot_description, robot_controllers],
-    )
-
-    robot_state_pub_node = Node(
+    robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        parameters=[robot_description],
         output="both",
-    )
-
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster",
-                   "--controller-manager", "/controller_manager"],
-    )
-
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["forward_position_controller", "-c", "/controller_manager"],
-    )
-
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
-        )
+        parameters=[robot_description],
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"),
-         "config", "view_robot.rviz"]
+        [FindPackageShare("kuka_kr5_support"), "config",
+         "view_robot.rviz"]
     )
 
     rviz_node = Node(
@@ -120,22 +59,13 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="log",
-        arguments=["-d", rviz_config_file],
-    )
-
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
+        arguments=["-d", rviz_config_file]
     )
 
     nodes = [
-        control_node,
-        robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner
+        joint_state_publisher_node,
+        robot_state_publisher_node,
+        rviz_node
     ]
 
-    return LaunchDescription(declared_arguments + nodes)
+    return LaunchDescription(nodes)
