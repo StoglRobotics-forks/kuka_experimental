@@ -28,7 +28,7 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "use_mock_hw",
+            "use_mock_hardware",
             default_value="true",
             description="Start robot with fake hardware mirroring command to its states."
         )
@@ -45,7 +45,7 @@ def generate_launch_description():
 
     # initialize arguments
     prefix = LaunchConfiguration("prefix")
-    use_mock_hw = LaunchConfiguration("use_mock_hw")
+    use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     use_mock_sensor_commands = LaunchConfiguration("use_mock_sensor_commands")
 
     robot_description_content = Command(
@@ -60,8 +60,8 @@ def generate_launch_description():
             "prefix:=",
             prefix,
             " ",
-            "use_mock_hw:=",
-            use_mock_hw,
+            "use_mock_hardware:=",
+            use_mock_hardware,
             " ",
             "use_mock_sensor_commands:=",
             use_mock_sensor_commands,
