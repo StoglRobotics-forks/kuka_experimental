@@ -3,7 +3,8 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /RobotModel1/Description Topic1
       Splitter Ratio: 0.5
     Tree Height: 749
   - Class: rviz_common/Selection
