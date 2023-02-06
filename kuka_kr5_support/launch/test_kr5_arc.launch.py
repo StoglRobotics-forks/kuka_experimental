@@ -72,7 +72,7 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("kuka_kr5_support"), "config",
+        [FindPackageShare("kuka_resources"), "config",
          "kuka_6dof_controllers.yaml"]
     )
 
@@ -112,7 +112,7 @@ def generate_launch_description():
 
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare("kuka_kr5_support"),
-         "config", "kuka_kr5.rviz"]
+         "config", "view_robot.rviz"]
     )
 
     rviz_node = Node(
