@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <robot name="kuka_kr5_arc" xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:arg name="prefix" default="" />
-  <xacro:arg name="use_mock_hw" default="false" />
-  <xacro:arg name="use_mock_sensor_commands" default="false" />
+  <xacro:arg name="use_mock_hardware" default="false" />
 
   <xacro:include filename="$(find kuka_kr5_support)/urdf/kr5_arc_macro.xacro" />
   <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
