@@ -111,8 +111,8 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_kr5_support"),
-         "config", "kuka_kr5.rviz"]
+        [FindPackageShare("kuka_resources"),
+         "config", "view_robot.rviz"]
     )
 
     rviz_node = Node(
