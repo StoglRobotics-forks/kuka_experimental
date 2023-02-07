@@ -34,19 +34,10 @@ def generate_launch_description():
         )
     )
 
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "use_mock_sensor_commands",
-            default_value="false",
-            description="Enable fake command interfaces for sensors used for simple simulations. \
-            Used only if 'use_mock_hardware' parameter is true.",
-        )
-    )
 
     # initialize arguments
     prefix = LaunchConfiguration("prefix")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
-    use_mock_sensor_commands = LaunchConfiguration("use_mock_sensor_commands")
 
     robot_description_content = Command(
         [
@@ -63,9 +54,7 @@ def generate_launch_description():
             "use_mock_hardware:=",
             use_mock_hardware,
             " ",
-            "use_mock_sensor_commands:=",
-            use_mock_sensor_commands,
-            " ",
+
         ]
     )
 
