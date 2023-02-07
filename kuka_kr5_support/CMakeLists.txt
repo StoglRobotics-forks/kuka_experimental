@@ -7,6 +7,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(launch_testing_ament_cmake)
+
+add_launch_test(test/ros_launch_test.py)
 
 
 install(
