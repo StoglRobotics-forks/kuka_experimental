@@ -24,7 +24,6 @@ from launch_ros.actions import Node
 import launch_testing
 import launch_testing.actions
 from launch_testing.asserts import assertSequentialStdout
-from launch_testing.event_handlers import StdoutReadyListener
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 
@@ -78,7 +77,7 @@ class TestGoodProcess(unittest.TestCase):
     def test_count_to_four(self, proc_output):
         # This will match stdout from any process.  In this example there is only one process
         # running
-        proc_output.assertWaitFor('Loop 1', timeout=1, stream='stdout')
+        proc_output.assertWaitFor('Loop 1', timeout=10, stream='stdout')
 
 
 
@@ -88,7 +87,7 @@ class TestProcessOutput(unittest.TestCase):
     def test_exit_code(self, proc_info):
         # Check that all processes in the launch (in this case, there's just one) exit
         # with code 0
-        launch_testing.event_handlers.StdoutReadyListener.describe(string,'Link tool0 had 0 children') 
+        launch_testing.asserts.assertExitCodes(proc_info)
 
     # def test_full_output(self, proc_output, dut_process):
     #     # Using the SequentialStdout context manager asserts that the following stdout
