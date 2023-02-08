@@ -7,7 +7,7 @@
 
       <hardware>
         <xacro:if value="${use_mock_hardware}">
-          <plugin>mock_components/GenericSystem</plugin>
+          <plugin>fake_components/GenericSystem</plugin>
         </xacro:if>
       </hardware>
 
