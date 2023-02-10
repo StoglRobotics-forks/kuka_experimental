@@ -1,69 +1,83 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(kuka_rsi_hw_interface)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  cmake_modules
-  controller_manager
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+  ament_cmake
   hardware_interface
-  joint_limits_interface
-  realtime_tools
-  roscpp
+  pluginlib
+  rclcpp
   std_msgs
 )
 
-find_package(Boost REQUIRED COMPONENTS system)
-find_package(TinyXML REQUIRED)
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
 
-
-catkin_package(
-  INCLUDE_DIRS
-    include
-  LIBRARIES
-    kuka_hardware_interface
-  CATKIN_DEPENDS
-    controller_manager
-    hardware_interface
-    joint_limits_interface
-    roscpp
-    std_msgs
-  DEPENDS
-    TinyXML
+add_library(
+	${PROJECT_NAME}
+	SHARED
+  src/kuka_system_position_only.cpp
+	# src/kuka_hardware_interface.cpp
 )
 
+target_include_directories(
+	${PROJECT_NAME}
+	PRIVATE
+	include
+)
 
-include_directories(
+ament_target_dependencies(
+  ${PROJECT_NAME}
+  ${THIS_PACKAGE_INCLUDE_DEPENDS}
+)
+
+# add_executable(kuka_hardware_interface_node src/kuka_hardware_interface_node.cpp)
+# target_include_directories(kuka_hardware_interface_node PRIVATE include)
+# target_link_libraries(kuka_hardware_interface_node
+#   ${PROJECT_NAME}
+# )
+# ament_target_dependencies(kuka_hardware_interface_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+install(
+  TARGETS ${PROJECT_NAME}
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+install(
+  DIRECTORY config krl launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following line skips the linter which checks for copyrights
+  # uncomment the line when a copyright and license is not present in all source files
+  #set(ament_cmake_copyright_FOUND TRUE)
+  # the following line skips cpplint (only works in a git repo)
+  # uncomment the line when this package is not in a git repo
+  #set(ament_cmake_cpplint_FOUND TRUE)
+  #ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_export_include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  ${TinyXML_INCLUDE_DIRS}
+)
+ament_export_libraries(
+  ${PROJECT_NAME}
+)
+ament_export_dependencies(
+  ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
 
-add_library(kuka_hardware_interface
-  src/kuka_hardware_interface.cpp
-)
-
-target_link_libraries(kuka_hardware_interface
-  ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${TinyXML_LIBRARIES}
-)
-
-add_executable(kuka_hardware_interface_node
-  src/kuka_hardware_interface_node.cpp
-)
-
-target_link_libraries(kuka_hardware_interface_node
-  kuka_hardware_interface
-)
-
-install(
-  TARGETS kuka_hardware_interface
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
-
-install(
-  TARGETS kuka_hardware_interface_node
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+ament_package()

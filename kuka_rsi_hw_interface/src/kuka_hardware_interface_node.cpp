@@ -39,11 +39,14 @@
 
 #include <kuka_rsi_hw_interface/kuka_hardware_interface.h>
 
+#include "rclcpp/rclcpp.hpp"
+
 int main(int argc, char** argv)
 {
-  ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
+  RCLCPP_INFO(rclcpp::get_logger("hardware_interface"), "Starting hardware interface...");
 
-  ros::init(argc, argv, "kuka_rsi_hardware_interface");
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::Node::make_shared("kuka_rsi_hardware_interface");
 
   ros::AsyncSpinner spinner(2);
   spinner.start();
@@ -76,7 +79,7 @@ int main(int argc, char** argv)
     // Receive current state from robot
     if (!kuka_rsi_hw_interface.read(timestamp, period))
     {
-      ROS_FATAL_NAMED("kuka_hardware_interface", "Failed to read state from robot. Shutting down!");
+      RCLCPP_FATAL(rclcpp::get_logger("kuka_hardware_interface"), "Failed to read state from robot. Shutting down!")
       ros::shutdown();
     }
 
@@ -94,7 +97,7 @@ int main(int argc, char** argv)
   }
 
   spinner.stop();
-  ROS_INFO_STREAM_NAMED("hardware_interface", "Shutting down.");
+  RCLCPP_INFO(rclcpp::get_logger("hardware_interface"), "Shutting down.");
 
   return 0;
 

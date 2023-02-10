@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot name="kuka_kr16_2" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_mock_hw" default="false" />
+  <xacro:arg name="use_mock_sensor_commands" default="false" />
+
+  <xacro:include filename="$(find kuka_kr16_support)/urdf/kr16_2_macro.xacro" />
+  <xacro:include filename="$(find common_6dof_position_only_system)/control/kuka_6dof_system_position_only.ros2_control.xacro"/>
+
+  <xacro:kuka_kr16_2 prefix=""/>
+  <xacro:kuka_6dof_system_posiition_only name="kuka_kr16_2_mock" prefix="$(arg prefix)" use_mock_hw="$(arg use_mock_hw)" use_mock_sensor_commands="$(arg use_mock_sensor_commands)"/>
+</robot>
