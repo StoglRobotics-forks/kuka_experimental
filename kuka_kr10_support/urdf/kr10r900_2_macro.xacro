@@ -158,7 +158,7 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 
-    <!-- ROS-Industrial 'base'- frame base_link to KUKA $ROBROT coordinate system transform -->
+    <!-- ROS-Industrial 'base'- frame base_link to KUKA $ROBROOT coordinate system transform -->
     <link name="${prefix}base" />
     <joint name="${prefix}base_link-base" type="fixed">
       <origin xyz="0 0 0" rpy="0 0 0"/>

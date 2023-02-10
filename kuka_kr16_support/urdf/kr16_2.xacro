@@ -9,6 +9,5 @@
 
   <xacro:kuka_common_ros2_control_macro name="kr16_2_mock" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)"/>
 
-
   <xacro:kuka_kr16_2 prefix=""/>
 </robot>
