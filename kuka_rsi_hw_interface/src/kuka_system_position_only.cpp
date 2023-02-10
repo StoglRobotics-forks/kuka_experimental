@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ros2_control_kuka_driver/kuka_system_position_only.hpp"
+#include "kuka_rsi_hw_interface/kuka_system_position_only.hpp"
 
 #include <thread>
 #include <chrono>

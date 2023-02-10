@@ -23,8 +23,8 @@ def generate_launch_description():
 
     position_goals = PathJoinSubstitution(
         [
-            FindPackageShare("ros2_control_kuka_driver"),
-            "config/kuka_kr16/controller",
+            FindPackageShare("kuka_kr16_support"),
+            "config/controller",
             "kuka_6dof_forward_position_controller_goals.yaml",
         ]
     )

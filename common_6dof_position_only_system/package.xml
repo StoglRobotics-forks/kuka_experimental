@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>example_6dof_position_only_system</name>
+  <name>common_6dof_position_only_system</name>
   <version>0.0.1</version>
   <description>Kuka driver for ros2 control</description>
   <maintainer email="dmitri.ignakov@taigarobotics.com">Dmitri</maintainer>
@@ -9,17 +9,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   
-  <depend>hardware_interface</depend>
-  <depend>kuka_rsi_hw_interface</depend>
-  <depend>pluginlib</depend>
-  <depend>rclcpp</depend>
-  <depend>xacro</depend>
-
-  <test_depend>ament_cmake_gtest</test_depend>
-
-  <!--<test_depend>ament_lint_auto</test_depend>-->
-  <!--<test_depend>ament_lint_common</test_depend>-->
-  <!--<test_depend>ament_cmake_gtest</test_depend>-->
+  <exec_depend>xacro</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

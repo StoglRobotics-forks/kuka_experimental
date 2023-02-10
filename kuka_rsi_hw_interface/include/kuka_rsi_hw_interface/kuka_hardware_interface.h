@@ -45,9 +45,8 @@
 #include <string>
 
 // ROS
-#include <ros/ros.h>
-#include <std_msgs/String.h>
-
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
 
 // ros_control
 #include <realtime_tools/realtime_publisher.h>

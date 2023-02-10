@@ -10,8 +10,6 @@ from launch.substitutions import Command, FindExecutable, LaunchConfiguration, P
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-import xacro
-
 
 def generate_launch_description():
 
@@ -53,8 +51,8 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("ros2_control_kuka_driver"),
-                 "description/kuka_kr16/urdf", "kuka_kr16.urdf.xacro"]
+                [FindPackageShare("kuka_kr16_support"),
+                 "urdf", "kr16_2.urdf.xacro"]
             ),
             " ",
             "prefix:=",
@@ -72,8 +70,8 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("ros2_control_kuka_driver"), "config/kuka_kr16/controller",
-         "kuka_6dof_controllers.yaml"]
+        [FindPackageShare("common_6dof_position_only_system"), "config",
+         "kuka_6dof_controller_position.yaml"]
     )
 
     control_node = Node(
@@ -111,8 +109,8 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("ros2_control_kuka_driver"), "config/kuka_kr16/rviz",
-         "kuka_kr16_2.rviz"]
+        [FindPackageShare("kuka_kr16_support"), "config/rviz",
+         "view_robot_kr16_2.rviz"]
     )
 
     rviz_node = Node(

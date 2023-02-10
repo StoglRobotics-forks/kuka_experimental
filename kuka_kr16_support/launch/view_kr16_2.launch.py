@@ -30,7 +30,7 @@ def generate_launch_description():
             " ",
             PathJoinSubstitution(
                 [FindPackageShare("kuka_kr16_support"), "urdf",
-                 "kr16_2.xacro"]
+                 "kr16_2.urdf.xacro"]
             ),
         ]
     )
@@ -50,8 +50,8 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("ros2_control_kuka_driver"), "config/kuka_kr16/rviz",
-         "kuka_kr16_2.rviz"]
+        [FindPackageShare("kuka_kr16_support"), "config/rviz",
+         "view_robot_kr16_2.rviz"]
     )
 
     rviz_node = Node(

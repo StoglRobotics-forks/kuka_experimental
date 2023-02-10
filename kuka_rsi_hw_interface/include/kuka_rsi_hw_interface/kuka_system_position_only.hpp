@@ -17,7 +17,7 @@
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 
 
-#include "ros2_control_kuka_driver/visibility_control.h"
+#include "kuka_rsi_hw_interface/visibility_control.h"
 
 #include "kuka_rsi_hw_interface/udp_server.h"
 #include "kuka_rsi_hw_interface/rsi_state.h"
