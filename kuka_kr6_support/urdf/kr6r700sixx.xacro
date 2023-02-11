@@ -2,7 +2,7 @@
 <robot name="kuka_kr6r700sixx" xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="use_mock_hardware" default="false" />
-  
+
   <xacro:include filename="$(find kuka_kr6_support)/urdf/kr6r700sixx_macro.xacro"/>
   <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
 

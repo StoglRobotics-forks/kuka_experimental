@@ -20,28 +20,27 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    
+
     declared_arguments = []
-    
+
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_package",
-            default_value = "kuka_kr5_support",
-            description = "Description package with robot URDF/xacro files.",
+            default_value="kuka_kr5_support",
+            description="Description package with robot URDF/xacro files.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_file",
-            default_value = "kr5_arc.xacro",
+            default_value="kr5_arc.xacro",
             description="URDF/XACRO description file with the robot.",
         )
     )
 
     # initialize arguments
-    robot_description_package = LaunchConfiguration('robot_description_package')
-    robot_description_file = LaunchConfiguration('robot_description_file')  
-
+    robot_description_package = LaunchConfiguration("robot_description_package")
+    robot_description_file = LaunchConfiguration("robot_description_file")
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -49,8 +48,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(robot_description_package), "urdf",
-                 robot_description_file]
+                [FindPackageShare(robot_description_package), "urdf", robot_description_file]
             ),
         ]
     )
@@ -70,8 +68,7 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"), "config",
-         "view_robot.rviz"]
+        [FindPackageShare("kuka_resources"), "config", "view_robot.rviz"]
     )
 
     rviz_node = Node(
@@ -79,13 +76,9 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="log",
-        arguments=["-d", rviz_config_file]
+        arguments=["-d", rviz_config_file],
     )
 
-    nodes = [
-        joint_state_publisher_node,
-        robot_state_publisher_node,
-        rviz_node
-    ]
+    nodes = [joint_state_publisher_node, robot_state_publisher_node, rviz_node]
 
     return LaunchDescription(declared_arguments + nodes)
