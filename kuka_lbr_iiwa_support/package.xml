@@ -13,9 +13,9 @@
     </p>
     <p>
       Joint limits and max joint velocities are based on the information in
-      the KUKA <a href="http://www.kuka-robotics.com/res/sps/e6c77545-9030-49b1-93f5-4d17c92173aa_Spez_LBR_iiwa_en.pdf">data sheets</a> online. 
-      All urdf's / xacro's are based on the default motion and joint velocity 
-      limits, unless noted otherwise (ie: no support for high speed joints, 
+      the KUKA <a href="http://www.kuka-robotics.com/res/sps/e6c77545-9030-49b1-93f5-4d17c92173aa_Spez_LBR_iiwa_en.pdf">data sheets</a> online.
+      All urdf's / xacro's are based on the default motion and joint velocity
+      limits, unless noted otherwise (ie: no support for high speed joints,
       extended / limited motion ranges or other options).
     </p>
     <p>
