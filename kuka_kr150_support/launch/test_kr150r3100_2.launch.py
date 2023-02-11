@@ -12,60 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
-from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
-
-from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
+from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import PathJoinSubstitution, LaunchConfiguration 
 
 
 def generate_launch_description():
 
-    # Get URDF via xacro
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
+    load_and_test = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                [FindPackageShare("kuka_kr150_support"), "urdf",
-                 "kr150r3100_2.xacro"]
-            ),
-        ]
+                    [FindPackageShare('kuka_resources'), "launch"
+                    ,'test_kuka.launch.py'
+                ])
+        ),
+        launch_arguments={
+            "robot_description_package": "kuka_kr150_support",
+            "robot_description_file": "kr150r3100_2.xacro",
+        }.items(),
     )
-
-    robot_description = {"robot_description": robot_description_content}
-
-    joint_state_publisher_node = Node(
-        package="joint_state_publisher_gui",
-        executable="joint_state_publisher_gui",
-    )
-
-    robot_state_publisher_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="both",
-        parameters=[robot_description],
-    )
-
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"), "config",
-         "view_robot.rviz"]
-    )
-
-    rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
-        output="log",
-        arguments=["-d", rviz_config_file]
-    )
-
-    nodes = [
-        joint_state_publisher_node,
-        robot_state_publisher_node,
-        rviz_node
+    
+    launch_files_to_include = [
+        load_and_test
     ]
-
-    return LaunchDescription(nodes)
+    
+    return LaunchDescription(launch_files_to_include)
