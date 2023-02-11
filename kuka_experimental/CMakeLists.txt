@@ -1,4 +1,11 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(kuka_experimental)
-find_package(catkin REQUIRED)
-catkin_metapackage()
+cmake_minimum_required(VERSION 3.16)
+
+project(kuka_experimental LANGUAGES CXX)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-Wall -Wextra)
+endif()
+
+find_package(ament_cmake REQUIRED)
+
+ament_package()
