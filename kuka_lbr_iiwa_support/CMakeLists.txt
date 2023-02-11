@@ -1,23 +1,31 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(kuka_lbr_iiwa_support)
+cmake_minimum_required(VERSION 3.16)
 
-find_package(catkin REQUIRED)
+project(kuka_lbr_iiwa_support LANGUAGES CXX)
 
-catkin_package()
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-Wall -Wextra)
+endif()
 
-install(DIRECTORY config launch urdf
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+find_package(ament_cmake REQUIRED)
+
+
+install(
+  DIRECTORY config launch urdf
+  DESTINATION share/${PROJECT_NAME}
+  )
 
 # temporarily: until sources are moved to other org/rep
 install(
   DIRECTORY
     meshes/lbr_iiwa_14_r820/collision
   DESTINATION
-    ${CATKIN_PACKAGE_SHARE_DESTINATION}/meshes/lbr_iiwa_14_r820/)
+  share/${PROJECT_NAME}/meshes/lbr_iiwa_14_r820/)
 
 # temporarily: until sources are moved to other org/rep
 install(
   DIRECTORY
     meshes/lbr_iiwa_14_r820/visual
   DESTINATION
-    ${CATKIN_PACKAGE_SHARE_DESTINATION}/meshes/lbr_iiwa_14_r820/)
+  share/${PROJECT_NAME}/meshes/lbr_iiwa_14_r820/)
+
+  ament_package()

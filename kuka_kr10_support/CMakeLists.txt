@@ -1,17 +1,17 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.16)
 
-project(kuka_kr10_support)
+project(kuka_kr10_support LANGUAGES CXX)
 
-find_package(catkin REQUIRED)
-
-catkin_package()
-
-if (CATKIN_ENABLE_TESTING)
-  find_package(roslaunch REQUIRED)
-  roslaunch_add_file_check(test/roslaunch_test_kr10r900_2.xml)
-  roslaunch_add_file_check(test/roslaunch_test_kr10r1100sixx.xml)
-  roslaunch_add_file_check(test/roslaunch_test_kr10r1420.xml)
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-Wall -Wextra)
 endif()
 
-install(DIRECTORY config launch meshes urdf
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+find_package(ament_cmake REQUIRED)
+
+
+install(
+  DIRECTORY config launch meshes urdf
+  DESTINATION share/${PROJECT_NAME}
+  )
+
+  ament_package()
