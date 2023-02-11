@@ -22,38 +22,16 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 
 def generate_launch_description():
 
-    declared_arguments = []
-    
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "robot_description_package",
-            default_value = "kuka_kr3_support",
-            description = "Description package with robot URDF/xacro files.",
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "robot_description_file",
-            default_value = "kr3r540.xacro",
-            description="URDF/XACRO description file with the robot.",
-        )
-    )
-    
-    
-    robot_description_package = LaunchConfiguration("robot_description_package")
-    robot_description_file = LaunchConfiguration("robot_description_file")
-
-
     load_and_test = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
                     [FindPackageShare('kuka_resources'), "launch"
-                    ,'test_ros2_control_kuka_xxx.launch.py'
+                    ,'test_ros2_control_kuka.launch.py'
                 ])
         ),
         launch_arguments={
-            "robot_description_package": robot_description_package,
-            "robot_description_file": robot_description_file,
+            "robot_description_package": "kuka_kr3_support",
+            "robot_description_file": "kr3r540.xacro",
         }.items(),
     )
     
@@ -61,4 +39,4 @@ def generate_launch_description():
         load_and_test
     ]
     
-    return LaunchDescription( declared_arguments + launch_files_to_include)
+    return LaunchDescription(launch_files_to_include)
