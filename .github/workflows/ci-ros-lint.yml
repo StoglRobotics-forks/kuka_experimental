@@ -18,7 +18,7 @@ jobs:
         distribution: rolling
         linter: ${{ matrix.linter }}
         package-name:
-          kuka_resources]
+          kuka_resources
           kuka_lbr_iiwa_support
           kuka_kr210_support
           kuka_kr150_support
@@ -28,7 +28,7 @@ jobs:
           kuka_kr6_support
           kuka_kr5_support
           kuka_kr3_support
-          [kuka_experimental
+          kuka_experimental
 
 
   ament_lint_100:
@@ -47,7 +47,7 @@ jobs:
         linter: cpplint
         arguments: "--linelength=100 --filter=-whitespace/newline"
         package-name:
-          kuka_resources]
+          kuka_resources
           kuka_lbr_iiwa_support
           kuka_kr210_support
           kuka_kr150_support
@@ -57,5 +57,4 @@ jobs:
           kuka_kr6_support
           kuka_kr5_support
           kuka_kr3_support
-          [kuka_experimental
           kuka_experimental
