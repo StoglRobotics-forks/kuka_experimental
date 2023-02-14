@@ -1,0 +1,61 @@
+name: ROS Lint
+on:
+  pull_request:
+
+jobs:
+  ament_lint:
+    name: ament_${{ matrix.linter }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+          linter: [cppcheck, copyright, lint_cmake]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ros-tooling/setup-ros@v0.2
+    - uses: ros-tooling/action-ros-lint@v0.1
+      with:
+        distribution: rolling
+        linter: ${{ matrix.linter }}
+        package-name:
+          kuka_resources]
+          kuka_lbr_iiwa_support
+          kuka_kr210_support
+          kuka_kr150_support
+          kuka_kr120_support
+          kuka_kr16_support
+          kuka_kr10_support
+          kuka_kr6_support
+          kuka_kr5_support
+          kuka_kr3_support
+          [kuka_experimental
+
+
+  ament_lint_100:
+    name: ament_${{ matrix.linter }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+          linter: [cpplint]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ros-tooling/setup-ros@v0.2
+    - uses: ros-tooling/action-ros-lint@v0.1
+      with:
+        distribution: rolling
+        linter: cpplint
+        arguments: "--linelength=100 --filter=-whitespace/newline"
+        package-name:
+          kuka_resources]
+          kuka_lbr_iiwa_support
+          kuka_kr210_support
+          kuka_kr150_support
+          kuka_kr120_support
+          kuka_kr16_support
+          kuka_kr10_support
+          kuka_kr6_support
+          kuka_kr5_support
+          kuka_kr3_support
+          [kuka_experimental
+          kuka_experimental
