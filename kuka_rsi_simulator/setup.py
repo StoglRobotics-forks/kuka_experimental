@@ -13,14 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='dmitri',
-    maintainer_email='dmitri@dmitri.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='Denis Štogl',
+    maintainer_email='denis@stoglrobotics.de',
+    description='Python node that implements a minimal RSI interface simulator.',
+    license='BSD',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-	    'kuka_rsi_simulator = kuka_rsi_simulator.kuka_rsi_simulator:main'
+	          'kuka_rsi_simulator = kuka_rsi_simulator.kuka_rsi_simulator:main',
         ],
     },
 )
