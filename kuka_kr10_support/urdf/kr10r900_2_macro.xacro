@@ -108,7 +108,7 @@
         </geometry>
       </collision>
     </link>
-
+    
 
     <joint name="${prefix}joint_a1" type="revolute">
       <origin xyz="0 0 0.400" rpy="0 0 0"/>
@@ -165,7 +165,7 @@
       <parent link="${prefix}base_link"/>
       <child link="${prefix}base"/>
     </joint>
-
+    
     <!-- ROS-Industrial 'flange' - frame attachment point for EEF models -->
     <link name="${prefix}flange" />
     <joint name="${prefix}joint_6-flange" type="fixed">
@@ -173,7 +173,7 @@
       <parent link="${prefix}link_6" />
       <child link="${prefix}flange" />
     </joint>
-
+    
     <!-- ROS-Industrial 'tool0' - frame all-zeros tool frame -->
     <!-- This frame corresponds to the $FLANGE coordinate system in KUKA KRC controllers. -->
     <link name="${prefix}tool0"/>

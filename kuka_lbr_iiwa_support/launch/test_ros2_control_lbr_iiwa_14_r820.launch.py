@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
@@ -20,6 +21,8 @@ from launch.substitutions import Command, FindExecutable, LaunchConfiguration, P
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
+import xacro
 
 
 def generate_launch_description():
@@ -39,9 +42,10 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "use_mock_hardware",
             default_value="true",
-            description="Start robot with fake hardware mirroring command to its states.",
+            description="Start robot with fake hardware mirroring command to its states."
         )
     )
+
 
     # initialize arguments
     prefix = LaunchConfiguration("prefix")
@@ -52,7 +56,8 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("kuka_lbr_iiwa_support"), "urdf", "lbr_iiwa_14_r820.xacro"]
+                [FindPackageShare("kuka_lbr_iiwa_support"),
+                 "urdf", "lbr_iiwa_14_r820.xacro"]
             ),
             " ",
             "prefix:=",
@@ -61,13 +66,15 @@ def generate_launch_description():
             "use_mock_hardware:=",
             use_mock_hardware,
             " ",
+
         ]
     )
 
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("kuka_lbr_iiwa_support"), "config", "kuka_7dof_controllers.yaml"]
+        [FindPackageShare("kuka_lbr_iiwa_support"), "config",
+         "kuka_7dof_controllers.yaml"]
     )
 
     control_node = Node(
@@ -87,7 +94,8 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster",
+                   "--controller-manager", "/controller_manager"],
     )
 
     robot_controller_spawner = Node(
@@ -104,7 +112,8 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"), "config", "view_robot.rviz"]
+        [FindPackageShare("kuka_resources"),
+         "config", "view_robot.rviz"]
     )
 
     rviz_node = Node(
@@ -127,7 +136,7 @@ def generate_launch_description():
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner
     ]
 
     return LaunchDescription(declared_arguments + nodes)

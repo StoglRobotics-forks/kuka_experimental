@@ -3,7 +3,7 @@
 
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="use_mock_hardware" default="false" />
-
+  
   <xacro:include filename="$(find kuka_kr3_support)/urdf/kr3r540_macro.xacro"/>
   <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
 

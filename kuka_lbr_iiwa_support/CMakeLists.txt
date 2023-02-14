@@ -12,22 +12,20 @@ find_package(ament_cmake REQUIRED)
 install(
   DIRECTORY config launch urdf
   DESTINATION share/${PROJECT_NAME}
-)
+  )
 
 # temporarily: until sources are moved to other org/rep
 install(
   DIRECTORY
     meshes/lbr_iiwa_14_r820/collision
   DESTINATION
-  share/${PROJECT_NAME}/meshes/lbr_iiwa_14_r820/
-)
+  share/${PROJECT_NAME}/meshes/lbr_iiwa_14_r820/)
 
 # temporarily: until sources are moved to other org/rep
 install(
   DIRECTORY
     meshes/lbr_iiwa_14_r820/visual
   DESTINATION
-  share/${PROJECT_NAME}/meshes/lbr_iiwa_14_r820/
-)
+  share/${PROJECT_NAME}/meshes/lbr_iiwa_14_r820/)
 
-ament_package()
+  ament_package()

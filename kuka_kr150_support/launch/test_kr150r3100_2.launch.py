@@ -15,9 +15,9 @@
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PathJoinSubstitution, LaunchConfiguration 
 
 
 def generate_launch_description():
@@ -25,15 +25,18 @@ def generate_launch_description():
     load_and_test = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                [FindPackageShare("kuka_resources"), "launch", "test_kuka.launch.py"]
-            )
+                    [FindPackageShare('kuka_resources'), "launch"
+                    ,'test_kuka.launch.py'
+                ])
         ),
         launch_arguments={
             "robot_description_package": "kuka_kr150_support",
             "robot_description_file": "kr150r3100_2.xacro",
         }.items(),
     )
-
-    launch_files_to_include = [load_and_test]
-
+    
+    launch_files_to_include = [
+        load_and_test
+    ]
+    
     return LaunchDescription(launch_files_to_include)
