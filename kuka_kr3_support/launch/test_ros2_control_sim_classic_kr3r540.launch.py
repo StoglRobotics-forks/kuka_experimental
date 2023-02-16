@@ -15,9 +15,9 @@
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration 
+from launch.substitutions import PathJoinSubstitution 
 
 
 def generate_launch_description():
@@ -25,8 +25,8 @@ def generate_launch_description():
     load_and_test = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                    [FindPackageShare('kuka_kr3_support'), "launch"
-                    ,'test_ros2_control_sim_kr3r540.launch.py'
+                    [FindPackageShare('kuka_resources'), "launch"
+                    ,'test_ros2_control_sim_classic.launch.py'
                 ])
         ),
         launch_arguments={
