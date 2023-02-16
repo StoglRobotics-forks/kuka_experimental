@@ -14,9 +14,6 @@
 #
 #
 # Author: Dr. Denis
-#
-
-from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import (
@@ -30,7 +27,8 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
+from launch.conditions import IfCondition, UnlessCondition
+import xacro
 
 def generate_launch_description():
     # Declare arguments
@@ -140,12 +138,12 @@ def generate_launch_description():
         arguments=["-d", rviz_config_file],
     )
 
-    # Gazebo nodes
-    gazebo_classic = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
-        ),
-    )
+    # # Gazebo nodes
+    # gazebo_classic = IncludeLaunchDescription(
+    #             PythonLaunchDescriptionSource(
+    #                 [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
+    #     ),
+    # )
     
     gazebo_ign = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -155,18 +153,21 @@ def generate_launch_description():
     )
 
     # Spawn robot
-    gazebo_spawn_robot = Node(
+    ignition_spawn_robot = Node(
         package="ros_ign_gazebo",
         executable="create",
         name="spawn_rrbot",
-        arguments=["-name", "kr3r540", "-topic", "/robot_description"],
+        arguments=["-name", "kr3r540", "-topic", "robot_description"],
         output="screen",
     )
     
-    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
-                        arguments=['-topic', 'robot_description',
-                                   '-entity', 'cartpole'],
-                        output='screen')
+    # classic_spawn_robot = Node(
+    #     package='gazebo_ros', 
+    #     executable='spawn_entity.py',
+    #     arguments=["-topic", "robot_description","-entity", "kr3r540"],
+    #     output='screen',
+        
+    # )
 
 
     joint_state_broadcaster_spawner = Node(
@@ -189,8 +190,8 @@ def generate_launch_description():
     # Delay loading and activation of `joint_state_broadcaster` after start of ros2_control_node
     delay_joint_state_broadcaster_spawner_after_ros2_control_node = RegisterEventHandler(
         event_handler=OnProcessStart(
-            # target_action=gazebo_spawn_robot,
-            target_action=spawn_entity,
+            # target_action=ignition_spawn_robot,
+            target_action=ignition_spawn_robot,
 
             on_start=[
                 TimerAction(
@@ -221,10 +222,10 @@ def generate_launch_description():
     return LaunchDescription(
         declared_arguments
         + [
-            gazebo_classic,
-            # gazebo_ign,
-            # gazebo_spawn_robot,
-            spawn_entity,
+            # gazebo_classic,
+            gazebo_ign,
+            ignition_spawn_robot,
+            # classic_spawn_robot,
             robot_state_pub_node,
             rviz_node,
             delay_joint_state_broadcaster_spawner_after_ros2_control_node,
