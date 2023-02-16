@@ -26,7 +26,7 @@
     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
   </xacro:kr3r540>
 
-  <xacro:kr3r540_ros2_control
+  <xacro:common_macro_ros2_control_sim
     name="kr3r540"
     prefix="$(arg prefix)"
     use_mock_hardware="$(arg use_mock_hardware)"
@@ -35,5 +35,4 @@
     sim_gazebo="$(arg sim_gazebo)"
     simulation_controllers="$(arg simulation_controllers)" />
 
-  <!-- <xacro:kr3r540 prefix=""/> -->
 </robot>
