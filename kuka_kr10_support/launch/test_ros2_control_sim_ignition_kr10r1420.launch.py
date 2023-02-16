@@ -26,12 +26,12 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
                     [FindPackageShare('kuka_resources'), "launch"
-                    ,'test_ros2_control_sim_classic.launch.py'
+                    ,'test_ros2_control_sim_ignition.launch.py'
                 ])
         ),
         launch_arguments={
             "description_package": "kuka_kr10_support",
-            "description_file": "kr10r900_2.xacro",
+            "description_file": "kr10r1420.xacro",
         }.items(),
     )
     

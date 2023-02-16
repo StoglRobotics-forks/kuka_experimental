@@ -26,7 +26,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
                     [FindPackageShare('kuka_resources'), "launch"
-                    ,'test_ros2_control_sim_classic.launch.py'
+                    ,'test_ros2_control_sim_ignition.launch.py'
                 ])
         ),
         launch_arguments={

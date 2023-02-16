@@ -30,8 +30,8 @@ def generate_launch_description():
                 ])
         ),
         launch_arguments={
-            "description_package": "kuka_kr10_support",
-            "description_file": "kr10r900_2.xacro",
+            "description_package": "kuka_kr6_support",
+            "description_file": "kr6r900_2.xacro",
         }.items(),
     )
     
