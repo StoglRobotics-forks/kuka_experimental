@@ -115,8 +115,8 @@ def generate_launch_description():
     ignition_spawn_robot = Node(
         package="ros_ign_gazebo",
         executable="create",
-        name="spawn_rrbot",
-        arguments=["-name", "kr3r540", "-topic", "robot_description"],
+        name="spawn_robot",
+        arguments=["-name", "lbr_iiwa_14_r820", "-topic", "robot_description"],
         output="screen",
     )
 
