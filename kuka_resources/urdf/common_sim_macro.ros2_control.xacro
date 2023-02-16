@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
-  <xacro:macro name="kr3r540_ros2_control" params="
+  <xacro:macro name="common_macro_ros2_control_sim" params="
                name
                prefix
                use_mock_hardware:=^|false
