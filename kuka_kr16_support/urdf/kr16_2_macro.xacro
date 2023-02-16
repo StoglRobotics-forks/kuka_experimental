@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
-  <xacro:macro name="kuka_kr16_2" params="prefix">
+  <xacro:macro name="kr16_2" params="prefix parent *origin">
     <!-- LINKS -->
     <!-- base link -->
     <link name="${prefix}base_link">
@@ -13,13 +13,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/base_link.dae" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/base_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/base_link.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/base_link.stl" />
         </geometry>
       </collision>
     </link>
@@ -33,13 +33,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/link_1.dae" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/link_1.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/link_1.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/link_1.stl" />
         </geometry>
       </collision>
     </link>
@@ -53,13 +53,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/link_2.dae"/>
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/link_2.dae"/>
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/link_2.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/link_2.stl" />
         </geometry>
       </collision>
     </link>
@@ -73,13 +73,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/link_3.dae" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/link_3.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/link_3.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/link_3.stl" />
         </geometry>
       </collision>
     </link>
@@ -93,13 +93,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/link_4.dae" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/link_4.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/link_4.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/link_4.stl" />
         </geometry>
       </collision>
     </link>
@@ -113,13 +113,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/link_5.dae" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/link_5.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/link_5.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/link_5.stl" />
         </geometry>
       </collision>
     </link>
@@ -133,13 +133,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/visual/link_6.dae" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/visual/link_6.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr16_support/meshes/kr16_2/collision/link_6.stl" />
+          <mesh filename="file://$(find kuka_kr16_support)/meshes/kr16_2/collision/link_6.stl" />
         </geometry>
       </collision>
     </link>
@@ -150,6 +150,14 @@
 
     <!-- JOINTS -->
     <!-- joint 1 (A1) -->
+
+
+    <!-- base_joint fixes base_link to the environment -->
+    <joint name="${prefix}base_joint" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${parent}" />
+      <child link="${prefix}base_link" />
+    </joint>
     <joint name="${prefix}joint_a1" type="revolute">
       <origin xyz="0 0 0.675" rpy="0 0 0"/>
       <parent link="${prefix}base_link"/>

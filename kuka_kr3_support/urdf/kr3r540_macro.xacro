@@ -119,6 +119,7 @@
 
     <!-- Following REP199, this frame shall be use to attach EEF or other equipment -->
     <link name="${prefix}flange" />
+    
     <!-- base_joint fixes base_link to the environment -->
     <joint name="${prefix}base_joint" type="fixed">
       <xacro:insert_block name="origin" />
