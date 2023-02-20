@@ -27,6 +27,7 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
+        exclude: \.(dae|DAE)$
       - id: mixed-line-ending
       - id: trailing-whitespace
       - id: fix-byte-order-marker
