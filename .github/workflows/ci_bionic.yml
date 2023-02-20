@@ -3,6 +3,8 @@ name: CI - Ubuntu Bionic
 on:
   # direct pushes to protected branches are not supported
   pull_request:
+    branches:
+      - melodic-devel
   # run every day, at 6am UTC
   schedule:
     - cron: '0 6 * * *'
