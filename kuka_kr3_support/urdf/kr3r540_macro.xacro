@@ -3,7 +3,7 @@
   <xacro:include filename="$(find kuka_resources)/urdf/common_materials.xacro"/>
   <xacro:include filename="$(find kuka_resources)/urdf/common_properties.xacro"/>
 
-  <xacro:macro name="kuka_kr3r540" params="prefix parent *origin">
+  <xacro:macro name="kuka_kr3r540" params="prefix">
     <link name="${prefix}base_link">
       <xacro:default_inertial/>
       <visual>
@@ -120,12 +120,7 @@
     <!-- Following REP199, this frame shall be use to attach EEF or other equipment -->
     <link name="${prefix}flange" />
     
-    <!-- base_joint fixes base_link to the environment -->
-    <joint name="${prefix}base_joint" type="fixed">
-      <xacro:insert_block name="origin" />
-      <parent link="${parent}" />
-      <child link="${prefix}base_link" />
-    </joint>
+
     <joint name="${prefix}joint_a1" type="revolute">
       <origin xyz="0 0 0.345" rpy="0 0 0"/>
       <parent link="${prefix}base_link"/>
