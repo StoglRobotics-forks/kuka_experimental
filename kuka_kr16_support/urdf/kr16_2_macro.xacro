@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
-  <xacro:macro name="kr16_2" params="prefix parent *origin">
+  <xacro:macro name="kuka_kr16_2" params="prefix parent *origin">
     <!-- LINKS -->
     <!-- base link -->
     <link name="${prefix}base_link">

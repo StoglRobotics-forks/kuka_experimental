@@ -3,7 +3,7 @@
   <xacro:include filename="$(find kuka_resources)/urdf/common_materials.xacro"/>
   <xacro:include filename="$(find kuka_resources)/urdf/common_properties.xacro"/>
 
-  <xacro:macro name="kr3r540" params="prefix parent *origin">
+  <xacro:macro name="kuka_kr3r540" params="prefix parent *origin">
     <link name="${prefix}base_link">
       <xacro:default_inertial/>
       <visual>

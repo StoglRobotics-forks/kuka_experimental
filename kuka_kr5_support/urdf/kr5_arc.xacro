@@ -17,12 +17,12 @@
 
   <!-- Load robot's macro with parameters -->
   <!-- set prefix if multiple robots are used -->
-  <xacro:kr5_arc prefix="$(arg prefix)" parent="world" >
+  <xacro:kuka_kr5_arc prefix="$(arg prefix)" parent="world" >
     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
-  </xacro:kr5_arc>
+  </xacro:kuka_kr5_arc>
 
   <xacro:common_macro_ros2_control_sim
-    name="kr5_arc"
+    name="kuka_kr5_arc"
     prefix="$(arg prefix)"
     use_mock_hardware="$(arg use_mock_hardware)"
     mock_sensor_commands="$(arg mock_sensor_commands)"

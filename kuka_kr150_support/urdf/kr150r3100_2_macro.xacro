@@ -4,7 +4,7 @@
   <xacro:include filename="$(find kuka_resources)/urdf/common_properties.xacro"/>
 
 
-  <xacro:macro name="kr150r3100_2" params="prefix parent *origin">
+  <xacro:macro name="kuka_kr150r3100_2" params="prefix parent *origin">
     <!-- LINKS -->
     <!-- base link -->
     <link name="${prefix}base_link">
