@@ -8,7 +8,7 @@
   <xacro:arg name="simulation_controllers" default="" />
 
   <xacro:include filename="$(find kuka_kr150_support)/urdf/kr150_2_macro.xacro" />
-  <xacro:include filename="$(find kuka_resources)/urdf/common_sim_macro.ros2_control.xacro"/>
+  <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
 
    <!-- create link fixed to the "world" -->
   <link name="world" />
@@ -19,7 +19,7 @@
     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
   </xacro:kuka_kr150_2>
 
-  <xacro:common_macro_ros2_control_sim
+  <xacro:kuka_common_ros2_control_macro
     name="kuka_kr150_2"
     prefix="$(arg prefix)"
     use_mock_hardware="$(arg use_mock_hardware)"
