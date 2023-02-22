@@ -1,6 +1,6 @@
 <library path="kuka_rsi_hw_interface">
   <class name="kuka_rsi_hw_interface/KukaSystemPositionOnlyHardware"
-         type="ros2_control_kuka_driver::KukaSystemPositionOnlyHardware"
+         type="kuka_rsi_hw_interface::KukaSystemPositionOnlyHardware"
          base_class_type="hardware_interface::SystemInterface">
     <description>
 		ROS2 control Kuka driver.

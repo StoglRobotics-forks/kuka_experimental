@@ -2,51 +2,49 @@ cmake_minimum_required(VERSION 3.5)
 project(kuka_rsi_hw_interface)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra)
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-set(THIS_PACKAGE_INCLUDE_DEPENDS
-  ament_cmake
-  hardware_interface
-  pluginlib
-  rclcpp
-  std_msgs
-)
-
-foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
-  find_package(${Dependency} REQUIRED)
-endforeach()
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
+#find_package(tinyxml REQUIRED)
+# uncomment the following section in order to fill in
+# further dependencies manually.
+# find_package(<dependency> REQUIRED)
 
 add_library(
 	${PROJECT_NAME}
 	SHARED
-  src/kuka_system_position_only.cpp
-	# src/kuka_hardware_interface.cpp
+	src/kuka_system_position_only.cpp
 )
-
 target_include_directories(
 	${PROJECT_NAME}
 	PRIVATE
 	include
 )
 
-ament_target_dependencies(
-  ${PROJECT_NAME}
-  ${THIS_PACKAGE_INCLUDE_DEPENDS}
+target_link_libraries(
+	${PROJECT_NAME}
+	tinyxml
 )
 
-# add_executable(kuka_hardware_interface_node src/kuka_hardware_interface_node.cpp)
-# target_include_directories(kuka_hardware_interface_node PRIVATE include)
-# target_link_libraries(kuka_hardware_interface_node
-#   ${PROJECT_NAME}
-# )
-# ament_target_dependencies(kuka_hardware_interface_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+ament_target_dependencies(
+  ${PROJECT_NAME}
+  hardware_interface
+  pluginlib
+  rclcpp
+)
+
+pluginlib_export_plugin_description_file(hardware_interface
+										 ros2_control_kuka_driver.xml)
+
 
 install(
   TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  DESTINATION lib
 )
 
 install(
@@ -77,7 +75,9 @@ ament_export_libraries(
   ${PROJECT_NAME}
 )
 ament_export_dependencies(
-  ${THIS_PACKAGE_INCLUDE_DEPENDS}
+  hardware_interface
+  pluginlib
+  rclcpp
 )
 
 ament_package()
