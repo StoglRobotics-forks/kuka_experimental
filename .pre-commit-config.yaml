@@ -140,5 +140,5 @@ repos:
     rev: v2.2.2
     hooks:
       - id: codespell
-        args: ['--write-changes', '--ignore-words-list Linz']
+        args: ['--write-changes', '--ignore-words-list=linz']
         exclude: CHANGELOG\.rst|\.(svg|pyc|drawio)$
