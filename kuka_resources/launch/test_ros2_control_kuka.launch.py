@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
@@ -22,24 +20,21 @@ from launch.substitutions import Command, FindExecutable, LaunchConfiguration, P
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-import xacro
-
 
 def generate_launch_description():
-
     declared_arguments = []
-    
+
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_package",
-            default_value = "kuka_kr5_support",
-            description = "Description package with robot URDF/xacro files.",
+            default_value="kuka_kr5_support",
+            description="Description package with robot URDF/xacro files.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_file",
-            default_value = "kr5_arc.xacro",
+            default_value="kr5_arc.xacro",
             description="URDF/XACRO description file with the robot.",
         )
     )
@@ -57,24 +52,22 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "use_mock_hardware",
             default_value="true",
-            description="Start robot with fake hardware mirroring command to its states."
+            description="Start robot with fake hardware mirroring command to its states.",
         )
     )
 
     # initialize arguments
-    robot_description_package = LaunchConfiguration('robot_description_package')
-    robot_description_file = LaunchConfiguration('robot_description_file')  
+    robot_description_package = LaunchConfiguration("robot_description_package")
+    robot_description_file = LaunchConfiguration("robot_description_file")
     prefix = LaunchConfiguration("prefix")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
-
 
     robot_description_content = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(robot_description_package),
-                 "urdf", robot_description_file]
+                [FindPackageShare(robot_description_package), "urdf", robot_description_file]
             ),
             " ",
             "prefix:=",
@@ -89,8 +82,7 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"), "config",
-         "kuka_6dof_controllers.yaml"]
+        [FindPackageShare("kuka_resources"), "config", "kuka_6dof_controllers.yaml"]
     )
 
     control_node = Node(
@@ -110,8 +102,7 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster",
-                   "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
     robot_controller_spawner = Node(
@@ -128,8 +119,7 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"),
-         "config", "view_robot.rviz"]
+        [FindPackageShare("kuka_resources"), "config", "view_robot.rviz"]
     )
 
     rviz_node = Node(
@@ -152,7 +142,7 @@ def generate_launch_description():
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner
+        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

@@ -27,6 +27,7 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
+        exclude: \.(dae|DAE)$
       - id: mixed-line-ending
       - id: trailing-whitespace
       - id: fix-byte-order-marker
@@ -139,5 +140,5 @@ repos:
     rev: v2.2.2
     hooks:
       - id: codespell
-        args: ['--write-changes', '--uri-ignore-words-list=ist']
+        args: ['--write-changes', '--ignore-words-list=linz']
         exclude: CHANGELOG\.rst|\.(svg|pyc|drawio)$
