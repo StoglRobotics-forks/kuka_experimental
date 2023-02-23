@@ -21,7 +21,6 @@ from launch.substitutions import PathJoinSubstitution
 
 
 def generate_launch_description():
-
     load_and_test = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(

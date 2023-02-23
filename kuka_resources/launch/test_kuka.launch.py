@@ -20,7 +20,6 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-
     declared_arguments = []
 
     declared_arguments.append(
