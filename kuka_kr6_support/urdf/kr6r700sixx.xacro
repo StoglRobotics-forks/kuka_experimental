@@ -4,9 +4,6 @@
   <xacro:arg name="use_mock_hardware" default="false" />
 
   <xacro:include filename="$(find kuka_kr6_support)/urdf/kr6r700sixx_macro.xacro"/>
-  <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
-
-  <xacro:kuka_common_ros2_control_macro name="kr6r700sixx_mock" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)"/>
 
   <xacro:kuka_kr6r700sixx prefix=""/>
 </robot>
