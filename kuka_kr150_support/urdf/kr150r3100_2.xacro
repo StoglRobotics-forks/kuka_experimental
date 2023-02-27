@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot name="kuka_kr150r3100_2" xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:arg name="prefix" default="" />
-  <xacro:arg name="use_mock_hardware" default="false" />
 
   <xacro:include filename="$(find kuka_kr150_support)/urdf/kr150r3100_2_macro.xacro" />
 
