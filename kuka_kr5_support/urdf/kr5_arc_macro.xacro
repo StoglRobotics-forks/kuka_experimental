@@ -20,13 +20,13 @@
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/base_link.dae" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/base_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/base_link.stl" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/base_link.stl" />
         </geometry>
       </collision>
     </link>
@@ -49,13 +49,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/link_1.dae" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/link_1.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/link_1.stl" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/link_1.stl" />
         </geometry>
       </collision>
     </link>
@@ -78,13 +78,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/link_2.dae"/>
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/link_2.dae"/>
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/link_2.stl"  />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/link_2.stl"  />
         </geometry>
       </collision>
     </link>
@@ -107,13 +107,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/link_3.dae" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/link_3.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/link_3.stl"  />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/link_3.stl"  />
         </geometry>
       </collision>
     </link>
@@ -136,13 +136,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/link_4.dae" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/link_4.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/link_4.stl"  />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/link_4.stl"  />
         </geometry>
       </collision>
     </link>
@@ -165,13 +165,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/link_5.dae" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/link_5.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/link_5.stl" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/link_5.stl" />
         </geometry>
       </collision>
     </link>
@@ -194,13 +194,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/visual/link_6.dae" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/visual/link_6.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr5_support/meshes/kr5_arc/collision/link_6.stl" />
+          <mesh filename="file://$(find kuka_kr5_support)/meshes/kr5_arc/collision/link_6.stl" />
         </geometry>
       </collision>
     </link>
