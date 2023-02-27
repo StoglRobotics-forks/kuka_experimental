@@ -4,7 +4,7 @@
   <xacro:arg name="use_mock_hardware" default="false" />
 
   <xacro:include filename="$(find kuka_kr10_support)/urdf/kr10r1420_macro.xacro" />
-  <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
+  <xacro:include filename="$(find kuka_ros2_control_support)/urdf/common_macro.ros2_control.xacro"/>
 
   <xacro:kuka_common_ros2_control_macro name="kr10r1420_mock" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)"/>
 
