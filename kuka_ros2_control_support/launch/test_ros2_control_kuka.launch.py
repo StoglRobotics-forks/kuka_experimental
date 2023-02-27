@@ -28,6 +28,16 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_description_package",
             default_value="kuka_kr5_support",
+            choices=[
+                "kuka_kr3_support", 
+                "kuka_kr5_support", 
+                "kuka_kr6_support", 
+                "kuka_kr10_support", 
+                "kuka_kr16_support",
+                "kuka_kr120_support",
+                "kuka_kr150_support",
+                "kuka_kr210_support",
+                ],
             description="Description package with robot URDF/xacro files.",
         )
     )
@@ -35,6 +45,21 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_description_file",
             default_value="kr5_arc.xacro",
+            choices=[
+                "kr3r540.xacro", 
+                "kr5_arc.xacro", 
+                "kr6r700sixx.xacro", 
+                "kr6r900_2.xacro", 
+                "kr6r900sixx.xacro",
+                "kr10r900_2.xacro",
+                "kr10r1100sixx.xacro",
+                "kr10r1420.xacro",                
+                "kr16_2.xacro", 
+                "kr120r2500pro.xacro", 
+                "kr150_2.xacro", 
+                "kr150r3100_2.xacro", 
+                "kr210l150.xacro",
+                ],
             description="URDF/XACRO description file with the robot.",
         )
     )
