@@ -2,110 +2,118 @@
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:include filename="$(find kuka_resources)/urdf/common_constants.xacro"/>
   <xacro:include filename="$(find kuka_resources)/urdf/common_materials.xacro"/>
+  <xacro:include filename="$(find kuka_resources)/urdf/common_properties.xacro"/>
 
   <xacro:macro name="kuka_kr6r900sixx" params="prefix">
     <link name="${prefix}base_link">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/visual/base_link.dae" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/visual/base_link.dae" />
         </geometry>
         <xacro:material_kuka_pedestal />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/collision/base_link.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/collision/base_link.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_1">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/visual/link_1.dae" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/visual/link_1.dae" />
         </geometry>
         <xacro:material_kuka_orange />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/collision/link_1.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/collision/link_1.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_2">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6r900sixx/visual/link_2.dae"/>
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6r900sixx/visual/link_2.dae"/>
         </geometry>
         <xacro:material_kuka_orange />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6r900sixx/collision/link_2.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6r900sixx/collision/link_2.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_3">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/visual/link_3.dae" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/visual/link_3.dae" />
         </geometry>
         <xacro:material_kuka_orange />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/collision/link_3.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/collision/link_3.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_4">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6r900sixx/visual/link_4.dae" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6r900sixx/visual/link_4.dae" />
         </geometry>
         <xacro:material_kuka_orange />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6r900sixx/collision/link_4.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6r900sixx/collision/link_4.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_5">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/visual/link_5.dae" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/visual/link_5.dae" />
         </geometry>
         <xacro:material_kuka_orange />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/collision/link_5.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/collision/link_5.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_6">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/visual/link_6.dae" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/visual/link_6.dae" />
         </geometry>
         <xacro:material_kuka_pedestal />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr6_support/meshes/kr6_agilus/collision/link_6.stl" />
+          <mesh filename="file://$(find kuka_kr6_support)/meshes/kr6_agilus/collision/link_6.stl" />
         </geometry>
       </collision>
     </link>
