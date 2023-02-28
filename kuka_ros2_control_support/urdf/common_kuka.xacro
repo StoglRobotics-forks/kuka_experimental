@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<robot name="kuka_kr3r540" xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_mock_hardware" default="false" />
+  <xacro:arg name="mock_sensor_commands" default="false" />
+  <xacro:arg name="sim_gazebo_classic" default="false" />
+  <xacro:arg name="sim_gazebo" default="false" />
+  <xacro:arg name="simulation_controllers" default="" />
+
+   <!-- create link fixed to the "world" -->
+   <!-- using-external-joints-and-links approach -->
+  <link name="world" />
+  <joint name="$(arg prefix)base_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->    
+    <parent link="world" />
+    <child link="$(arg prefix)base_link" />
+  </joint>  
+
+  <xacro:include filename="$(find kuka_kr3_support)/urdf/kr3r540_macro.xacro"/>
+
+  <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
+
+  <!-- Load robot's macro with parameters -->
+  <!-- set prefix if multiple robots are used -->
+  <xacro:kuka_kr3r540 prefix="$(arg prefix)" >  
+  </xacro:kuka_kr3r540>
+
+  <xacro:kuka_common_ros2_control_macro
+    name="kuka_kr3r540"
+    prefix="$(arg prefix)"
+    use_mock_hardware="$(arg use_mock_hardware)"
+    mock_sensor_commands="$(arg mock_sensor_commands)"
+    sim_gazebo_classic="$(arg sim_gazebo_classic)"
+    sim_gazebo="$(arg sim_gazebo)"
+    simulation_controllers="$(arg simulation_controllers)" />
+
+</robot>
