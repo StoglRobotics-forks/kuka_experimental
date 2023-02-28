@@ -1,0 +1,347 @@
+&ACCESS RVP
+def  kuka_eki_hw_interface()
+
+   ; Software License Agreement (BSD License)
+   ;
+   ; Copyright (c) 2018, 3M
+   ; All rights reserved.
+   ;
+   ; Redistribution and use in source and binary forms, with or without
+   ; modification, are permitted provided that the following conditions are met:
+   ;
+   ;      * Redistributions of source code must retain the above copyright
+   ;        notice, this list of conditions and the following disclQaimer.
+   ;      * Redistributions in binary form must reproduce the above copyright
+   ;        notice, this list of conditions and the following disclaimer in the
+   ;        documentation and/or other materials provided with the distribution.
+   ;      * Neither the name of the copyright holder, nor the names of its
+   ;        contributors may be used to endorse or promote products derived
+   ;        from this software without specific prior written permission.
+   ;
+   ; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+   ; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   ; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+   ; ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+   ; LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+   ; CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+   ; SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+   ; INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+   ; CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+   ; ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+   ; POSSIBILITY OF SUCH DAMAGE.
+
+   ; Author: Brett Hemes (3M) <brhemes@mmm.com>
+
+   ; Declarations
+   decl axis joint_pos_tgt
+   decl int elements_read
+   decl int io_elements_read
+   decl int io_elements_set
+   decl int index
+
+   ; INI
+   bas(#initmov, 0)  ; Basic initializasion of axes
+
+   ; Initialize eki_hw_interface server
+   ;   Config located in C:/ROBOTER/Config/User/Common/EthernetKRL/EkiHwInterface.xml
+   ;   Starts a TCP state sever on xml-specified IP address/port.
+   ;
+   ;   State transmission is periodic (currently determined by $timer[1]=-## line in
+   ;   eki_hw_iface_send()
+   ;
+   ;   Joint position commands execute as they come in.
+   ;   PTP motions are blended in joint-space via c_ptp approximation when possible
+   ;   via the advance run.  The advance run will read and blend command points as
+   ;   soon as the become available up to value set in $advance (in range [0, 5])
+   ;
+   ;   Utilized system resources:
+   ;     Flags:
+   ;       $flag[1]:        Indicates active client connection
+   ;       $timer_flag[1]:  Used to trigger periodic send of robot state
+   ;     Interrupts:
+   ;       15: Calls eki_hw_iface_reset() on falling edge of $flag[1]
+   ;       16: Calls eki_hw_iface_send() on rising edge of $timer_flag[1]
+   eki_hw_iface_init()
+   eki_io_iface_init()
+
+   ; BCO (Block COincidence) run to current position
+   ; (requied for below loop continue before first incoming command)
+   joint_pos_tgt = $axis_act_meas
+   ; additional comment
+   ptp joint_pos_tgt
+
+   for index = 1 to 2
+      io_pins[index] = index
+      io_types[index] = 1
+      io_cmd[index] = -1
+   endfor
+   
+   eki_io_iface_send()
+
+   ; Loop forever
+   $advance = 5
+   loop
+      ; TODO: check return values
+      elements_read = eki_hw_iface_get(joint_pos_tgt)  ; Get new command from buffer if present
+      if elements_read == 1 then
+         ptp joint_pos_tgt c_ptp                          ; PTP to most recent commanded position
+      endif
+      io_elements_read = eki_io_iface_get()
+      if io_elements_read == 1 then
+         set_io_values()
+         eki_io_iface_send()
+      endif
+   endloop
+
+   ; Note: EKI channels delete on reset or deselect of this program
+   ;       See <ENVIRONMENT>Program</ENVIRONMENT> EKI config element
+end
+
+def eki_hw_iface_init()
+   decl eki_status eki_ret
+
+   ; Setup interrupts
+   ; Interrupt 15 - Connection cleanup on client disconnect
+   global interrupt decl 15 when $flag[1]==false do eki_hw_iface_reset()
+   interrupt on 15
+   ; Interrupt 16 - Timer interrupt for periodic state transmission
+   global interrupt decl 16 when $timer_flag[1]==true do eki_hw_iface_send()
+   interrupt on 16
+   wait sec 0.012          ; Wait for next interpolation cycle
+   $timer[1] = -200        ; Time in [ms] before first interrupt call
+   $timer_stop[1] = false  ; Start timer 1
+
+   ; Create and open EKI interface
+   eki_ret = eki_init("EkiHwInterface")
+   eki_ret = eki_open("EkiHwInterface")
+end
+
+def eki_io_iface_init()
+   decl eki_status eki_ret
+
+   ; Setup interrupts
+   ; Interrupt 15 - Connection cleanup on client disconnect
+   ;global interrupt decl 17 when $flag[2]==false do eki_io_iface_reset()
+   ;interrupt on 17
+   ; Interrupt 16 - Timer interrupt for periodic state transmission
+   ;global interrupt decl 18 when $timer_flag[2]==true do eki_io_iface_send()
+   ;interrupt on 18
+   ;wait sec 0.012          ; Wait for next interpolation cycle
+   ;$timer[2] = -200        ; Time in [ms] before first interrupt call
+   ;$timer_stop[2] = false  ; Start timer 1
+
+   ; Create and open EKI interface
+   eki_ret = eki_init("EkiIOInterface")
+   eki_ret = eki_open("EkiIOInterface")
+end
+
+def eki_io_iface_send()
+   decl eki_status eki_ret
+   decl int index
+   if $flag[2] then
+      index = 1
+      eki_ret = eki_setint("EkiIOInterface", "IOState/IO1/@Type", io_types[index])
+      eki_ret = eki_setint("EkiIOInterface", "IOState/IO1/@Pin", io_pins[index])
+      switch io_types[index]
+         case 1
+            eki_ret = eki_setbool("EkiIOInterface", "IOState/IO1/@State", $in[io_pins[index]])
+         case 2
+            eki_ret = eki_setbool("EkiIOInterface", "IOState/IO1/@State", $out[io_pins[index]])
+         default
+            eki_ret = eki_setbool("EkiIOInterface", "IOState/IO1/@State", False)
+      endswitch
+
+      index = 2
+      eki_ret = eki_setint("EkiIOInterface", "IOState/IO2/@Type", io_types[index])
+      eki_ret = eki_setint("EkiIOInterface", "IOState/IO2/@Pin", io_pins[index])
+      switch io_types[index]
+         case 1
+            eki_ret = eki_setbool("EkiIOInterface", "IOState/IO2/@State", $in[io_pins[index]])
+         case 2
+            eki_ret = eki_setbool("EkiIOInterface", "IOState/IO2/@State", $out[io_pins[index]])
+         default
+            eki_ret = eki_setbool("EkiIOInterface", "IOState/IO2/@State", False)
+      endswitch
+      eki_ret = eki_checkbuffer("EkiIOInterface", "IOCommand/IO1/@Mode")
+      eki_ret = eki_setint("EkiIOInterface", "IOState/IOCommand/@Size", eki_ret.buff)
+      ; Send xml structure
+      if $flag[2] then  ; Make sure connection hasn't died while updating xml structure
+         eki_ret = eki_send("EkiIOInterface", "IOState")
+      endif
+   endif
+
+
+   ; Set timer for next interrupt [ms]
+   $timer[2] = -10  ; ~10 ms for above send + 10 ms interrupt timer -> ~50 Hz state transmission
+end
+
+def eki_hw_iface_send()
+   decl eki_status eki_ret
+   decl real vel_percent
+   if $flag[1] then  ; If connection alive
+      ; Load state values into xml structure
+      ; position
+      eki_ret = eki_setreal("EkiHwInterface", "RobotState/Pos/@A1", $axis_act_meas.a1)
+      eki_ret = eki_setreal("EkiHwInterface", "RobotState/Pos/@A2", $axis_act_meas.a2)
+      eki_ret = eki_setreal("EkiHwInterface", "RobotState/Pos/@A3", $axis_act_meas.a3)
+      eki_ret = eki_setreal("EkiHwInterface", "RobotState/Pos/@A4", $axis_act_meas.a4)
+      eki_ret = eki_setreal("EkiHwInterface", "RobotState/Pos/@A5", $axis_act_meas.a5)
+      eki_ret = eki_setreal("EkiHwInterface", "RobotState/Pos/@A6", $axis_act_meas.a6)
+      ; velocity
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Vel/@A1", $vel_axis_act[1] * $vel_axis_ma[1] / 100.0)
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Vel/@A2", $vel_axis_act[2] * $vel_axis_ma[2] / 100.0)
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Vel/@A3", $vel_axis_act[3] * $vel_axis_ma[3] / 100.0)
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Vel/@A4", $vel_axis_act[4] * $vel_axis_ma[4] / 100.0)
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Vel/@A5", $vel_axis_act[5] * $vel_axis_ma[5] / 100.0)
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Vel/@A6", $vel_axis_act[6] * $vel_axis_ma[6] / 100.0)
+      ; effort
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Eff/@A1", $torque_axis_act[1])
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Eff/@A2", $torque_axis_act[2])
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Eff/@A3", $torque_axis_act[3])
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Eff/@A4", $torque_axis_act[4])
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Eff/@A5", $torque_axis_act[5])
+      ;eki_ret = eki_setreal("EkiHwInterface", "RobotState/Eff/@A6", $torque_axis_act[6])
+      ; interface state
+      eki_ret = eki_checkbuffer("EkiHwInterface", "RobotCommand/Pos/@A1")
+      eki_ret = eki_setint("EkiHwInterface", "RobotState/RobotCommand/@Size", eki_ret.buff)
+
+      ; Send xml structure
+      if $flag[1] then  ; Make sure connection hasn't died while updating xml structure
+         eki_ret = eki_send("EkiHwInterface", "RobotState")
+      endif
+   endif
+
+   ; Set timer for next interrupt [ms]
+   $timer[1] = -10  ; ~10 ms for above send + 10 ms interrupt timer -> ~50 Hz state transmission
+end
+
+deffct int eki_hw_iface_available()
+   decl eki_status eki_ret
+   continue
+   if not $flag[2] then
+      return 0
+   endif
+
+   eki_ret = eki_checkbuffer("EkiHwInterface", "RobotCommand/Pos/@A1")
+   $timer[2] = -10
+   return eki_ret.buff
+endfct
+
+; eki_hw_iface_get
+; Tries to read most recent elemnt from buffer. q left unchanged if empty.
+; Returns number of elements read.
+deffct int eki_hw_iface_get(joint_pos_cmd :out)
+   decl eki_status eki_ret
+   decl axis joint_pos_cmd
+
+   if not $flag[1] then
+      return 0
+   endif
+
+   eki_ret = eki_checkbuffer("EkiHwInterface", "RobotCommand/Pos/@A1")
+
+   if eki_ret.buff <= 0 then
+      return 0
+   endif
+
+   eki_ret = eki_getreal("EkiHwInterface", "RobotCommand/Pos/@A1", joint_pos_cmd.a1)
+   eki_ret = eki_getreal("EkiHwInterface", "RobotCommand/Pos/@A2", joint_pos_cmd.a2)
+   eki_ret = eki_getreal("EkiHwInterface", "RobotCommand/Pos/@A3", joint_pos_cmd.a3)
+   eki_ret = eki_getreal("EkiHwInterface", "RobotCommand/Pos/@A4", joint_pos_cmd.a4)
+   eki_ret = eki_getreal("EkiHwInterface", "RobotCommand/Pos/@A5", joint_pos_cmd.a5)
+   eki_ret = eki_getreal("EkiHwInterface", "RobotCommand/Pos/@A6", joint_pos_cmd.a6)
+   return 1
+endfct
+
+; eki_io_iface_get
+; Tries to read most recent elemnt from buffer. q left unchanged if empty.
+; Returns number of elements read.
+deffct int eki_io_iface_get()
+   decl eki_status eki_ret
+   decl int index
+   decl int io_mode
+   decl int value
+   
+   if not $flag[2] then
+      return 0
+   endif
+
+   eki_ret = eki_checkbuffer("EkiIOInterface", "IOCommand/IO1/@Mode")
+
+   if eki_ret.buff <= 0 then
+      return 0
+   endif
+
+   io_mode = 0
+   index = 1
+   value = -1
+   eki_ret = eki_getint("EkiIOInterface", "IOCommand/IO1/@Mode", io_mode)
+   eki_ret = eki_getint("EkiIOInterface", "IOCommand/IO1/@Pin", io_pins[index])
+   eki_ret = eki_getint("EkiIOInterface", "IOCommand/IO1/@Value", value)
+   switch io_mode
+      case 1
+         io_types[index] = 1
+         io_cmd[index] = -1
+      case 2
+         io_types[index] = 2
+         io_cmd[index] = value
+      case 3
+         io_types[index] = 2
+         io_cmd[index] = -1
+      default
+         io_types[index] = 0
+         io_cmd[index] = -1
+   endswitch
+   index = 2
+   value = -1
+   eki_ret = eki_getint("EkiIOInterface", "IOCommand/IO2/@Mode", io_mode)
+   eki_ret = eki_getint("EkiIOInterface", "IOCommand/IO2/@Pin", io_pins[index])
+   eki_ret = eki_getint("EkiIOInterface", "IOCommand/IO2/@Value", value)
+   switch io_mode
+      case 1
+         io_types[index] = 1
+         io_cmd[index] = -1
+      case 2
+         io_types[index] = 2
+         io_cmd[index] = value
+      case 3
+         io_types[index] = 2
+         io_cmd[index] = -1
+      default
+         io_types[index] = 0
+         io_cmd[index] = -1
+   endswitch
+   
+   
+   return 1
+endfct
+
+; set_io_values
+; Tries to read most recent elemnt from buffer. q left unchanged if empty.
+; Returns number of elements read.
+def set_io_values()
+   decl int index
+   for index = 1 to 2
+      if (io_cmd[index] <> -1) then
+         REPEAT
+            $out[io_pins[index]] = (io_cmd[index] <> 0)
+         UNTIL $out[io_pins[index]] == (io_cmd[index] <> 0)
+      endif
+   endfor
+end
+
+def eki_hw_iface_reset()
+   decl eki_status eki_ret
+   
+   eki_ret = eki_clear("EkiHwInterface")
+   eki_ret = eki_init("EkiHwInterface")
+   eki_ret = eki_open("EkiHwInterface")
+end
+
+def eki_io_iface_reset()
+   decl eki_status eki_ret
+   
+   eki_ret = eki_clear("EkiIOInterface")
+   eki_ret = eki_init("EkiIOInterface")
+   eki_ret = eki_open("EkiIOInterface")
+end

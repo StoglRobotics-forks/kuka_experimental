@@ -1,0 +1,7 @@
+&ACCESS RVP
+defdat kuka_eki_hw_interface
+   ext bas(bas_command  :in,real  :in )
+   decl int io_pins[2]
+   decl int io_types[2]
+   decl int io_cmd[2]
+enddat
