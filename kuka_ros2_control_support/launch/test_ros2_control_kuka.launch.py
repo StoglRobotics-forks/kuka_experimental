@@ -27,7 +27,6 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_package",
-            default_value="kuka_kr5_support",
             choices=[
                 "kuka_kr3_support", 
                 "kuka_kr5_support", 
@@ -43,22 +42,21 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "robot_description_file",
-            default_value="kr5_arc.xacro",
+            "robot_description_macro_file",
             choices=[
-                "kr3r540.xacro", 
-                "kr5_arc.xacro", 
-                "kr6r700sixx.xacro", 
-                "kr6r900_2.xacro", 
-                "kr6r900sixx.xacro",
-                "kr10r900_2.xacro",
-                "kr10r1100sixx.xacro",
-                "kr10r1420.xacro",                
-                "kr16_2.xacro", 
-                "kr120r2500pro.xacro", 
-                "kr150_2.xacro", 
-                "kr150r3100_2.xacro", 
-                "kr210l150.xacro",
+                "kr3r540_macro.xacro", 
+                "kr5_arc_macro.xacro", 
+                "kr6r700sixx_macro.xacro", 
+                "kr6r900_2_macro.xacro", 
+                "kr6r900sixx_macro.xacro",
+                "kr10r900_2_macro.xacro",
+                "kr10r1100sixx_macro.xacro",
+                "kr10r1420_macro.xacro",                
+                "kr16_2_macro.xacro", 
+                "kr120r2500pro_macro.xacro", 
+                "kr150_2_macro.xacro", 
+                "kr150r3100_2_macro.xacro", 
+                "kr210l150_macro.xacro",
                 ],
             description="URDF/XACRO description file with the robot.",
         )
@@ -80,10 +78,50 @@ def generate_launch_description():
             description="Start robot with fake hardware mirroring command to its states.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "ros2_control_support_package",
+            default_value="kuka_ros2_control_support",
+            description="Support package for ros2_control. Contains files that use base "
+            "kuka robot description and add on ros2_control support. ",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "common_description_file",
+            default_value="common_kuka.xacro",
+            description="loads robot macros by chosen value for arguments 'robot_description_package'"
+            "and 'robot_description_file' .",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "robot_name",
+            choices=[
+                "kuka_kr3r540", 
+                "kuka_kr5_arc", 
+                "kuka_kr6r700sixx", 
+                "kuka_kr6r900_2", 
+                "kuka_kr6r900sixx",
+                "kuka_kr10r900_2",
+                "kuka_kr10r1100sixx",
+                "kuka_kr10r1420",                
+                "kuka_kr16_2", 
+                "kuka_kr120r2500pro", 
+                "kuka_kr150_2", 
+                "kuka_kr150r3100_2", 
+                "kuka_kr210l150",
+                ],
+            description="NOTE:robot name and robot description macro name are same",
+        )
+    )
 
     # initialize arguments
     robot_description_package = LaunchConfiguration("robot_description_package")
-    robot_description_file = LaunchConfiguration("robot_description_file")
+    ros2_control_support_package = LaunchConfiguration("ros2_control_support_package")
+    common_description_file = LaunchConfiguration("common_description_file")
+    robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
+    robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
 
@@ -92,7 +130,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(robot_description_package), "urdf", robot_description_file]
+                [FindPackageShare(ros2_control_support_package), "urdf", common_description_file]
             ),
             " ",
             "prefix:=",
@@ -101,6 +139,16 @@ def generate_launch_description():
             "use_mock_hardware:=",
             use_mock_hardware,
             " ",
+            "robot_description_package:=",
+            robot_description_package,
+            " ",
+            "robot_description_macro_file:=",
+            robot_description_macro_file,
+            " ",
+            "robot_name:=",
+            robot_name,
+            " ",
+            
         ]
     )
 

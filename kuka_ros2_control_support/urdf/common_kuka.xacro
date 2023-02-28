@@ -1,12 +1,15 @@
 <?xml version="1.0" ?>
-<robot name="kuka_kr3r540" xmlns:xacro="http://wiki.ros.org/xacro">
+<robot name="kuka" xmlns:xacro="http://wiki.ros.org/xacro">
 
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="use_mock_hardware" default="false" />
-  <xacro:arg name="mock_sensor_commands" default="false" />
-  <xacro:arg name="sim_gazebo_classic" default="false" />
-  <xacro:arg name="sim_gazebo" default="false" />
-  <xacro:arg name="simulation_controllers" default="" />
+  <xacro:arg name="robot_description_package" default="kuka_kr3_support"/>
+  <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
+  <xacro:arg name="robot_name" default="kuka_kr3r540"/>
+
+  <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
+  <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
+  <xacro:property name="robot_name" value="$(arg robot_name)"/>
 
    <!-- create link fixed to the "world" -->
    <!-- using-external-joints-and-links approach -->
@@ -14,25 +17,70 @@
   <joint name="$(arg prefix)base_joint" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->    
     <parent link="world" />
-    <child link="$(arg prefix)base_link" />
+    <child link="$(arg prefix)base_link"/>
   </joint>  
 
-  <xacro:include filename="$(find kuka_kr3_support)/urdf/kr3r540_macro.xacro"/>
+  <xacro:include filename="$(find ${robot_description_package})/urdf/${robot_description_macro_file}"/>
 
-  <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
+  <xacro:include filename="$(find kuka_ros2_control_support)/urdf/common_macro.ros2_control.xacro"/>
 
-  <!-- Load robot's macro with parameters -->
-  <!-- set prefix if multiple robots are used -->
-  <xacro:kuka_kr3r540 prefix="$(arg prefix)" >  
-  </xacro:kuka_kr3r540>
 
   <xacro:kuka_common_ros2_control_macro
-    name="kuka_kr3r540"
+    name="$(arg robot_name)"
     prefix="$(arg prefix)"
     use_mock_hardware="$(arg use_mock_hardware)"
-    mock_sensor_commands="$(arg mock_sensor_commands)"
-    sim_gazebo_classic="$(arg sim_gazebo_classic)"
-    sim_gazebo="$(arg sim_gazebo)"
-    simulation_controllers="$(arg simulation_controllers)" />
+    />
+  <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
+    <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr5_support'}">
+    <xacro:kuka_kr5_arc prefix="$(arg prefix)"/>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr6_support'}">
+    <xacro:if value="${robot_description_macro_file == 'kr6r700sixx_macro.xacro'}">
+      <xacro:kuka_kr6r700sixx prefix="$(arg prefix)"/>
+    </xacro:if>
+    <xacro:if value="${robot_description_macro_file == 'kr6r900_2_macro.xacro'}">
+      <xacro:kuka_kr6r900_2 prefix="$(arg prefix)"/>
+    </xacro:if>
+    <xacro:if value="${robot_description_macro_file == 'kr6r900sixx_macro.xacro'}">
+      <xacro:kuka_kr6r900sixx prefix="$(arg prefix)"/>
+    </xacro:if>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr10_support'}">
+    <xacro:if value="${robot_description_macro_file == 'kr10r900_2_macro.xacro'}">
+      <xacro:kuka_kr10r900_2 prefix="$(arg prefix)"/>
+    </xacro:if>
+    <xacro:if value="${robot_description_macro_file == 'kr10r1100sixx_macro.xacro'}">
+      <xacro:kuka_kr10r1100sixx prefix="$(arg prefix)"/>
+    </xacro:if>
+    <xacro:if value="${robot_description_macro_file == 'kr10r1420_macro.xacro'}">
+      <xacro:kuka_kr10r1420 prefix="$(arg prefix)"/>
+    </xacro:if>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr16_support'}">
+    <xacro:kuka_kr16_2 prefix="$(arg prefix)"/>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr120_support'}">
+    <xacro:kuka_kr120r2500pro prefix="$(arg prefix)"/>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr150_support'}">
+    <xacro:if value="${robot_description_macro_file == 'kr150_2_macro.xacro'}">
+      <xacro:kuka_kr150_2 prefix="$(arg prefix)"/>
+    </xacro:if>
+    <xacro:if value="${robot_description_macro_file == 'kr150r3100_2_macro.xacro'}">
+      <xacro:kuka_kr150r3100_2 prefix="$(arg prefix)"/>
+    </xacro:if>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr210_support'}">
+    <xacro:kuka_kr210l150 prefix="$(arg prefix)"/>
+  </xacro:if>
 
 </robot>
