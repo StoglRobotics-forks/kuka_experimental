@@ -80,22 +80,6 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "ros2_control_support_package",
-            default_value="kuka_ros2_control_support",
-            description="Support package for ros2_control. Contains files that use base "
-            "kuka robot description and add on ros2_control support. ",
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "common_description_file",
-            default_value="common_kuka.xacro",
-            description="loads robot macros by chosen value for arguments 'robot_description_package'"
-            "and 'robot_description_file' .",
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
             "robot_name",
             choices=[
                 "kuka_kr3r540", 
@@ -118,8 +102,6 @@ def generate_launch_description():
 
     # initialize arguments
     robot_description_package = LaunchConfiguration("robot_description_package")
-    ros2_control_support_package = LaunchConfiguration("ros2_control_support_package")
-    common_description_file = LaunchConfiguration("common_description_file")
     robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
     robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
@@ -130,7 +112,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(ros2_control_support_package), "urdf", common_description_file]
+                [FindPackageShare("kuka_ros2_control_support"), "urdf", "common_kuka.xacro"]
             ),
             " ",
             "prefix:=",
