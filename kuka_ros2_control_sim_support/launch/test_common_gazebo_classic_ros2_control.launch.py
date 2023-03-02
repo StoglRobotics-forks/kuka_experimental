@@ -35,8 +35,8 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "runtime_config_package",
             default_value="kuka_resources",
-            description='Package with the controller\'s configuration in "config" folder. \
-        Usually the argument is not set, it enables use of a custom setup.',
+            description="Package with the controller's configuration in \"config\" folder. \
+        Usually the argument is not set, it enables use of a custom setup.",
         )
     )
     declared_arguments.append(
