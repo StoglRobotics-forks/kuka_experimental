@@ -103,13 +103,6 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "use_mock_hardware",
-            default_value="true",
-            description="Start robot with fake hardware mirroring command to its states.",
-        )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument(
             "ros2_control_sim_support_package",
             default_value="kuka_ros2_control_sim_support",
             description="Support package for ros2_control and simulators. Contains files that use base "
@@ -158,7 +151,6 @@ def generate_launch_description():
     robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
     robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
-    use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     robot_controller = LaunchConfiguration("robot_controller")
 
     robot_controllers = PathJoinSubstitution(
@@ -180,8 +172,6 @@ def generate_launch_description():
             " ",
             "prefix:=",
             prefix,
-            " ",
-            "use_mock_hardware:=false",
             " ",
             "mock_sensor_commands:=false",
             " ",
