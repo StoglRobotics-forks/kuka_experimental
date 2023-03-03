@@ -1,110 +1,118 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:include filename="$(find kuka_resources)/urdf/common_materials.xacro"/>
+  <xacro:include filename="$(find kuka_resources)/urdf/common_properties.xacro"/>
 
   <xacro:macro name="kuka_kr10r900_2" params="prefix">
-    <xacro:include filename="$(find kuka_resources)/urdf/common_materials.xacro"/>
     <link name="${prefix}base_link">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/base_link.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/base_link.stl" />
         </geometry>
         <xacro:material_kuka_ral_gray_aluminium />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/base_link.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/base_link.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_1">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/link_1.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/link_1.stl" />
         </geometry>
         <xacro:material_kuka_ral_traffic_white />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/link_1.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/link_1.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_2">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/link_2.stl"/>
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/link_2.stl"/>
         </geometry>
         <xacro:material_kuka_ral_traffic_white />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/link_2.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/link_2.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_3">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/link_3.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/link_3.stl" />
         </geometry>
         <xacro:material_kuka_ral_traffic_white />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/link_3.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/link_3.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_4">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/link_4.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/link_4.stl" />
         </geometry>
         <xacro:material_kuka_ral_traffic_white />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/link_4.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/link_4.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_5">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/link_5.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/link_5.stl" />
         </geometry>
         <xacro:material_kuka_ral_traffic_white />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/link_5.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/link_5.stl" />
         </geometry>
       </collision>
     </link>
     <link name="${prefix}link_6">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/visual/link_6.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/visual/link_6.stl" />
         </geometry>
         <xacro:material_kuka_black />
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://kuka_kr10_support/meshes/kr10r900_2/collision/link_6.stl" />
+          <mesh filename="file://$(find kuka_kr10_support)/meshes/kr10r900_2/collision/link_6.stl" />
         </geometry>
       </collision>
     </link>
