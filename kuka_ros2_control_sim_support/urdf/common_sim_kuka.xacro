@@ -35,6 +35,7 @@
     sim_gazebo_classic="$(arg sim_gazebo_classic)"
     sim_gazebo="$(arg sim_gazebo)"
     simulation_controllers="$(arg simulation_controllers)"
+    robot_description_package="$(arg robot_description_package)"
     />
 
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
@@ -88,6 +89,10 @@
 
   <xacro:if value="${robot_description_package == 'kuka_kr210_support'}">
     <xacro:kuka_kr210l150 prefix="$(arg prefix)"/>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_lbr_iiwa_support'}">
+    <xacro:kuka_lbr_iiwa_14_r820 prefix="$(arg prefix)"/>
   </xacro:if>
 
 </robot>
