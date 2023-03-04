@@ -258,7 +258,8 @@ def generate_launch_description():
         ]
 
     return LaunchDescription(
-        declared_arguments[
+        declared_arguments
+        + [
             gazebo_ign,
             ignition_spawn_robot,
             robot_state_pub_node,
