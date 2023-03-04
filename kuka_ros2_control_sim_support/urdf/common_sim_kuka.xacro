@@ -18,10 +18,10 @@
    <!-- using-external-joints-and-links approach -->
   <link name="world" />
   <joint name="$(arg prefix)base_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->    
+    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
     <parent link="world" />
     <child link="$(arg prefix)base_link"/>
-  </joint>  
+  </joint>
 
   <xacro:include filename="$(find ${robot_description_package})/urdf/${robot_description_macro_file}"/>
 
@@ -36,7 +36,7 @@
     sim_gazebo="$(arg sim_gazebo)"
     simulation_controllers="$(arg simulation_controllers)"
     />
-    
+
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
     <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>
   </xacro:if>
