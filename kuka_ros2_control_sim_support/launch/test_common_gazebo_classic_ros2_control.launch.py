@@ -44,7 +44,7 @@ def generate_launch_description():
             "controllers_file",
             choices=[
                 "kuka_6dof_controllers.yaml",
-                "kuka_7dof_controllers.yaml", 
+                "kuka_7dof_controllers.yaml",
                 # Note: for the robot kuka_lbr_iiwa_14_r820, kuka_7dof_controllers.yaml should be used
                 # and the rest use kuka_6dof_controllers.yaml
             ],
@@ -138,7 +138,7 @@ def generate_launch_description():
     robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
     robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
-    robot_controller = LaunchConfiguration("robot_controller") 
+    robot_controller = LaunchConfiguration("robot_controller")
     robot_controllers = PathJoinSubstitution(
         [FindPackageShare(runtime_config_package), "config", controllers_file]
     )
@@ -273,4 +273,3 @@ def generate_launch_description():
         ]
         + delay_robot_controller_spawners_after_joint_state_broadcaster_spawner
     )
-
