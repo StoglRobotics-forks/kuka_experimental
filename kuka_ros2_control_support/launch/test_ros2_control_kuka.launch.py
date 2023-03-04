@@ -28,7 +28,7 @@ def generate_launch_description():
             "controllers_file",
             choices=[
                 "kuka_6dof_controllers.yaml",
-                "kuka_7dof_controllers.yaml", 
+                "kuka_7dof_controllers.yaml",
                 # Note: for the robot kuka_lbr_iiwa_14_r820, kuka_7dof_controllers.yaml should be used
                 # and the rest use kuka_6dof_controllers.yaml
             ],
