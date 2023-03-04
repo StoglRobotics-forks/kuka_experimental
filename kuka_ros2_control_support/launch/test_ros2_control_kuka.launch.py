@@ -28,15 +28,15 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_description_package",
             choices=[
-                "kuka_kr3_support", 
-                "kuka_kr5_support", 
-                "kuka_kr6_support", 
-                "kuka_kr10_support", 
+                "kuka_kr3_support",
+                "kuka_kr5_support",
+                "kuka_kr6_support",
+                "kuka_kr10_support",
                 "kuka_kr16_support",
                 "kuka_kr120_support",
                 "kuka_kr150_support",
                 "kuka_kr210_support",
-                ],
+            ],
             description="Description package with robot URDF/xacro files.",
         )
     )
@@ -44,20 +44,20 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_description_macro_file",
             choices=[
-                "kr3r540_macro.xacro", 
-                "kr5_arc_macro.xacro", 
-                "kr6r700sixx_macro.xacro", 
-                "kr6r900_2_macro.xacro", 
+                "kr3r540_macro.xacro",
+                "kr5_arc_macro.xacro",
+                "kr6r700sixx_macro.xacro",
+                "kr6r900_2_macro.xacro",
                 "kr6r900sixx_macro.xacro",
                 "kr10r900_2_macro.xacro",
                 "kr10r1100sixx_macro.xacro",
-                "kr10r1420_macro.xacro",                
-                "kr16_2_macro.xacro", 
-                "kr120r2500pro_macro.xacro", 
-                "kr150_2_macro.xacro", 
-                "kr150r3100_2_macro.xacro", 
+                "kr10r1420_macro.xacro",
+                "kr16_2_macro.xacro",
+                "kr120r2500pro_macro.xacro",
+                "kr150_2_macro.xacro",
+                "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
-                ],
+            ],
             description="URDF/XACRO description file with the robot.",
         )
     )
@@ -82,20 +82,20 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_name",
             choices=[
-                "kuka_kr3r540", 
-                "kuka_kr5_arc", 
-                "kuka_kr6r700sixx", 
-                "kuka_kr6r900_2", 
+                "kuka_kr3r540",
+                "kuka_kr5_arc",
+                "kuka_kr6r700sixx",
+                "kuka_kr6r900_2",
                 "kuka_kr6r900sixx",
                 "kuka_kr10r900_2",
                 "kuka_kr10r1100sixx",
-                "kuka_kr10r1420",                
-                "kuka_kr16_2", 
-                "kuka_kr120r2500pro", 
-                "kuka_kr150_2", 
-                "kuka_kr150r3100_2", 
+                "kuka_kr10r1420",
+                "kuka_kr16_2",
+                "kuka_kr120r2500pro",
+                "kuka_kr150_2",
+                "kuka_kr150r3100_2",
                 "kuka_kr210l150",
-                ],
+            ],
             description="NOTE:robot name and robot description macro name are same",
         )
     )
@@ -130,7 +130,6 @@ def generate_launch_description():
             "robot_name:=",
             robot_name,
             " ",
-            
         ]
     )
 
