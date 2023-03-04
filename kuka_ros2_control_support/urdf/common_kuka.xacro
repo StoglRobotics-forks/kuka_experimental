@@ -3,9 +3,9 @@
 
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="use_mock_hardware" default="false" />
-  <xacro:arg name="robot_description_package" default="kuka_kr3_support"/>
-  <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
-  <xacro:arg name="robot_name" default="kuka_kr3r540"/>
+  <xacro:arg name="robot_description_package"/>
+  <xacro:arg name="robot_description_macro_file"/>
+  <xacro:arg name="robot_name"/>
 
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
