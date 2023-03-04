@@ -4,7 +4,9 @@
   <xacro:macro name="kuka_common_ros2_control_macro" params="
                name
                prefix
-               use_mock_hardware:=^|false">
+               use_mock_hardware:=^|false
+               robot_description_package"
+               >
 
     <ros2_control name="${name}" type="system">
 
@@ -68,6 +70,17 @@
           <param name="initial_value">0.0</param>
         </state_interface>
       </joint>
+      <xacro:if value="${robot_description_package == 'kuka_lbr_iiwa_support'}">
+        <joint name="${prefix}joint_a7">
+        <command_interface name="position">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        </joint>
+      </xacro:if>
     </ros2_control>
 
   </xacro:macro>

@@ -3,9 +3,9 @@
 
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="use_mock_hardware" default="false" />
-  <xacro:arg name="robot_description_package"/>
-  <xacro:arg name="robot_description_macro_file"/>
-  <xacro:arg name="robot_name"/>
+  <xacro:arg name="robot_description_package" default="kuka_kr3_support"/>
+  <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
+  <xacro:arg name="robot_name" default="kuka_kr3r540"/>
 
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
@@ -29,6 +29,7 @@
     name="$(arg robot_name)"
     prefix="$(arg prefix)"
     use_mock_hardware="$(arg use_mock_hardware)"
+    robot_description_package="$(arg robot_description_package)"
     />
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
     <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>
@@ -83,4 +84,7 @@
     <xacro:kuka_kr210l150 prefix="$(arg prefix)"/>
   </xacro:if>
 
+  <xacro:if value="${robot_description_package == 'kuka_lbr_iiwa_support'}">
+    <xacro:kuka_lbr_iiwa_14_r820 prefix="$(arg prefix)"/>
+  </xacro:if>
 </robot>
