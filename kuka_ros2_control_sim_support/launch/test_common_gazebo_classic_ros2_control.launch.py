@@ -28,6 +28,7 @@ from launch.substitutions import Command, FindExecutable, LaunchConfiguration, P
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
+
 def generate_launch_description():
     # Declare arguments
     declared_arguments = []
@@ -35,8 +36,8 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "runtime_config_package",
             default_value="kuka_resources",
-            description="Package with the controller's configuration in \"config\" folder. \
-        Usually the argument is not set, it enables use of a custom setup.",
+            description='Package with the controller\'s configuration in "config" folder. \
+        Usually the argument is not set, it enables use of a custom setup.',
         )
     )
     declared_arguments.append(
@@ -50,15 +51,15 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_description_package",
             choices=[
-                "kuka_kr3_support", 
-                "kuka_kr5_support", 
-                "kuka_kr6_support", 
-                "kuka_kr10_support", 
+                "kuka_kr3_support",
+                "kuka_kr5_support",
+                "kuka_kr6_support",
+                "kuka_kr10_support",
                 "kuka_kr16_support",
                 "kuka_kr120_support",
                 "kuka_kr150_support",
                 "kuka_kr210_support",
-                ],
+            ],
             description="Description package with robot URDF/xacro files. Usually the argument \
         is not set, it enables use of a custom description.",
         )
@@ -67,20 +68,20 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_description_macro_file",
             choices=[
-                "kr3r540_macro.xacro", 
-                "kr5_arc_macro.xacro", 
-                "kr6r700sixx_macro.xacro", 
-                "kr6r900_2_macro.xacro", 
+                "kr3r540_macro.xacro",
+                "kr5_arc_macro.xacro",
+                "kr6r700sixx_macro.xacro",
+                "kr6r900_2_macro.xacro",
                 "kr6r900sixx_macro.xacro",
                 "kr10r900_2_macro.xacro",
                 "kr10r1100sixx_macro.xacro",
-                "kr10r1420_macro.xacro",                
-                "kr16_2_macro.xacro", 
-                "kr120r2500pro_macro.xacro", 
-                "kr150_2_macro.xacro", 
-                "kr150r3100_2_macro.xacro", 
+                "kr10r1420_macro.xacro",
+                "kr16_2_macro.xacro",
+                "kr120r2500pro_macro.xacro",
+                "kr150_2_macro.xacro",
+                "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
-                ],
+            ],
             description="URDF/XACRO description file with the robot.",
         )
     )
@@ -105,26 +106,23 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "robot_name",
             choices=[
-                "kuka_kr3r540", 
-                "kuka_kr5_arc", 
-                "kuka_kr6r700sixx", 
-                "kuka_kr6r900_2", 
+                "kuka_kr3r540",
+                "kuka_kr5_arc",
+                "kuka_kr6r700sixx",
+                "kuka_kr6r900_2",
                 "kuka_kr6r900sixx",
                 "kuka_kr10r900_2",
                 "kuka_kr10r1100sixx",
-                "kuka_kr10r1420",                
-                "kuka_kr16_2", 
-                "kuka_kr120r2500pro", 
-                "kuka_kr150_2", 
-                "kuka_kr150r3100_2", 
+                "kuka_kr10r1420",
+                "kuka_kr16_2",
+                "kuka_kr120r2500pro",
+                "kuka_kr150_2",
+                "kuka_kr150r3100_2",
                 "kuka_kr210l150",
-                ],
+            ],
             description="NOTE:robot name and robot description macro name are same",
         )
     )
-    
-    
-    
 
     # Initialize Arguments
     runtime_config_package = LaunchConfiguration("runtime_config_package")
@@ -149,7 +147,11 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("kuka_ros2_control_sim_support"), "urdf", "common_sim_kuka.xacro"]
+                [
+                    FindPackageShare("kuka_ros2_control_sim_support"),
+                    "urdf",
+                    "common_sim_kuka.xacro",
+                ]
             ),
             " ",
             "prefix:=",
@@ -193,21 +195,19 @@ def generate_launch_description():
 
     # # Gazebo node
     gazebo_classic = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
+        PythonLaunchDescriptionSource(
+            [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
         ),
     )
 
     # Spawn robot
-    
-    classic_spawn_robot = Node(
-        package='gazebo_ros', 
-        executable='spawn_entity.py',
-        arguments=["-topic", "robot_description","-entity", "$ROBOT_NAME$"],
-        output='screen',
-        
-    )
 
+    classic_spawn_robot = Node(
+        package="gazebo_ros",
+        executable="spawn_entity.py",
+        arguments=["-topic", "robot_description", "-entity", "$ROBOT_NAME$"],
+        output="screen",
+    )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
@@ -230,7 +230,6 @@ def generate_launch_description():
     delay_joint_state_broadcaster_spawner_after_ros2_control_node = RegisterEventHandler(
         event_handler=OnProcessStart(
             target_action=classic_spawn_robot,
-
             on_start=[
                 TimerAction(
                     period=3.0,
@@ -258,8 +257,7 @@ def generate_launch_description():
         ]
 
     return LaunchDescription(
-        declared_arguments
-        + [
+        declared_arguments[
             gazebo_classic,
             classic_spawn_robot,
             robot_state_pub_node,

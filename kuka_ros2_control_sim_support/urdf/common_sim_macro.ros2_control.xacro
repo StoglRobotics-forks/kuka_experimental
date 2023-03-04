@@ -2,8 +2,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:macro name="kuka_common_sim_ros2_control_macro" params="
-               name 
-               prefix 
+               name
+               prefix
                use_mock_hardware:=^|false
                sim_gazebo_classic:=^|false
                sim_gazebo:=^|false
