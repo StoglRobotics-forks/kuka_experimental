@@ -194,15 +194,15 @@ def generate_launch_description():
     )
 
     # # Gazebo nodes
-    gazebo_ign = IncludeLaunchDescription(
+    gazebo_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [FindPackageShare("ros_ign_gazebo"), "/launch", "/ign_gazebo.launch.py"]
+            [FindPackageShare("ros_gz_sim"), "/launch", "/gz_sim.launch.py"]
         ),
         launch_arguments={"ign_args": " -r -v 3 empty.sdf"}.items(),
     )
 
     # Spawn robot
-    ignition_spawn_robot = Node(
+    gazebo_spawn_robot = Node(
         package="ros_gz_sim",
         executable="create",
         name="spawn_rrbot",
@@ -260,8 +260,8 @@ def generate_launch_description():
     return LaunchDescription(
         declared_arguments
         + [
-            gazebo_ign,
-            ignition_spawn_robot,
+            gazebo_sim,
+            gazebo_spawn_robot,
             robot_state_pub_node,
             rviz_node,
             delay_joint_state_broadcaster_spawner_after_ros2_control_node,
