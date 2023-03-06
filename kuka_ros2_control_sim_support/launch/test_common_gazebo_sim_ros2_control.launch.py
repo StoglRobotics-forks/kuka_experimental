@@ -203,7 +203,7 @@ def generate_launch_description():
 
     # Spawn robot
     ignition_spawn_robot = Node(
-        package="ros_ign_gazebo",
+        package="ros_gz_sim",
         executable="create",
         name="spawn_rrbot",
         arguments=["-name", "$ROBOT_NAME$", "-topic", "robot_description"],
