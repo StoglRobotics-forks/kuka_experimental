@@ -23,43 +23,54 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     declared_arguments = []
-
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "controllers_file",
+            choices=[
+                "kuka_6dof_controllers.yaml",
+                "kuka_7dof_controllers.yaml",
+                # Note: for the robot kuka_lbr_iiwa_14_r820, kuka_7dof_controllers.yaml should be used
+                # and the rest use kuka_6dof_controllers.yaml
+            ],
+            description="YAML file with the controllers configuration.",
+        )
+    )
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_package",
-            default_value="kuka_kr5_support",
             choices=[
-                "kuka_kr3_support", 
-                "kuka_kr5_support", 
-                "kuka_kr6_support", 
-                "kuka_kr10_support", 
+                "kuka_kr3_support",
+                "kuka_kr5_support",
+                "kuka_kr6_support",
+                "kuka_kr10_support",
                 "kuka_kr16_support",
                 "kuka_kr120_support",
                 "kuka_kr150_support",
                 "kuka_kr210_support",
-                ],
+                "kuka_lbr_iiwa_support",
+            ],
             description="Description package with robot URDF/xacro files.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "robot_description_file",
-            default_value="kr5_arc.xacro",
+            "robot_description_macro_file",
             choices=[
-                "kr3r540.xacro", 
-                "kr5_arc.xacro", 
-                "kr6r700sixx.xacro", 
-                "kr6r900_2.xacro", 
-                "kr6r900sixx.xacro",
-                "kr10r900_2.xacro",
-                "kr10r1100sixx.xacro",
-                "kr10r1420.xacro",                
-                "kr16_2.xacro", 
-                "kr120r2500pro.xacro", 
-                "kr150_2.xacro", 
-                "kr150r3100_2.xacro", 
-                "kr210l150.xacro",
-                ],
+                "kr3r540_macro.xacro",
+                "kr5_arc_macro.xacro",
+                "kr6r700sixx_macro.xacro",
+                "kr6r900_2_macro.xacro",
+                "kr6r900sixx_macro.xacro",
+                "kr10r900_2_macro.xacro",
+                "kr10r1100sixx_macro.xacro",
+                "kr10r1420_macro.xacro",
+                "kr16_2_macro.xacro",
+                "kr120r2500pro_macro.xacro",
+                "kr150_2_macro.xacro",
+                "kr150r3100_2_macro.xacro",
+                "kr210l150_macro.xacro",
+                "lbr_iiwa_14_r820_macro.xacro",
+            ],
             description="URDF/XACRO description file with the robot.",
         )
     )
@@ -80,10 +91,35 @@ def generate_launch_description():
             description="Start robot with fake hardware mirroring command to its states.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "robot_name",
+            choices=[
+                "kuka_kr3r540",
+                "kuka_kr5_arc",
+                "kuka_kr6r700sixx",
+                "kuka_kr6r900_2",
+                "kuka_kr6r900sixx",
+                "kuka_kr10r900_2",
+                "kuka_kr10r1100sixx",
+                "kuka_kr10r1420",
+                "kuka_kr16_2",
+                "kuka_kr120r2500pro",
+                "kuka_kr150_2",
+                "kuka_kr150r3100_2",
+                "kuka_kr210l150",
+                "kuka_lbr_iiwa_14_r820",
+            ],
+            description="NOTE:robot name and robot description macro name are same",
+        )
+    )
 
     # initialize arguments
+    controllers_file = LaunchConfiguration("controllers_file")
+
     robot_description_package = LaunchConfiguration("robot_description_package")
-    robot_description_file = LaunchConfiguration("robot_description_file")
+    robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
+    robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
 
@@ -92,7 +128,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(robot_description_package), "urdf", robot_description_file]
+                [FindPackageShare("kuka_ros2_control_support"), "urdf", "common_kuka.xacro"]
             ),
             " ",
             "prefix:=",
@@ -101,13 +137,25 @@ def generate_launch_description():
             "use_mock_hardware:=",
             use_mock_hardware,
             " ",
+            "controllers_file:=",
+            controllers_file,
+            " ",
+            "robot_description_package:=",
+            robot_description_package,
+            " ",
+            "robot_description_macro_file:=",
+            robot_description_macro_file,
+            " ",
+            "robot_name:=",
+            robot_name,
+            " ",
         ]
     )
 
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("kuka_resources"), "config", "kuka_6dof_controllers.yaml"]
+        [FindPackageShare("kuka_resources"), "config", controllers_file]
     )
 
     control_node = Node(

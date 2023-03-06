@@ -1,14 +1,31 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="kuka_common_ros2_control_macro" params="name prefix use_mock_hardware:=^|false">
+  <xacro:macro name="kuka_common_ros2_control_macro" params="
+               name
+               prefix
+               use_mock_hardware:=^|false
+               sim_gazebo_classic:=^|false
+               sim_gazebo:=^|false
+               simulation_controllers
+               robot_description_package"
+               >
 
     <ros2_control name="${name}" type="system">
 
       <hardware>
         <xacro:if value="${use_mock_hardware}">
-          <plugin>fake_components/GenericSystem</plugin>
+          <plugin>mock_components/GenericSystem</plugin>
         </xacro:if>
+        <xacro:if value="${sim_gazebo_classic}">
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </xacro:if>
+        <xacro:if value="${sim_gazebo}">
+          <plugin>ign_ros2_control/IgnitionSystem</plugin>
+        </xacro:if>
+        <xacro:unless value="${use_mock_hardware or sim_gazebo_classic or sim_gazebo}">
+          <plugin>robot_hardware_inteface/RobotHardwareInteface</plugin>
+        </xacro:unless>
       </hardware>
 
       <joint name="${prefix}joint_a1">
@@ -65,8 +82,42 @@
           <param name="initial_value">0.0</param>
         </state_interface>
       </joint>
+
+      <xacro:if value="${robot_description_package == 'kuka_lbr_iiwa_support'}">
+        <joint name="${prefix}joint_a7">
+        <command_interface name="position">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        </joint>
+      </xacro:if>
     </ros2_control>
 
-  </xacro:macro>
+    <xacro:if value="$(arg sim_gazebo_classic)">
+      <!-- Gazebo plugins -->
+      <gazebo reference="world">
+      </gazebo>
+      <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+          <parameters>${simulation_controllers}</parameters>
+        </plugin>
+      </gazebo>
+    </xacro:if>
 
+    <xacro:if value="$(arg sim_gazebo)">
+      <!-- Gazebo plugins -->
+      <gazebo reference="world">
+      </gazebo>
+      <gazebo>
+        <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+          <parameters>${simulation_controllers}</parameters>
+          <controller_manager_node_name>${prefix}controller_manager</controller_manager_node_name>
+        </plugin>
+      </gazebo>
+    </xacro:if>
+
+  </xacro:macro>
 </robot>
