@@ -202,7 +202,7 @@ def generate_launch_description():
     )
 
     # # Gazebo node
-    gazebo_classic = IncludeLaunchDescription(
+    gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
         ),
@@ -210,7 +210,7 @@ def generate_launch_description():
 
     # Spawn robot
 
-    classic_spawn_robot = Node(
+    gazebo_spawn_robot = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
         arguments=["-topic", "robot_description", "-entity", "$ROBOT_NAME$"],
@@ -265,8 +265,8 @@ def generate_launch_description():
     return LaunchDescription(
         declared_arguments
         + [
-            gazebo_classic,
-            classic_spawn_robot,
+            gazebo,
+            gazebo_spawn_robot,
             robot_state_pub_node,
             rviz_node,
             delay_joint_state_broadcaster_spawner_after_ros2_control_node,
