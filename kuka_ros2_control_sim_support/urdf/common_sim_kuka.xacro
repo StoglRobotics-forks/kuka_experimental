@@ -25,10 +25,10 @@
 
   <xacro:include filename="$(find ${robot_description_package})/urdf/${robot_description_macro_file}"/>
 
-  <xacro:include filename="$(find kuka_ros2_control_sim_support)/urdf/common_sim_macro.ros2_control.xacro"/>
+  <xacro:include filename="$(find kuka_ros2_control_support)/urdf/common_macro.ros2_control.xacro"/>
 
 
-  <xacro:kuka_common_sim_ros2_control_macro
+  <xacro:kuka_common_ros2_control_macro
     name="$(arg robot_name)"
     prefix="$(arg prefix)"
     use_mock_hardware="$(arg use_mock_hardware)"
