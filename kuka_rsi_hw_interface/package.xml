@@ -18,7 +18,7 @@
   <depend>pluginlib</depend>
   <depend>rclcpp</depend>
   <depend>ros2_control</depend>
-  <depend>ros2_controller</depend>
+  <depend>ros2_controllers</depend>
   <depend>std_msgs</depend>
   <depend>xacro</depend>
   
