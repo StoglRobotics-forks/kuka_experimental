@@ -236,7 +236,7 @@ def generate_launch_description():
     # Delay loading and activation of `joint_state_broadcaster` after start of ros2_control_node
     delay_joint_state_broadcaster_spawner_after_ros2_control_node = RegisterEventHandler(
         event_handler=OnProcessStart(
-            target_action=classic_spawn_robot,
+            target_action=gazebo_spawn_robot,
             on_start=[
                 TimerAction(
                     period=3.0,
