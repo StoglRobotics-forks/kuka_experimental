@@ -51,6 +51,10 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
 1. Create a colcon workspace:
 
     ```
+    # update and upgrade
+    sudo apt update
+    sudo apt upgrade -y
+
     # Setup the workspace
     mkdir -p ~/ws/src
     cd ~/ws/src
