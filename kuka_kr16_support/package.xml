@@ -40,6 +40,8 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>kuka_resources</exec_depend>
+  
+  <depend>ros2_controllers_test_nodes</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
