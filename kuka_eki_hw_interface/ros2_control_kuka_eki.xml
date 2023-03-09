@@ -1,0 +1,9 @@
+<library path="kuka_eki_hw_interface">
+  <class name="kuka_eki_hw_interface/KukaEkiHardwareInterface"
+         type="kuka_eki_hw_interface::KukaEkiHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Minimal hardware interface implementation for use with KUKA EKI.
+    </description>
+  </class>
+</library>
