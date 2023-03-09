@@ -57,10 +57,10 @@ namespace kuka_eki_hw_interface
             hardware_interface::return_type stop() override;
 
             ROS2_CONTROL_KUKA_EKI_HW_PUBLIC
-            hardware_interface::return_type read() override;
+            hardware_interface::return_type read(const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
             ROS2_CONTROL_KUKA_EKI_HW_PUBLIC
-            hardware_interface::return_type write() override;
+            hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
         private:
             // Store the command for the simulated robot
