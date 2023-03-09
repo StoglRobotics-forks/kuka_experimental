@@ -259,7 +259,7 @@ namespace kuka_eki_hw_interface
         return hardware_interface::return_type::OK;
     }
 
-    hardware_interface::return_type KukaEkiHardwareInterface::read()
+    hardware_interface::return_type KukaEkiHardwareInterface::read(const rclcpp::Time & time, const rclcpp::Duration & period)
     {
         std::vector<double> joint_position;
         std::vector<double> joint_velocity;
@@ -281,7 +281,7 @@ namespace kuka_eki_hw_interface
         return hardware_interface::return_type::OK;
     }
 
-    hardware_interface::return_type KukaEkiHardwareInterface::write()
+    hardware_interface::return_type KukaEkiHardwareInterface::write(const rclcpp::Time & time, const rclcpp::Duration & period)
     {
         if (eki_cmd_buff_len_ < eki_max_cmd_buff_len_)
             eki_write_command(hw_commands_);
