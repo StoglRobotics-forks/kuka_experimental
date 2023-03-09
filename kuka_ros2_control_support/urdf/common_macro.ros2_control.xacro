@@ -15,7 +15,7 @@
 
       <hardware>
         <xacro:if value="${use_mock_hardware}">
-          <plugin>mock_components/GenericSystem</plugin>
+          <plugin>fake_components/GenericSystem</plugin>
         </xacro:if>
         <xacro:if value="${sim_gazebo_classic}">
           <plugin>gazebo_ros2_control/GazeboSystem</plugin>

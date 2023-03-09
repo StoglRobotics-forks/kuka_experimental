@@ -201,23 +201,23 @@ def generate_launch_description():
     # # Gazebo nodes
     gazebo_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [FindPackageShare("ros_gz_sim"), "/launch", "/gz_sim.launch.py"]
+            [FindPackageShare("ros_ign_gazebo"), "/launch", "/ign_gazebo.launch.py"]
         ),
         launch_arguments={"ign_args": " -r -v 3 empty.sdf"}.items(),
     )
 
     # Spawn robot
     gazebo_spawn_robot = Node(
-        package="ros_gz_sim",
+        package="ros_ign_gazebo",
         executable="create",
-        name="spawn_rrbot",
+        name="spawn_robot",
         arguments=["-name", "$ROBOT_NAME$", "-topic", "robot_description"],
         output="screen",
     )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
-        executable="spawner",
+        executable="spawner.py",
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
@@ -227,7 +227,7 @@ def generate_launch_description():
         robot_controller_spawners += [
             Node(
                 package="controller_manager",
-                executable="spawner",
+                executable="spawner.py",
                 arguments=[controller, "-c", "/controller_manager"],
             )
         ]
