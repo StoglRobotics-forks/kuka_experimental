@@ -64,6 +64,7 @@ def generate_launch_description():
                 "kuka_kr120_support",
                 "kuka_kr150_support",
                 "kuka_kr210_support",
+                "kuka_lbr_iiwa_support",
             ],
             description="Description package with robot URDF/xacro files. Usually the argument \
         is not set, it enables use of a custom description.",
@@ -86,6 +87,8 @@ def generate_launch_description():
                 "kr150_2_macro.xacro",
                 "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
+                "kr210r3100_macro.xacro",
+                "lbr_iiwa_14_r820_macro.xacro",
             ],
             description="URDF/XACRO description file with the robot.",
         )
@@ -124,6 +127,8 @@ def generate_launch_description():
                 "kuka_kr150_2",
                 "kuka_kr150r3100_2",
                 "kuka_kr210l150",
+                "kuka_kr210r3100",
+                "kuka_lbr_iiwa_14_r820",
             ],
             description="NOTE:robot name and robot description macro name are same",
         )
@@ -170,6 +175,9 @@ def generate_launch_description():
             " ",
             "simulation_controllers:=",
             robot_controllers,
+            " ",
+            "controllers_file:=",
+            controllers_file,
             " ",
             "robot_description_package:=",
             robot_description_package,
