@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:macro name="kuka_kr210r3100" params="prefix">
+        <!-- links -->
+        <link name="${prefix}base_link">
+	  <inertial>
+	    <origin xyz="-0.11679684267239988 0.000930569464110783 0.11527547215411776" rpy="0 0 0"/>
+	    <mass value="559.015034572722"/>
+	    <inertia ixx="14.115944" iyy="29.220456" izz="36.740034" ixy="0.227734" iyz="-0.019714" ixz="2.942609"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/base_link.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/base_link.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <link name="${prefix}link_1">
+	  <inertial>
+	    <origin xyz="-0.051293985883457974 -0.016100728932733975 0.24358671689243275" rpy="0 0 0"/>
+	    <mass value="641.9952770003224"/>
+	    <inertia ixx="23.28132" iyy="38.470516" izz="35.359261" ixy="-3.876946" iyz="1.247398" ixz="3.392799"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l1_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l1_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <link name="${prefix}link_2">
+	  <inertial>
+	    <origin xyz="0.5525579788462762 -0.20117297897412317 -0.0012439878558074824" rpy="0 0 0"/>
+	    <mass value="881.9229270319727"/>
+	    <inertia ixx="23.656804" iyy="249.415174" izz="261.229221" ixy="10.1437" iyz="-0.074947" ixz="-0.654405"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l2_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l2_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <link name="${prefix}link_3">
+	  <inertial>
+	    <origin xyz="0.40113692670924617 0.09903913096749664 0.11933441692607738" rpy="0 0 0"/>
+	    <mass value="486.9958150524646"/>
+	    <inertia ixx="4.549686" iyy="78.154293" izz="78.434222" ixy="-0.798513" iyz="-0.236711" ixz="1.680031"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l3_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l3_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <link name="${prefix}link_4">
+	  <inertial>
+	    <origin xyz="0.18467307685142398 0.004490481023792502 8.438804702359803e-06" rpy="0 0 0"/>
+	    <mass value="39.6680434352628"/>
+	    <inertia ixx="0.09658" iyy="0.69817" izz="0.696467" ixy="-0.031784" iyz="-4e-06" ixz="0.000837"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l4_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l4_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <link name="${prefix}link_5">
+	  <inertial>
+	    <origin xyz="0.05762714897611465 -0.012624478869733204 -2.736635066713511e-05" rpy="0 0 0"/>
+	    <mass value="78.51538422789798"/>
+	    <inertia ixx="0.773476" iyy="0.796478" izz="1.122301" ixy="0.230722" iyz="9.4e-05" ixz="9.7e-05"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l5_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l5_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <link name="${prefix}link_6">
+	  <inertial>
+	    <origin xyz="0.02169435909842532 -1.3980071648605966e-05 5.2250469270931355e-05" rpy="0 0 0"/>
+	    <mass value="6.586106550753541"/>
+	    <inertia ixx="0.032807" iyy="0.017048" izz="0.017012" ixy="-1e-06" iyz="0.0" ixz="-1e-06"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l6_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	    <material name="">
+        	<color rgba="0.75294 0.75294 0.75294 1"/>
+     	    </material>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	    <geometry>
+	      <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l6_1.stl" scale="0.001 0.001 0.001"/>
+	    </geometry>
+	  </collision>
+        </link>
+        <!-- This frame corresponds to the $TOOL coordinate system in KUKA KRC controllers. -->
+        <link name="${prefix}flange"/>
+
+       <!-- joints -->
+        <joint name="${prefix}joint_a1" type="revolute">
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+            <parent link="${prefix}base_link"/>
+            <child link="${prefix}link_1"/>
+            <axis xyz="0 0 -1"/>
+            <limit lower="${radians(-185)}" upper="${radians(185)}" effort="0" velocity="${radians(105) * 0.3}"/>
+        </joint>
+        <joint name="${prefix}joint_a2" type="revolute">
+            <origin xyz="0.33 0.010 0.4094" rpy="0 ${radians(90)} 0"/>
+            <parent link="${prefix}link_1"/>
+            <child link="${prefix}link_2"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="${radians(-140)}" upper="${radians(-5)}" effort="0" velocity="${radians(94) * 0.3}"/>
+        </joint>
+        <joint name="${prefix}joint_a3" type="revolute">
+            <origin xyz="3e-05 -0.115 1.35" rpy="0 ${radians(-90)} 0"/>
+            <parent link="${prefix}link_2"/>
+            <child link="${prefix}link_3"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="${radians(-120)}" upper="${radians(168)}" effort="0" velocity="${radians(100) * 0.3}"/>
+        </joint>
+        <joint name="${prefix}joint_a4" type="revolute">
+            <origin xyz="1.0685 0.105 0.115" rpy="0 0 0"/>
+            <parent link="${prefix}link_3"/>
+            <child link="${prefix}link_4"/>
+            <axis xyz="1 0 0"/>
+            <limit lower="${radians(-350)}" upper="${radians(350)}" effort="0" velocity="${radians(136) * 0.3}"/>
+        </joint>
+        <joint name="${prefix}joint_a5" type="revolute">
+            <origin xyz="0.3515 0.059 0.0" rpy="0 0 0"/>
+            <parent link="${prefix}link_4"/>
+            <child link="${prefix}link_5"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="${radians(-122)}" upper="${radians(122)}" effort="0" velocity="${radians(129) * 0.3}"/>
+        </joint>
+        <joint name="${prefix}joint_a6" type="revolute">
+            <origin xyz="0.2001 -0.058987 0.0" rpy="0 0 0"/>
+            <parent link="${prefix}link_5"/>
+            <child link="${prefix}link_6"/>
+            <axis xyz="-1 0 0"/>
+            <limit lower="${radians(-350)}" upper="${radians(350)}" effort="0" velocity="${radians(206) * 0.3}"/>
+        </joint>
+        <joint name="${prefix}link_6-flange" type="fixed">
+            <parent link="${prefix}link_6"/>
+            <child link="${prefix}flange"/>
+            <origin xyz="0.0375 0 -0.00023924" rpy="0 0 0"/>
+        </joint>
+
+        <!-- ROS base_link to KUKA $ROBROOT coordinate system transform -->
+        <link name="${prefix}base"/>
+        <joint name="${prefix}base_link-base" type="fixed">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="${prefix}base_link"/>
+            <child link="${prefix}base"/>
+        </joint>
+
+        <!-- This frame corresponds to the $TOOL coordinate system in KUKA KRC controllers -->
+        <link name="${prefix}tool0"/>
+        <joint name="${prefix}flange-tool0" type="fixed">
+            <parent link="${prefix}flange"/>
+            <child link="${prefix}tool0"/>
+            <origin xyz="0 0 0" rpy="0 ${radians(90)} 0"/>
+        </joint>
+
+        <!-- rename 'Link1' to 'link_1', maintain bw-compatibility -->
+        <link name="${prefix}Link1"/>
+        <joint name="${prefix}Link1-link_1" type="fixed">
+            <parent link="${prefix}link_1"/>
+            <child link="${prefix}Link1"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+    </xacro:macro>
+</robot>
