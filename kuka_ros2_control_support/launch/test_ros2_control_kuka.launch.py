@@ -115,7 +115,22 @@ def generate_launch_description():
             description="NOTE:robot name and robot description macro name are same",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "robot_ip",
+            default_value="10.181.116.1",
+            description="IP address by which the robot can be reached."
+        )
+    )
 
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "robot_port",
+            default_value="54600",
+            description="Port by which the robot can be reached."
+        )
+    )
+    
     # initialize arguments
     controllers_file = LaunchConfiguration("controllers_file")
 
@@ -124,6 +139,11 @@ def generate_launch_description():
     robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
+    robot_ip = LaunchConfiguration("robot_ip")
+    robot_port = LaunchConfiguration("robot_port")
+
+
+
 
     robot_description_content = Command(
         [
@@ -151,6 +171,11 @@ def generate_launch_description():
             "robot_name:=",
             robot_name,
             " ",
+            "robot_ip:=",
+            robot_ip,
+            " ",
+            "robot_port:=",
+            robot_port,
         ]
     )
 
