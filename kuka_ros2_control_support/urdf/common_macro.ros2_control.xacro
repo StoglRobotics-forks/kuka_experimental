@@ -8,8 +8,12 @@
                sim_gazebo_classic:=^|false
                sim_gazebo:=^|false
                simulation_controllers
-               robot_description_package"
+               robot_description_package
+               initial_positions_file
+               robot_ip
+               robot_port"
                >
+      <xacro:property name="initial_positions" value="${load_yaml(initial_positions_file)['initial_positions']}"/>
 
     <ros2_control name="${name}" type="system">
 
@@ -17,6 +21,11 @@
         <xacro:if value="${use_mock_hardware}">
           <plugin>fake_components/GenericSystem</plugin>
         </xacro:if>
+        <xacro:unless value="${use_fake_hardware}">
+            <plugin>kuka_eki_hw_interface/KukaEkiHardwareInterface</plugin>
+            <param name="robot_ip">${robot_ip}</param>
+            <param name="robot_port">${robot_port}</param>
+        </xacro:unless>
         <xacro:if value="${sim_gazebo_classic}">
           <plugin>gazebo_ros2_control/GazeboSystem</plugin>
         </xacro:if>
@@ -29,6 +38,7 @@
       </hardware>
 
       <joint name="${prefix}joint_a1">
+        <param name="initial_position">${initial_positions['joint_a1']}</param>
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">1</param>
@@ -38,6 +48,7 @@
         </state_interface>
       </joint>
       <joint name="${prefix}joint_a2">
+        <param name="initial_position">${initial_positions['joint_a2']}</param>
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">1</param>
@@ -47,6 +58,7 @@
         </state_interface>
 	  </joint>
       <joint name="${prefix}joint_a3">
+        <param name="initial_position">${initial_positions['joint_a3']}</param>
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">0.61</param>
@@ -56,6 +68,7 @@
         </state_interface>
 	  </joint>
       <joint name="${prefix}joint_a4">
+        <param name="initial_position">${initial_positions['joint_a4']}</param>
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">1</param>
@@ -65,6 +78,7 @@
         </state_interface>
       </joint>
       <joint name="${prefix}joint_a5">
+        <param name="initial_position">${initial_positions['joint_a5']}</param>
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">1</param>
@@ -74,6 +88,7 @@
         </state_interface>
       </joint>
       <joint name="${prefix}joint_a6">
+        <param name="initial_position">${initial_positions['joint_a6']}</param>
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">1</param>
