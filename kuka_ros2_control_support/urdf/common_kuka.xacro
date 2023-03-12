@@ -2,7 +2,7 @@
 <robot name="kuka" xmlns:xacro="http://wiki.ros.org/xacro">
 
   <xacro:arg name="prefix" default="" />
-  <xacro:arg name="use_mock_hardware" default="false" />
+  <xacro:arg name="use_fake_hardware" default="false" />
   <xacro:arg name="sim_gazebo_classic" default="false" />
   <xacro:arg name="sim_gazebo" default="false" />
   <xacro:arg name="simulation_controllers" default="" />
@@ -31,7 +31,7 @@
   <xacro:kuka_common_ros2_control_macro
     name="$(arg robot_name)"
     prefix="$(arg prefix)"
-    use_mock_hardware="$(arg use_mock_hardware)"
+    use_fake_hardware="$(arg use_fake_hardware)"
     sim_gazebo_classic="$(arg sim_gazebo_classic)"
     sim_gazebo="$(arg sim_gazebo)"
     simulation_controllers="$(arg simulation_controllers)"
