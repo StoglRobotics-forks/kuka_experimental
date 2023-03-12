@@ -9,14 +9,13 @@
   <xacro:arg name="robot_description_package" default="kuka_kr3_support"/>
   <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
   <xacro:arg name="robot_name" default="kuka_kr3r540"/>
-  <xacro:arg name="initial_positions_file" default="$(find kuka_ros2_control_support)/config/initial_positions.yaml"/>
   <xacro:arg name="robot_ip" default="10.181.116.41"/>
   <xacro:arg name="robot_port" default="54600"/>
 
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
   <xacro:property name="robot_name" value="$(arg robot_name)"/>
-
+  
    <!-- create link fixed to the "world" -->
    <!-- using-external-joints-and-links approach -->
   <link name="world" />
@@ -39,7 +38,6 @@
     sim_gazebo="$(arg sim_gazebo)"
     simulation_controllers="$(arg simulation_controllers)"
     robot_description_package="$(arg robot_description_package)"
-    initial_positions_file="(arg initial_positions_file)"
     robot_ip="(arg robot_ip)"
     robot_port="(arg robot_port)"
     />
