@@ -31,7 +31,6 @@
 
   <xacro:include filename="$(find kuka_ros2_control_support)/urdf/common_macro.ros2_control.xacro"/>
 
-
   <xacro:kuka_common_ros2_control_macro
     name="$(arg robot_name)"
     prefix="$(arg prefix)"
@@ -44,6 +43,20 @@
     robot_ip="(arg robot_ip)"
     robot_port="(arg robot_port)"
   />
+
+  <xacro:if value="${robot_description_package == 'kuka_kr10r1100sixx_cell_description'}">
+    <xacro:include filename="$(find kuka_kr10r1100sixx_cell_description)/urdf/kr10_macro.ros2_control.xacro"/>
+    <xacro:kr10_gripper_ros2_control name="gripper_control" prefix="$(arg prefix)"/>
+    <xacro:if value="${robot_description_macro_file == 'kr10_cylinder_macro.xacro'}">
+      <xacro:kuka_kr10r1100sixx_cell 
+      prefix="$(arg prefix)"
+      robot_ip="(arg robot_ip)"
+      robot_port="(arg robot_port)"
+      use_fake_hardware="$(arg use_fake_hardware)"
+       />
+    </xacro:if>
+  </xacro:if>
+
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
     <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>
   </xacro:if>
