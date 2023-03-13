@@ -15,14 +15,16 @@
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
   <xacro:property name="robot_name" value="$(arg robot_name)"/>
-  
+
+  <xacro:arg name="initial_positions_file" default="$(find ${robot_description_package})/config/initial_positions.yaml"/>
+
    <!-- create link fixed to the "world" -->
    <!-- using-external-joints-and-links approach -->
   <link name="world" />
-  <joint name="$(arg prefix)base_joint" type="fixed">
+  <joint name="$(arg prefix)table_link" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
     <parent link="world" />
-    <child link="$(arg prefix)base_link"/>
+    <child link="$(arg prefix)table_link"/>
   </joint>
 
   <xacro:include filename="$(find ${robot_description_package})/urdf/${robot_description_macro_file}"/>
@@ -33,6 +35,7 @@
   <xacro:kuka_common_ros2_control_macro
     name="$(arg robot_name)"
     prefix="$(arg prefix)"
+    initial_positions_file="$(arg initial_positions_file)"
     use_fake_hardware="$(arg use_fake_hardware)"
     sim_gazebo_classic="$(arg sim_gazebo_classic)"
     sim_gazebo="$(arg sim_gazebo)"
@@ -40,7 +43,7 @@
     robot_description_package="$(arg robot_description_package)"
     robot_ip="(arg robot_ip)"
     robot_port="(arg robot_port)"
-    />
+  />
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
     <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>
   </xacro:if>
