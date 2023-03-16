@@ -2,3 +2,6 @@
 	path = ros2_control
 	url = https://github.com/StoglRobotics-forks/ros2_control.git
 	branch = control_node_max_update_rate
+[submodule "ros2_controllers"]
+	path = ros2_controllers
+	url = https://github.com/StoglRobotics-forks/ros2_controllers.git
