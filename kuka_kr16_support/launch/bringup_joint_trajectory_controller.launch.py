@@ -5,7 +5,12 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -28,7 +33,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "use_mock_hw",
             default_value="false",
-            description="Start robot with fake hardware mirroring command to its states."
+            description="Start robot with fake hardware mirroring command to its states.",
         )
     )
 
@@ -51,8 +56,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("kuka_kr16_support"),
-                 "urdf", "kr16_2.urdf.xacro"]
+                [FindPackageShare("kuka_kr16_support"), "urdf", "kr16_2.urdf.xacro"]
             ),
             " ",
             "prefix:=",
@@ -70,13 +74,16 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
-        [FindPackageShare("common_6dof_position_only_system"), "config",
-         "kuka_6dof_controller_position.yaml"]
+        [
+            FindPackageShare("common_6dof_position_only_system"),
+            "config",
+            "kuka_6dof_controller_position.yaml",
+        ]
     )
 
     control_node = Node(
         package="controller_manager",
-        executable="ros2_control_node",
+        executable="ros2_control_node_max_update_rate",
         output="both",
         parameters=[robot_description, robot_controllers],
     )
@@ -91,8 +98,11 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster",
-                   "--controller-manager", "/controller_manager"],
+        arguments=[
+            "joint_state_broadcaster",
+            "--controller-manager",
+            "/controller_manager",
+        ],
     )
 
     robot_controller_spawner = Node(
@@ -101,16 +111,17 @@ def generate_launch_description():
         arguments=["position_trajectory_controller", "-c", "/controller_manager"],
     )
 
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
+    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = (
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=joint_state_broadcaster_spawner,
+                on_exit=[robot_controller_spawner],
+            )
         )
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kuka_kr16_support"), "config/rviz",
-         "view_robot_kr16_2.rviz"]
+        [FindPackageShare("kuka_kr16_support"), "config/rviz", "view_robot_kr16_2.rviz"]
     )
 
     rviz_node = Node(
@@ -137,17 +148,19 @@ def generate_launch_description():
     )
 
     joint_trajecotory_controller = Node(
-                package="ros2_controllers_test_nodes",
-                executable="publisher_joint_trajectory_controller",
-                name="publisher_joint_trajectory_controller",
-                parameters=[position_goals],
-                output="both",
+        package="ros2_controllers_test_nodes",
+        executable="publisher_joint_trajectory_controller",
+        name="publisher_joint_trajectory_controller",
+        parameters=[position_goals],
+        output="both",
     )
 
-    delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[joint_trajecotory_controller],
+    delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner = (
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=joint_state_broadcaster_spawner,
+                on_exit=[joint_trajecotory_controller],
+            )
         )
     )
 
@@ -156,8 +169,8 @@ def generate_launch_description():
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        #delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner        
+        # delay_rviz_after_joint_state_broadcaster_spawner,
+        delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner,
     ]
 
     return LaunchDescription(declared_arguments + nodes)
