@@ -68,7 +68,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
     vcs import src < src/kuka_experimental/kuka_experimental.rolling.repos
     ```
 
-1. Install dependencies (this may also install Gazebo):
+1. Install dependencies:
 
     ```
     cd ~/ws
