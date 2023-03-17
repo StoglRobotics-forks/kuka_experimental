@@ -147,6 +147,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
             ]
 
     NOTE: Please choose only the related combination of the various parameters.
+    
     # launches robot model with ros2_control support for "kuka_kr16_2" robot
     ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py robot_description_package:=kuka_kr16_support robot_description_macro_file:=kr16_2_macro.xacro robot_name:=kuka_kr16_2 controllers_file:=kuka_6dof_controllers.yaml
 
