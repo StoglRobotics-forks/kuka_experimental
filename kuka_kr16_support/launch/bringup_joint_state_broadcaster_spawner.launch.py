@@ -88,13 +88,6 @@ def generate_launch_description():
         parameters=[robot_description, robot_controllers],
     )
 
-    robot_state_pub_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        parameters=[robot_description],
-        output="both",
-    )
-
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -105,52 +98,9 @@ def generate_launch_description():
         ],
     )
 
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["position_trajectory_controller", "-c", "/controller_manager"],
-    )
-
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = (
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=joint_state_broadcaster_spawner,
-                on_exit=[robot_controller_spawner],
-            )
-        )
-    )
-
-    position_goals = PathJoinSubstitution(
-        [
-            FindPackageShare("kuka_kr16_support"),
-            "config/controller",
-            "kuka_6dof_joint_trajectory_controller_goals.yaml",
-        ]
-    )
-
-    joint_trajecotory_controller = Node(
-        package="ros2_controllers_test_nodes",
-        executable="publisher_joint_trajectory_controller",
-        name="publisher_joint_trajectory_controller",
-        parameters=[position_goals],
-        output="both",
-    )
-
-    delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner = (
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=joint_state_broadcaster_spawner,
-                on_exit=[joint_trajecotory_controller],
-            )
-        )
-    )
-
     nodes = [
         control_node,
-        robot_state_pub_node,
         joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

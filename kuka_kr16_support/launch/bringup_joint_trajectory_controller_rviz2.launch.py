@@ -120,6 +120,25 @@ def generate_launch_description():
         )
     )
 
+    rviz_config_file = PathJoinSubstitution(
+        [FindPackageShare("kuka_kr16_support"), "config/rviz", "view_robot_kr16_2.rviz"]
+    )
+
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="log",
+        arguments=["-d", rviz_config_file],
+    )
+
+    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[rviz_node],
+        )
+    )
+
     position_goals = PathJoinSubstitution(
         [
             FindPackageShare("kuka_kr16_support"),
@@ -150,6 +169,7 @@ def generate_launch_description():
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner,
     ]
 
