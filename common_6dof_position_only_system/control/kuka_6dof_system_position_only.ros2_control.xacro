@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="kuka_6dof_system_posiition_only" params="name prefix use_mock_hw:=^|false use_mock_sensor_commands:=^|false">
+  <xacro:macro name="kuka_6dof_system_posiition_only" params="name prefix use_mock_hw:=^|false use_mock_sensor_commands:=^|false listen_ip_address:=^|127.0.0.1 listen_port:=^|49152">
 
     <ros2_control name="${name}" type="system">
       <hardware>
@@ -11,8 +11,8 @@
         </xacro:if>
         <xacro:unless value="${use_mock_hw}">
           <plugin>kuka_rsi_hw_interface/KukaSystemPositionOnlyHardware</plugin>
-          <param name="listen_address">172.20.19.101</param>
-          <param name="listen_port">49152</param>
+          <param name="listen_address">${listen_ip_address}</param>
+          <param name="listen_port">${listen_port}</param>
         </xacro:unless>
       </hardware>
       <joint name="${prefix}joint_a1">

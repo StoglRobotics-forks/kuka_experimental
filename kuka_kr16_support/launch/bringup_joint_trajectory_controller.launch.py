@@ -48,6 +48,38 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
+            "listen_ip_address",
+            default_value="172.20.19.101",
+            description="The ip address on of your device on which is listend.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "listen_port",
+            default_value="49152",
+            description="The port on which is listend.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "control_node",
+            default_value="ros2_control_node_max_update_rate",
+            description="Change the control node which is used.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "update_rate",
+            default_value="83",
+            description="Set the update rate of the controller manager node.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
             "log_level",
             default_value="info",
             description="Set the logging level of the loggers of all started nodes.",
@@ -66,6 +98,10 @@ def generate_launch_description():
     prefix = LaunchConfiguration("prefix")
     use_mock_hw = LaunchConfiguration("use_mock_hw")
     use_mock_sensor_commands = LaunchConfiguration("use_mock_sensor_commands")
+    listen_ip_address = LaunchConfiguration("listen_ip_address")
+    listen_port = LaunchConfiguration("listen_port")
+    control_node = LaunchConfiguration("control_node")
+    update_rate = LaunchConfiguration("update_rate")
     log_level = LaunchConfiguration("log_level")
     log_level_all = LaunchConfiguration("log_level_all")
 
@@ -86,6 +122,12 @@ def generate_launch_description():
             "use_mock_sensor_commands:=",
             use_mock_sensor_commands,
             " ",
+            "listen_ip_address:=",
+            listen_ip_address,
+            " ",
+            "listen_port:=",
+            listen_port,
+            " ",
         ]
     )
 
@@ -101,7 +143,7 @@ def generate_launch_description():
 
     control_node = Node(
         package="controller_manager",
-        executable="ros2_control_node_max_update_rate",
+        executable=control_node,
         output="both",
         arguments=[
             "--ros-args",
@@ -110,6 +152,9 @@ def generate_launch_description():
             "--ros-args",
             "--log-level",
             log_level_all,
+            "--ros-args",
+            "-p",
+            ["update_rate:=", update_rate],
         ],
         parameters=[robot_description, robot_controllers],
     )
