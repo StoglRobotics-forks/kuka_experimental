@@ -46,10 +46,28 @@ def generate_launch_description():
         )
     )
 
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "log_level",
+            default_value="info",
+            description="Set the logging level of the loggers of all started nodes.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "log_level_all",
+            default_value="info",
+            description="Set the logging level of the loggers of all started nodes.",
+        )
+    )
+
     # initialize arguments
     prefix = LaunchConfiguration("prefix")
     use_mock_hw = LaunchConfiguration("use_mock_hw")
     use_mock_sensor_commands = LaunchConfiguration("use_mock_sensor_commands")
+    log_level = LaunchConfiguration("log_level")
+    log_level_all = LaunchConfiguration("log_level_all")
 
     robot_description_content = Command(
         [
@@ -85,6 +103,14 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node_max_update_rate",
         output="both",
+        arguments=[
+            "--ros-args",
+            "--log-level",
+            ["KukaSystemPositionOnlyHardware:=", log_level],
+            "--ros-args",
+            "--log-level",
+            log_level_all,
+        ],
         parameters=[robot_description, robot_controllers],
     )
 
@@ -108,7 +134,11 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["position_trajectory_controller", "-c", "/controller_manager"],
+        arguments=[
+            "position_trajectory_controller",
+            "-c",
+            "/controller_manager",
+        ],
     )
 
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = (

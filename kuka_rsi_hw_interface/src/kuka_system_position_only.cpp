@@ -32,8 +32,8 @@ namespace kuka_rsi_hw_interface
 	// return_type KukaSystemPositionOnlyHardware::configure(const hardware_interface::HardwareInfo &info)
 	CallbackReturn KukaSystemPositionOnlyHardware::on_init(const hardware_interface::HardwareInfo &info)
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"on_init()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "on_init()");
 
 		if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
 		{
@@ -84,8 +84,8 @@ namespace kuka_rsi_hw_interface
 		local_host_ = info_.hardware_parameters["listen_address"];
 		local_port_ = stoi(info_.hardware_parameters["listen_port"]);
 
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"robot location: %s:%d", local_host_.c_str(), local_port_);
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "robot location: %s:%d", local_host_.c_str(), local_port_);
 
 		// done
 		//  status_ = hardware_interface::status::CONFIGURED;
@@ -95,8 +95,8 @@ namespace kuka_rsi_hw_interface
 
 	CallbackReturn KukaSystemPositionOnlyHardware::on_configure(const rclcpp_lifecycle::State &previous_state)
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"on_configure()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "on_configure()");
 
 		// just in case - not 100% sure this is the right thing to do . . .
 		for (size_t i = 0; i < hw_states_.size(); ++i)
@@ -112,8 +112,8 @@ namespace kuka_rsi_hw_interface
 
 	std::vector<hardware_interface::StateInterface> KukaSystemPositionOnlyHardware::export_state_interfaces()
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"export_state_interfaces()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "export_state_interfaces()");
 
 		std::vector<hardware_interface::StateInterface> state_interfaces;
 		for (size_t i = 0; i < info_.joints.size(); i++)
@@ -129,8 +129,8 @@ namespace kuka_rsi_hw_interface
 
 	std::vector<hardware_interface::CommandInterface> KukaSystemPositionOnlyHardware::export_command_interfaces()
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"export_command_interfaces()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "export_command_interfaces()");
 
 		std::vector<hardware_interface::CommandInterface> command_interfaces;
 		for (size_t i = 0; i < info_.joints.size(); i++)
@@ -147,19 +147,19 @@ namespace kuka_rsi_hw_interface
 	// return_type KukaSystemPositionOnlyHardware::start()  // QUESTION: should this be in configure?
 	CallbackReturn KukaSystemPositionOnlyHardware::on_activate(const rclcpp_lifecycle::State &previous_state)
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"on_activate()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "on_activate()");
 
 		// Wait for connection from robot
 		server_.reset(new UDPServer(local_host_, local_port_));
 
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"Connecting to robot . . .");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "Connecting to robot . . .");
 
 		int bytes = server_->recv(in_buffer_);
 
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"got some bytes");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "got some bytes");
 
 		// Drop empty <rob> frame with RSI <= 2.3
 		if (bytes < 100)
@@ -187,8 +187,8 @@ namespace kuka_rsi_hw_interface
 		server_->send(out_buffer_);
 		server_->set_timeout(1000); // Set receive timeout to 1 second
 
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"System Sucessfully started!");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "System Sucessfully started!");
 
 		// status_ = hardware_interface::status::STARTED;
 		// return return_type::OK;
@@ -199,11 +199,11 @@ namespace kuka_rsi_hw_interface
 	CallbackReturn KukaSystemPositionOnlyHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state)
 	{
 
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"on_deactivate()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "on_deactivate()");
 
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-					"System sucessfully stopped!");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
+					 "System sucessfully stopped!");
 
 		return CallbackReturn::SUCCESS;
 	}
@@ -211,7 +211,7 @@ namespace kuka_rsi_hw_interface
 	// WARN: NOT REAL TIME SAFE due to strings/possible allocations
 	return_type KukaSystemPositionOnlyHardware::read(const rclcpp::Time &time, const rclcpp::Duration &period)
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "read()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "read()");
 
 		in_buffer_.resize(1024); // FIXME:
 		if (server_->recv(in_buffer_) == 0)
@@ -224,7 +224,7 @@ namespace kuka_rsi_hw_interface
 		for (size_t i = 0; i < hw_states_.size(); i++)
 		{
 			hw_states_[i] = rsi_state_.positions[i] * 3.14159 / 180.0;
-			RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Got state %.5f for joint %ld!", hw_states_[i], i);
+			RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Got state %.5f for joint %ld!", hw_states_[i], i);
 		}
 		ipoc_ = rsi_state_.ipoc;
 
@@ -233,13 +233,13 @@ namespace kuka_rsi_hw_interface
 
 	return_type KukaSystemPositionOnlyHardware::write(const rclcpp::Time &time, const rclcpp::Duration &period)
 	{
-		RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "write()");
+		RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "write()");
 
 		out_buffer_.resize(1024); // FIXME
 
 		for (size_t i = 0; i < hw_commands_.size(); i++)
 		{
-			RCLCPP_INFO(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Got command %.5f for joint %ld!", hw_commands_[i], i);
+			RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Got command %.5f for joint %ld!", hw_commands_[i], i);
 			rsi_joint_position_corrections_[i] = (hw_commands_[i] * 180.0 / 3.14159) - rsi_initial_joint_positions_[i];
 		}
 		out_buffer_ = kuka_rsi_hw_interface::RSICommand(rsi_joint_position_corrections_, ipoc_).xml_doc;
