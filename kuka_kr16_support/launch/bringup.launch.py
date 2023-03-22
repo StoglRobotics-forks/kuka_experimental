@@ -3,7 +3,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
@@ -16,9 +16,49 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
+def get_nodes_to_launch(context, *args, **kwargs):
+    list_nodes = LaunchConfiguration("list_nodes").perform(context)
+    nodes_to_launch = LaunchConfiguration("nodes_to_launch").perform(context)
+    if list_nodes == "true":
+        print(f"Possible nodes you can launch are:{kwargs.keys()}")
+        exit()
+
+    nodes = []
+
+    nodes_to_launch = nodes_to_launch.replace(" ", "").split(",")
+    print(f"nodes to launch:{nodes_to_launch}")
+    for elem in nodes_to_launch:
+        if elem in kwargs:
+            nodes.append(kwargs[elem])
+        else:
+            print(
+                f"{elem} is not a valid node you can launch. valid choices are:{kwargs.keys()}"
+            )
+            exit()
+
+    return nodes
+
+
 def generate_launch_description():
 
     declared_arguments = []
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "nodes_to_launch",
+            default_value="cn, rsp, jsb, rcs, rviz, jtc",
+            description="list of all nodes you want to launch.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "list_nodes",
+            default_value="false",
+            description="list all nodes that can be launched.",
+            choices=["true", "false"],
+        )
+    )
 
     declared_arguments.append(
         DeclareLaunchArgument(
@@ -29,11 +69,13 @@ def generate_launch_description():
             have to be updated.",
         )
     )
+
     declared_arguments.append(
         DeclareLaunchArgument(
             "use_mock_hw",
             default_value="false",
             description="Start robot with fake hardware mirroring command to its states.",
+            choices=["true", "false"],
         )
     )
 
@@ -43,6 +85,7 @@ def generate_launch_description():
             default_value="false",
             description="Enable fake command interfaces for sensors used for simple simulations. \
             Used only if 'use_mock_hardware' parameter is true.",
+            choices=["true", "false"],
         )
     )
 
@@ -67,6 +110,7 @@ def generate_launch_description():
             "control_node",
             default_value="ros2_control_node_max_update_rate",
             description="Change the control node which is used.",
+            choices=["ros2_control_node", "ros2_control_node_max_update_rate"],
         )
     )
 
@@ -83,6 +127,18 @@ def generate_launch_description():
             "log_level",
             default_value="info",
             description="Set the logging level of the loggers of all started nodes.",
+            choices=[
+                "debug",
+                "DEBUG",
+                "info",
+                "INFO",
+                "warn",
+                "WARN",
+                "error",
+                "ERROR",
+                "fatal",
+                "FATAL",
+            ],
         )
     )
 
@@ -91,6 +147,18 @@ def generate_launch_description():
             "log_level_all",
             default_value="info",
             description="Set the logging level of the loggers of all started nodes.",
+            choices=[
+                "debug",
+                "DEBUG",
+                "info",
+                "INFO",
+                "warn",
+                "WARN",
+                "error",
+                "ERROR",
+                "fatal",
+                "FATAL",
+            ],
         )
     )
 
@@ -239,13 +307,16 @@ def generate_launch_description():
         )
     )
 
-    nodes = [
-        control_node,
-        robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner,
-    ]
+    nodes = {
+        "cn": control_node,
+        "rsp": robot_state_pub_node,
+        "jsb": joint_state_broadcaster_spawner,
+        "rcs": delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        "rviz": delay_rviz_after_joint_state_broadcaster_spawner,
+        "jtc": delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner,
+    }
 
-    return LaunchDescription(declared_arguments + nodes)
+    return LaunchDescription(
+        declared_arguments
+        + [OpaqueFunction(function=get_nodes_to_launch, kwargs=nodes)]
+    )
