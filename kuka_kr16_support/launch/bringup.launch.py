@@ -19,20 +19,20 @@ from launch_ros.substitutions import FindPackageShare
 def get_nodes_to_launch(context, *args, **kwargs):
     list_nodes = LaunchConfiguration("list_nodes").perform(context)
     nodes_to_launch = LaunchConfiguration("nodes_to_launch").perform(context)
+    nodes_map = kwargs
     if list_nodes == "true":
-        print(f"Possible nodes you can launch are:{kwargs.keys()}")
+        print(f"Possible nodes you can launch are:{nodes_map.keys()}")
         exit()
 
     nodes = []
 
     nodes_to_launch = nodes_to_launch.replace(" ", "").split(",")
-    print(f"nodes to launch:{nodes_to_launch}")
     for elem in nodes_to_launch:
-        if elem in kwargs:
-            nodes.append(kwargs[elem])
+        if elem in nodes_map:
+            nodes.append(nodes_map[elem])
         else:
             print(
-                f"{elem} is not a valid node you can launch. valid choices are:{kwargs.keys()}"
+                f"{elem} is not a valid node you can launch. valid choices are:{nodes_map.keys()}"
             )
             exit()
 
