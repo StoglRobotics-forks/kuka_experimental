@@ -16,7 +16,7 @@
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
   <xacro:property name="robot_name" value="$(arg robot_name)"/>
 
-  <xacro:arg name="initial_positions_file" default="$(find ${robot_description_package})/config/initial_positions.yaml"/>
+  <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
 
    <!-- create link fixed to the "world" -->
    <!-- using-external-joints-and-links approach -->
