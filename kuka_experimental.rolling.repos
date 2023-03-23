@@ -1,0 +1,13 @@
+repositories:
+  src/kuka_experimental:
+    type: git
+    url: git@github.com:StoglRobotics-forks/kuka_experimental.git
+    version: ctrlx_virt_docker
+  src/ros2_control:
+    type: git
+    url: git@github.com:StoglRobotics-forks/ros2_control.git
+    version: control_node_max_update_rate
+  src/ros2_controllers:
+    type: git
+    url: git@github.com:ros-controls/ros2_controllers.git
+    version: master

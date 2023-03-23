@@ -27,7 +27,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "use_mock_hw",
-            default_value="true",
+            default_value="false",
             description="Start robot with fake hardware mirroring command to its states."
         )
     )
@@ -76,7 +76,7 @@ def generate_launch_description():
 
     control_node = Node(
         package="controller_manager",
-        executable="ros2_control_node",
+        executable="ros2_control_node_max_update_rate",
         output="both",
         parameters=[robot_description, robot_controllers],
     )
