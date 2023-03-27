@@ -223,9 +223,9 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
-    robot_controllers = [robot_controller]
+    robot_controllers_to_spawn = [robot_controller]
     robot_controller_spawners = []
-    for controller in robot_controllers:
+    for controller in robot_controllers_to_spawn:
         robot_controller_spawners += [
             Node(
                 package="controller_manager",
