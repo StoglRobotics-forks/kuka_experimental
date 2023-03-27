@@ -111,7 +111,13 @@ def generate_launch_description():
             "control_node",
             default_value="ros2_control_node_max_update_rate",
             description="Change the control node which is used.",
-            choices=["ros2_control_node", "ros2_control_node_max_update_rate"],
+            choices=[
+                "ros2_control_node",
+                "ros2_control_node_max_update_rate",
+                "ros2_control_node_fixed_period",
+                "ros2_control_node_max_update_rate_sc",
+                "ros2_control_node_fixed_period_sc",
+            ],
         )
     )
 
@@ -209,7 +215,6 @@ def generate_launch_description():
             "kuka_6dof_controller_position.yaml",
         ]
     )
-
     control_node = Node(
         package="controller_manager",
         executable=control_node,
@@ -315,7 +320,7 @@ def generate_launch_description():
         "rcs": delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         "rviz": delay_rviz_after_joint_state_broadcaster_spawner,
         "jtc_after_jsb": delay_joint_trajecotory_controller_after_joint_state_broadcaster_spawner,
-        "jtc": joint_trajecotory_controller
+        "jtc": joint_trajecotory_controller,
     }
 
     return LaunchDescription(
