@@ -1,12 +1,8 @@
 <?xml version="1.0"?>
 <robot name="kuka_kr10r900_2" xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:arg name="prefix" default="" />
-  <xacro:arg name="use_mock_hardware" default="false" />
 
   <xacro:include filename="$(find kuka_kr10_support)/urdf/kr10r900_2_macro.xacro" />
-  <xacro:include filename="$(find kuka_resources)/urdf/common_macro.ros2_control.xacro"/>
-
-  <xacro:kuka_common_ros2_control_macro name="kr10r900_2_mock" prefix="$(arg prefix)" use_mock_hardware="$(arg use_mock_hardware)"/>
 
   <xacro:kuka_kr10r900_2 prefix=""/>
 </robot>
