@@ -29,6 +29,6 @@
   <exec_depend>kuka_rsi_simulator</exec_depend>
 
   <export>
-	<metapackage/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>
