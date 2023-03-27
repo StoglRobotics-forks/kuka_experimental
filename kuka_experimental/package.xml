@@ -14,12 +14,21 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <exec_depend>kuka_kr10_support</exec_depend>
+  <exec_depend>kuka_kr120_support</exec_depend>
+  <exec_depend>kuka_kr150_support</exec_depend>
+  <exec_depend>kuka_kr16_support</exec_depend>
+  <exec_depend>kuka_kr210_support</exec_depend>
+  <exec_depend>kuka_kr5_support</exec_depend>
   <exec_depend>kuka_kr6_support</exec_depend>
+  <exec_depend>kuka_lbr_iiwa_support</exec_depend>
   <exec_depend>kuka_resources</exec_depend>
   <!--<exec_depend>kuka_rsi_hw_interface</exec_depend>-->
+  <exec_depend>kuka_eki_hw_interface</exec_depend>
+  <exec_depend>kuka_rsi_hw_interface</exec_depend>
   <exec_depend>kuka_rsi_simulator</exec_depend>
 
   <export>
-	<build_type>ament_cmake</build_type>
+	<metapackage/>
   </export>
 </package>
