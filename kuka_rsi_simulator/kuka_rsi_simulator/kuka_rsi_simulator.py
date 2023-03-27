@@ -7,8 +7,8 @@ import time
 import xml.etree.ElementTree as ET
 
 import errno
-import rclpy
-from std_msgs.msg import String
+# import rospy
+# from std_msgs.msg import String
 
 def create_rsi_xml_rob(act_joint_pos, setpoint_joint_pos, timeout_count, ipoc):
     q = act_joint_pos
@@ -35,64 +35,76 @@ def parse_rsi_xml_sen(data):
     return desired_joint_correction, int(IPOC)
 
 
-node_name = 'kuka_rsi_simulation'
+# if __name__ == '__main__':
+def main():
+    node_name = 'kuka_rsi_simulation'
+# rsi_act_pub = rospy.Publisher(node_name + '/rsi/state', String, queue_size=1)
+# rsi_cmd_pub = rospy.Publisher(node_name + '/rsi/command', String, queue_size=1)
 
-cycle_time = 0.004
-act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
-cmd_joint_pos = act_joint_pos.copy()
-des_joint_correction_absolute = np.zeros(6)
-timeout_count = 0
-ipoc = 0
+    cycle_time = 0.004
+    act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
+    cmd_joint_pos = act_joint_pos.copy()
+    des_joint_correction_absolute = np.zeros(6)
+    timeout_count = 0
+    ipoc = 0
 
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='KUKA RSI Simulation')
-    parser.add_argument('--rsi_hw_iface_ip', default="127.0.0.1", help='The ip address of the RSI control interface (default=127.0.0.1)')
-    parser.add_argument('--rsi_hw_iface_port', default=49152, help='The port of the RSI control interface (default=49152)')
-    parser.add_argument('--sen', default='ImFree', help='Type attribute in RSI XML doc. E.g. <Sen Type:"ImFree">')
-    # Only parse known arguments
-    args, _ = parser.parse_known_args()
-    host = args.rsi_hw_iface_ip
-    port = int(args.rsi_hw_iface_port)
-    sen_type = args.sen
+    # import argparse
+    # parser = argparse.ArgumentParser(description='KUKA RSI Simulation')
+    # parser.add_argument('--rsi_hw_iface_ip', default="127.0.0.1", help='The ip address of the RSI control interface (default=127.0.0.1)')
+    # parser.add_argument('--rsi_hw_iface_port', default=49152, help='The port of the RSI control interface (default=49152)')
+    # parser.add_argument('--sen', default='ImFree', help='Type attribute in RSI XML doc. E.g. <Sen Type:"ImFree">')
+    # # Only parse known arguments
+    # args, _ = parser.parse_known_args()
+    # host = args.rsi_hw_iface_ip
+    # port = int(args.rsi_hw_iface_port)
+    # sen_type = args.sen
 
-    rclpy.init(args=args)
-    node = rclpy.create_node(node_name)
+    host = "127.0.0.1"
+    port = 49152
+    sen_type = 'ImFree'
 
-    node.get_logger().info(f"Started '{node_name}'")
 
-    rsi_act_pub = node.create_publisher(String, '~/rsi/state')
-    rsi_cmd_pub = node.create_publisher(String, '~/rsi/command')
+    # rospy.init_node(node_name)
+    # rospy.loginfo('{}: Started'.format(node_name))
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        node.get_logger().info(f"[{node_name}] Successfully created socket.")
+        # rospy.loginfo('{}, Successfully created socket'.format(node_name))
+        print('{}, Successfully created socket'.format(node_name))
         s.settimeout(1)
     except socket.error as e:
-        node.get_logger().fatal(f"[{node_name}] Could not create socket.")
+        # rospy.logfatal('{}Could not create socket'.format(node_name))
+        print('{}Could not create socket'.format(node_name))
         sys.exit()
 
-    while rclpy.ok():
+    def shutdown_hook():
+        # rospy.loginfo('{}: Shutting down'.format(node_name))
+        print('{}: Shutting down'.format(node_name))
+        s.close()
+
+    # rospy.on_shutdown(shutdown_hook)
+
+    # while not rospy.is_shutdown():
+    while True:
         time.sleep(0.001)  # this is a hack, make this a ros2 node
         try:
             msg = create_rsi_xml_rob(act_joint_pos, cmd_joint_pos, timeout_count, ipoc)
-            rsi_act_pub.publish(str(msg))
+            # rsi_act_pub.publish(str(msg))
             s.sendto(msg, (host, port))
             recv_msg, addr = s.recvfrom(1024)
-            rsi_cmd_pub.publish(str(recv_msg))
+            # rsi_cmd_pub.publish(str(recv_msg))
             des_joint_correction_absolute, ipoc_recv = parse_rsi_xml_sen(recv_msg)
             act_joint_pos = cmd_joint_pos + des_joint_correction_absolute
             ipoc += 1
-            rclpy.spin_once(node)
             time.sleep(cycle_time / 2)
         except socket.timeout:
-            node.get_logger().warn(f"[{node_name}] Socket timed out.")
+            # rospy.logwarn('{}: Socket timed out'.format(node_name))
+            print('{}: Socket timed out'.format(node_name))
             timeout_count += 1
         except socket.error as e:
             if e.errno != errno.EINTR:
                 raise
 
-    node.get_logger().info(f"Shutting down '{node_name}'")
-    node.destroy_node()
-    rclpy.shutdown()
-    s.close()
+
+if __name__ == '__main__':
+    main()
