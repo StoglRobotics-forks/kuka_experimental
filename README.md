@@ -104,6 +104,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kuka_kr120_support",
                 "kuka_kr150_support",
                 "kuka_kr210_support",
+                "kuka_lbr_iiwa_support",
             ]
     
     "robot_description_macro_file",
@@ -121,6 +122,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kr150_2_macro.xacro",
                 "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
+                "lbr_iiwa_14_r820_macro.xacro",
             ]
     "robot_name",
             choices=[
@@ -137,6 +139,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kuka_kr150_2",
                 "kuka_kr150r3100_2",
                 "kuka_kr210l150",
+                "kuka_lbr_iiwa_14_r820",
             ]
     "controllers_file",
             choices=[
