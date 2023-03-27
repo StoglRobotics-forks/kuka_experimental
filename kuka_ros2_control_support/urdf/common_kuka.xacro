@@ -16,20 +16,47 @@
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
   <xacro:property name="robot_name" value="$(arg robot_name)"/>
 
-  <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
+  <xacro:if value="${robot_description_package != 'kuka_kr10r1100sixx_cell_description'}">
+    
+    <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
 
-   <!-- create link fixed to the "world" -->
-   <!-- using-external-joints-and-links approach -->
-  <link name="world" />
-  <joint name="$(arg prefix)table_link" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
-    <parent link="world" />
-    <child link="$(arg prefix)table_link"/>
-  </joint>
+    <!-- create link fixed to the "world" -->
+    <!-- using-external-joints-and-links approach -->
+    <link name="world" />
+    <joint name="$(arg prefix)base_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+      <parent link="world" />
+      <child link="$(arg prefix)base_link"/>
+    </joint>
+  </xacro:if>
+
 
   <xacro:include filename="$(find ${robot_description_package})/urdf/${robot_description_macro_file}"/>
 
   <xacro:include filename="$(find kuka_ros2_control_support)/urdf/common_macro.ros2_control.xacro"/>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr10r1100sixx_cell_description'}">
+
+    <xacro:arg name="initial_positions_file" default="$(find kuka_kr10r1100sixx_cell_description)/config/initial_positions.yaml"/>
+    <!-- create link fixed to the "world" -->
+    <!-- using-external-joints-and-links approach -->
+    <link name="world" />
+    <joint name="$(arg prefix)table_link" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+      <parent link="world" />
+      <child link="$(arg prefix)table_link"/>
+    </joint>
+    <xacro:include filename="$(find kuka_kr10r1100sixx_cell_description)/urdf/kr10_macro.ros2_control.xacro"/>
+    <xacro:kr10_gripper_ros2_control name="gripper_control" prefix="$(arg prefix)"/>
+    <xacro:if value="${robot_description_macro_file == 'kr10_cylinder_macro.xacro'}">
+      <xacro:kuka_kr10r1100sixx_cell 
+      prefix="$(arg prefix)"
+      robot_ip="(arg robot_ip)"
+      robot_port="(arg robot_port)"
+      use_fake_hardware="$(arg use_fake_hardware)"
+       />
+    </xacro:if>
+  </xacro:if>
 
   <xacro:kuka_common_ros2_control_macro
     name="$(arg robot_name)"
@@ -43,19 +70,6 @@
     robot_ip="(arg robot_ip)"
     robot_port="(arg robot_port)"
   />
-
-  <xacro:if value="${robot_description_package == 'kuka_kr10r1100sixx_cell_description'}">
-    <xacro:include filename="$(find kuka_kr10r1100sixx_cell_description)/urdf/kr10_macro.ros2_control.xacro"/>
-    <xacro:kr10_gripper_ros2_control name="gripper_control" prefix="$(arg prefix)"/>
-    <xacro:if value="${robot_description_macro_file == 'kr10_cylinder_macro.xacro'}">
-      <xacro:kuka_kr10r1100sixx_cell 
-      prefix="$(arg prefix)"
-      robot_ip="(arg robot_ip)"
-      robot_port="(arg robot_port)"
-      use_fake_hardware="$(arg use_fake_hardware)"
-       />
-    </xacro:if>
-  </xacro:if>
 
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
     <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>
