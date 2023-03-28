@@ -44,3 +44,116 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
    Uses repos file: `$NAME$.repos`
 
 1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
+
+
+## How to use this repository
+
+1. Create a colcon workspace:
+
+    ```
+    # update and upgrade
+    sudo apt update
+    sudo apt upgrade -y
+
+    # Setup the workspace
+    mkdir -p ~/ws/src
+    cd ~/ws/src
+
+    # Download needed software
+    git clone https://github.com/StoglRobotics-forks/kuka_experimental.git -b kuka_ros2_control_sim_support-package-added
+
+
+    # importing dependent repos
+    cd ~/ws
+    vcs import src < src/kuka_experimental/kuka_experimental.rolling.repos
+    ```
+
+1. Install dependencies (this may also install Gazebo):
+
+    ```
+    cd ~/ws
+    rosdep install -r --from-paths src -i -y --rosdistro rolling
+    ```
+
+1. Build the workspace:
+
+    ```
+    # Source ROS distro's setup.bash
+    source /opt/ros/<distro>/setup.bash
+
+    # Build and install into workspace
+    cd ~/ws
+    colcon build
+    ```
+
+1. Launch possibilities  :
+
+    ```
+    # launches only robot model with Joint state publisher GUI
+    ros2 launch kuka_kr3_support test_kr3r540.launch.py
+
+    # possible arguments for the following launch file are as follows: 
+
+    "robot_description_package",
+            choices=[
+                "kuka_kr3_support",
+                "kuka_kr5_support",
+                "kuka_kr6_support",
+                "kuka_kr10_support",
+                "kuka_kr16_support",
+                "kuka_kr120_support",
+                "kuka_kr150_support",
+                "kuka_kr210_support",
+            ]
+    
+    "robot_description_macro_file",
+            choices=[
+                "kr3r540_macro.xacro",
+                "kr5_arc_macro.xacro",
+                "kr6r700sixx_macro.xacro",
+                "kr6r900_2_macro.xacro",
+                "kr6r900sixx_macro.xacro",
+                "kr10r900_2_macro.xacro",
+                "kr10r1100sixx_macro.xacro",
+                "kr10r1420_macro.xacro",
+                "kr16_2_macro.xacro",
+                "kr120r2500pro_macro.xacro",
+                "kr150_2_macro.xacro",
+                "kr150r3100_2_macro.xacro",
+                "kr210l150_macro.xacro",
+            ]
+    "robot_name",
+            choices=[
+                "kuka_kr3r540",
+                "kuka_kr5_arc",
+                "kuka_kr6r700sixx",
+                "kuka_kr6r900_2",
+                "kuka_kr6r900sixx",
+                "kuka_kr10r900_2",
+                "kuka_kr10r1100sixx",
+                "kuka_kr10r1420",
+                "kuka_kr16_2",
+                "kuka_kr120r2500pro",
+                "kuka_kr150_2",
+                "kuka_kr150r3100_2",
+                "kuka_kr210l150",
+            ]
+    "controllers_file",
+            choices=[
+                "kuka_6dof_controllers.yaml",
+                "kuka_7dof_controllers.yaml",
+                # Note: for the robot kuka_lbr_iiwa_14_r820, kuka_7dof_controllers.yaml should be used
+                # and the rest use kuka_6dof_controllers.yaml
+            ]
+
+    NOTE: Please choose only the related combination of the various parameters.
+    
+    # launches robot model with ros2_control support for "kuka_kr16_2" robot
+    ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py robot_description_package:=kuka_kr16_support robot_description_macro_file:=kr16_2_macro.xacro robot_name:=kuka_kr16_2 controllers_file:=kuka_6dof_controllers.yaml
+
+    # launches robot model with ros2_control support and gazebo classic simulator for "kuka_kr16_2" robot
+    ros2 launch kuka_ros2_control_sim_support test_common_gazebo_classic_ros2_control.launch.py robot_description_package:=kuka_kr16_support robot_description_macro_file:=kr16_2_macro.xacro robot_name:=kuka_kr16_2 controllers_file:=kuka_6dof_controllers.yaml
+
+    # launches robot model with ros2_control support and gazebo simulator for "kuka_kr16_2" robot
+    ros2 launch kuka_ros2_control_sim_support test_common_gazebo_sim_ros2_control.launch.py robot_description_package:=kuka_kr16_support robot_description_macro_file:=kr16_2_macro.xacro robot_name:=kuka_kr16_2 controllers_file:=kuka_6dof_controllers.yaml
+    ```
