@@ -123,14 +123,6 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            "update_rate",
-            default_value="83",
-            description="Set the update rate of the controller manager node.",
-        )
-    )
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
             "log_level",
             default_value="info",
             description="Set the logging level of the loggers of all started nodes.",
@@ -176,7 +168,6 @@ def generate_launch_description():
     listen_ip_address = LaunchConfiguration("listen_ip_address")
     listen_port = LaunchConfiguration("listen_port")
     control_node = LaunchConfiguration("control_node")
-    update_rate = LaunchConfiguration("update_rate")
     log_level = LaunchConfiguration("log_level")
     log_level_all = LaunchConfiguration("log_level_all")
 
@@ -226,9 +217,6 @@ def generate_launch_description():
             "--ros-args",
             "--log-level",
             log_level_all,
-            "--ros-args",
-            "-p",
-            ["update_rate:=", update_rate],
         ],
         parameters=[robot_description, robot_controllers],
     )
