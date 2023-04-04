@@ -37,34 +37,29 @@
  * Author: Lars Tingelstad
  */
 
-#ifndef KUKA_RSI_HARDWARE_INTERFACE_KUKA_HARDWARE_INTERFACE_
-#define KUKA_RSI_HARDWARE_INTERFACE_KUKA_HARDWARE_INTERFACE_
-
-// STL
-#include <vector>
-#include <string>
-
-// ROS
-#include <ros/ros.h>
-#include <std_msgs/String.h>
-
-
-// ros_control
-#include <realtime_tools/realtime_publisher.h>
-#include <controller_manager/controller_manager.h>
-#include <hardware_interface/joint_command_interface.h>
-#include <hardware_interface/joint_state_interface.h>
-#include <hardware_interface/robot_hw.h>
-
-// Timers
-#include <chrono>
+#ifndef KUKA_RSI_HW_INTERFACE__KUKA_HARDWARE_INTERFACE_HPP_
+#define KUKA_RSI_HW_INTERFACE__KUKA_HARDWARE_INTERFACE_HPP_
 
 // UDP server
-#include <kuka_rsi_hw_interface/udp_server.h>
-
-// RSI
-#include <kuka_rsi_hw_interface/rsi_state.h>
 #include <kuka_rsi_hw_interface/rsi_command.h>
+#include <kuka_rsi_hw_interface/rsi_state.h>
+#include <kuka_rsi_hw_interface/udp_server.hpp>
+
+// STL
+#include <chrono>
+#include <string>
+#include <vector>
+
+// ROS
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
+
+// ros_control
+#include <controller_manager/controller_manager.hpp>
+#include <hardware_interface/joint_command_interface.hpp>
+#include <hardware_interface/joint_state_interface.hpp>
+#include <hardware_interface/robot_hw.hpp>
+#include <realtime_tools/realtime_publisher.hpp>
 
 namespace kuka_rsi_hw_interface
 {
@@ -74,9 +69,7 @@ static const double DEG2RAD = 0.017453292519943295;
 
 class KukaHardwareInterface : public hardware_interface::RobotHW
 {
-
 private:
-
   // ROS node handle
   ros::NodeHandle nh_;
 
@@ -98,7 +91,7 @@ private:
   std::vector<double> rsi_joint_position_corrections_;
   unsigned long long ipoc_;
 
-  std::unique_ptr<realtime_tools::RealtimePublisher<std_msgs::String> > rt_rsi_pub_;
+  std::unique_ptr<realtime_tools::RealtimePublisher<std_msgs::String>> rt_rsi_pub_;
 
   std::unique_ptr<UDPServer> server_;
   std::string local_host_;
@@ -118,7 +111,6 @@ private:
   hardware_interface::PositionJointInterface position_joint_interface_;
 
 public:
-
   KukaHardwareInterface();
   ~KukaHardwareInterface();
 
@@ -126,9 +118,8 @@ public:
   void configure();
   bool read(const ros::Time time, const ros::Duration period);
   bool write(const ros::Time time, const ros::Duration period);
-
 };
 
-} // namespace kuka_rsi_hw_interface
+}  // namespace kuka_rsi_hw_interface
 
-#endif
+#endif  // KUKA_RSI_HW_INTERFACE__KUKA_HARDWARE_INTERFACE_HPP_

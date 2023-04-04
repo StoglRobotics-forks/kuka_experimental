@@ -1,6 +1,13 @@
 repositories:
-  ## EXAMPLE DEPENDENCY
-#   <some_ros_package>:
-#     type: git
-#     url: git@github.com:<some_github_namespace>/<some_ros_package>.git
-#     version: master
+  kuka_experimental:
+    type: git
+    url: git@github.com:StoglRobotics-forks/kuka_experimental.git
+    version: rolling
+  ros2_control:
+    type: git
+    url: git@github.com:ros-controls/ros2_control.git
+    version: master
+  ros2_controllers:
+    type: git
+    url: git@github.com:ros-controls/ros2_controllers.git
+    version: master

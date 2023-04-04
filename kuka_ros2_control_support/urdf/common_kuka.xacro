@@ -10,6 +10,8 @@
   <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
   <xacro:arg name="robot_name" default="kuka_kr3r540"/>
   <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
+  <xacro:arg name="listen_ip_address" default="127.0.0.1" />
+  <xacro:arg name="listen_port" default="49152" />
 
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
@@ -38,6 +40,8 @@
     sim_gazebo="$(arg sim_gazebo)"
     simulation_controllers="$(arg simulation_controllers)"
     robot_description_package="$(arg robot_description_package)"
+    listen_ip_address="$(arg listen_ip_address)"
+    listen_port="$(arg listen_port)"
     />
   <xacro:if value="${robot_description_package == 'kuka_kr3_support'}">
     <xacro:kuka_kr3r540 prefix="$(arg prefix)"/>

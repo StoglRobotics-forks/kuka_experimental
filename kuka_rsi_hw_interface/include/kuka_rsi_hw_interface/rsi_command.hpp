@@ -61,9 +61,9 @@ RSICommand::RSICommand()
 RSICommand::RSICommand(std::vector<double> joint_position_correction, unsigned long long ipoc)
 {
   TiXmlDocument doc;
-  TiXmlElement* root = new TiXmlElement("Sen");
+  TiXmlElement * root = new TiXmlElement("Sen");
   root->SetAttribute("Type", "ImFree");
-  TiXmlElement* el = new TiXmlElement("AK");
+  TiXmlElement * el = new TiXmlElement("AK");
   // Add string attribute
   el->SetAttribute("A1", std::to_string(joint_position_correction[0]));
   el->SetAttribute("A2", std::to_string(joint_position_correction[1]));
@@ -84,6 +84,6 @@ RSICommand::RSICommand(std::vector<double> joint_position_correction, unsigned l
   xml_doc = printer.Str();
 }
 
-} // namespace kuka_rsi_hw_interface
+}  // namespace kuka_rsi_hw_interface
 
 #endif

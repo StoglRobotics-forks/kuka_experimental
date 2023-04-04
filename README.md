@@ -65,22 +65,22 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
 
     # importing dependent repos
     cd ~/ws
-    vcs import src < src/kuka_experimental/kuka_experimental.rolling.repos
+    vcs import -w 1 src --skip-existing --input src/kuka_experimental/kuka_experimental.rolling.repos
     ```
 
 1. Install dependencies:
 
     ```
     cd ~/ws
-    rosdep install -r --from-paths src -i -y --rosdistro rolling
+    # Source ROS distro's setup.bash
+    source /opt/ros/<distro>/setup.bash
+    rosdep update
+    rosdep install -r --from-paths src -i -y
     ```
 
 1. Build the workspace:
 
     ```
-    # Source ROS distro's setup.bash
-    source /opt/ros/<distro>/setup.bash
-
     # Build and install into workspace
     cd ~/ws
     colcon build
@@ -92,7 +92,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
     # launches only robot model with Joint state publisher GUI
     ros2 launch kuka_kr3_support test_kr3r540.launch.py
 
-    # possible arguments for the following launch file are as follows: 
+    # possible arguments for the following launch file are as follows:
 
     "robot_description_package",
             choices=[
@@ -106,7 +106,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kuka_kr210_support",
                 "kuka_lbr_iiwa_support",
             ]
-    
+
     "robot_description_macro_file",
             choices=[
                 "kr3r540_macro.xacro",
@@ -154,4 +154,13 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
     # launches robot model with ros2_control support for "kuka_kr16_2" robot
     ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py robot_description_package:=kuka_kr16_support robot_description_macro_file:=kr16_2_macro.xacro robot_name:=kuka_kr16_2 controllers_file:=kuka_6dof_controllers.yaml
 
+    ```
+
+    You can set the ip address and the port the robot sensor interface (rsi) udp server should listen on with:
+    ```
+    ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py listen_ip_address:=<address> listen_port:=<port>
+    ```
+    Additionally if you need to debug the driver you can pass the:
+    ```
+    ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py log_level_driver:=<log_level>
     ```

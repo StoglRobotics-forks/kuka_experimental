@@ -14,14 +14,24 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-
+find_package(controller_manager REQUIRED)
+find_package(rclcpp REQUIRED)
 
 install(
   DIRECTORY urdf launch
   DESTINATION share/${PROJECT_NAME}
 )
 
-ament_package()
+add_executable(ros2_control_node_steady_clock src/ros2_control_node_steady_clock.cpp)
+ament_target_dependencies(ros2_control_node_steady_clock
+  controller_manager
+  rclcpp
+)
+
+install(
+  TARGETS ros2_control_node_steady_clock
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(launch_testing_ament_cmake)
@@ -33,3 +43,5 @@ if(BUILD_TESTING)
     )
   endif()
 endif()
+
+ament_package()
