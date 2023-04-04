@@ -121,7 +121,12 @@
   </xacro:if>
 
   <xacro:if value="${robot_description_package == 'kuka_kr210_support'}">
-    <xacro:kuka_kr210l150 prefix="$(arg prefix)"/>
+    <xacro:if value="${robot_description_macro_file == 'kr210l150_macro.xacro'}">
+      <xacro:kuka_kr210l150 prefix="$(arg prefix)"/>
+    </xacro:if>
+    <xacro:if value="${robot_description_macro_file == 'kr210r3100_macro.xacro'}">
+      <xacro:kuka_kr210r3100 prefix="$(arg prefix)"/>
+    </xacro:if>
   </xacro:if>
 
   <xacro:if value="${robot_description_package == 'kuka_lbr_iiwa_support'}">
