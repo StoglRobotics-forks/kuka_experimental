@@ -4,13 +4,14 @@
   <xacro:macro name="kuka_common_ros2_control_macro" params="
                name
                prefix
+               initial_positions_file
                use_mock_hardware:=^|false
                sim_gazebo_classic:=^|false
                sim_gazebo:=^|false
                simulation_controllers
                robot_description_package"
                >
-
+    <xacro:property name="initial_positions" value="${load_yaml(initial_positions_file)['initial_positions']}"/>
     <ros2_control name="${name}" type="system">
 
       <hardware>

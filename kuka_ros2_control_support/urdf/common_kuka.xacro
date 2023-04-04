@@ -9,6 +9,7 @@
   <xacro:arg name="robot_description_package" default="kuka_kr3_support"/>
   <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
   <xacro:arg name="robot_name" default="kuka_kr3r540"/>
+  <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
 
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
@@ -31,6 +32,7 @@
   <xacro:kuka_common_ros2_control_macro
     name="$(arg robot_name)"
     prefix="$(arg prefix)"
+    initial_positions_file="$(arg initial_positions_file)"
     use_mock_hardware="$(arg use_mock_hardware)"
     sim_gazebo_classic="$(arg sim_gazebo_classic)"
     sim_gazebo="$(arg sim_gazebo)"
