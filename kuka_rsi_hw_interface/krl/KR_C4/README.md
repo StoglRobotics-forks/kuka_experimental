@@ -6,26 +6,58 @@ This guide highlights the steps needed in order to successfully configure the **
 
 Windows runs behind the SmartHMI on the teach pad. Make sure that the **Windows interface** of the controller and the **PC with ROS** is connected to the same subnet.
 
+
 1. Log in as **Expert** or **Administrator** on the teach pad and navigate to **Network configuration** (**Start-up > Network configuration > Activate advanced configuration**).
 2. There should already be an interface checked out as the **Windows interface**. For example:
    * **IP**: 192.168.250.20
    * **Subnet mask**: 255.255.255.0
    * **Default gateway**: 192.168.250.20
    * **Windows interface checkbox** should be checked.
-3. Minimize the SmartHMI (**Start-up > Service > Minimize HMI**).
-4. Run **RSI-Network** from the Windows Start menu (**All Programs > RSI-Network**).
-5. Check that the **Network - Kuka User Interface** show the Windows interface with the specified IP address.
-6. Add a new IP address on another subnet (e.g. 192.168.1.20) for the **RSI interface**.
+> As of 8.6 the network configuration changed: see 
+> [Chapter 1.2](#netzwerk-866)
+1. Minimize the SmartHMI (**Start-up > Service > Minimize HMI**).
+2. Run **RSI-Network** from the Windows Start menu (**All Programs > RSI-Network**).
+3. Check that the **Network - Kuka User Interface** show the Windows interface with the specified IP address.
+4. Add a new IP address on another subnet (e.g. 192.168.1.20) for the **RSI interface**.
    * Select the entry **New** under **RSI Ethernet** in the tree structure and press **Edit**.
    * Enter the IP address and confirm with **OK**.
    * Close **RSI-Network** and maximize the SmartHMI.
-7. Reboot the controller with a cold restart (**Shutdown > Check *Force cold start* and *Reload files* > Reboot control PC**).
-8. After reboot, minimize the SmartHMI (**Start-up > Service > Minimize HMI**).
-9. Run **cmd.exe** and ping the PC you want to communicate with on the same subnet (e.g. 192.168.250.xx).
+5. Reboot the controller with a cold restart (**Shutdown > Check *Force cold start* and *Reload files* > Reboot control PC**).
+6. After reboot, minimize the SmartHMI (**Start-up > Service > Minimize HMI**).
+7. Run **cmd.exe** and ping the PC you want to communicate with on the same subnet (e.g. 192.168.250.xx).
 
 If your **PC** has an IP address on the same subnet as the **Windows interface** on the controller, the controller should receive answers from the PC:
 * If this is the case, add another IP address to the current PC connection (e.g. 192.168.1.xx) on the same subnet as the **RSI** interface.
 
+-----
+## 1.2 Network Configurationfor KSS >= 8.6   {#netzwerk-866}
+
+1. In the main menu, select Startup > Network Configuration. The Network configuration window opens. 
+2. Press Advanced.... The window for the extended network configuration opens. 
+3. Press Add interface. A new entry is automatically created in the Configured Interfaces area. 
+4. Highlight the newly created entry and enter the network name in the Interface name  field, e.g. "Ethernet sensor network"
+5. In the field *Address type*: select the type Mixed IP address.
+By selecting the Mixed IP address type, the necessary receive tasks are automatically created. necessary receive tasks are created automatically:
+   - Receive Task:
+      - Receive Filter: Destination Subnet
+   - Real time Receive task:
+      - Receive filter: UDP
+
+1. In the fields below enter the IP address of the robot controller and the subnet mask.
+
+> This method is creating a virtually assigned interface on the very same ethernet port as for KLI. It's like adding second ip address in another subnet. MAC address stays same. 
+
+### 1.3 Server/ROS 
+Your ros2 server can be connected to a good network switch via two ethernet cables connected to different network interface cards (NIC) on server. One NIC has to stay in the same subnet as the newly assigned virtual interface
+E.g. 
+
+| Device | Interface # | IP | Subnet (cidr) | DNS | comment |
+|:--------|:-----------:|:---: |--------------|:--------------|:------
+| krc4   | virtual 6 |  172.30.1.148       | /24     | same as first virtual IF| rsi connection (client)
+| server | NIC1:     |  172.30.1.101       | /24     | |rsi connection (server)
+| server | NIC2:     | <span style="color:red">**!(172.30.1.0)**</span>      | /24     | | for KLI (debugging and syncronizing)
+
+-------
 ## 2. KRL Files
 
 The files included in this folder specifies the data transferred via RSI. Some of the files needs to be modified to work for your specific configuration.
