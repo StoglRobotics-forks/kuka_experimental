@@ -17,17 +17,19 @@
   <xacro:property name="robot_name" value="$(arg robot_name)"/>
 
   <xacro:if value="${robot_description_package != 'kuka_kr10r1100sixx_cell_description'}">
+    <xacro:if value="${robot_description_package != 'kuka_kr210r3100_cell_description'}">
     
-    <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
+      <xacro:arg name="initial_positions_file" default="$(find kuka_resources)/config/initial_positions.yaml"/>
 
-    <!-- create link fixed to the "world" -->
-    <!-- using-external-joints-and-links approach -->
-    <link name="world" />
-    <joint name="$(arg prefix)base_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
-      <parent link="world" />
-      <child link="$(arg prefix)base_link"/>
-    </joint>
+      <!-- create link fixed to the "world" -->
+      <!-- using-external-joints-and-links approach -->
+      <link name="world" />
+      <joint name="$(arg prefix)base_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+        <parent link="world" />
+        <child link="$(arg prefix)base_link"/>
+      </joint>
+    </xacro:if>
   </xacro:if>
 
 
@@ -55,6 +57,17 @@
       robot_port="(arg robot_port)"
       use_fake_hardware="$(arg use_fake_hardware)"
        />
+    </xacro:if>
+  </xacro:if>
+
+  <xacro:if value="${robot_description_package == 'kuka_kr210r3100_cell_description'}">
+
+    <xacro:arg name="initial_positions_file" default="$(find kuka_kr210r3100_cell_description)/config/initial_positions.yaml"/>
+    <!-- create link fixed to the "world" -->
+    <!-- using-external-joints-and-links approach -->
+    <link name="world" />
+    <xacro:if value="${robot_description_macro_file == 'kuka_kr210r3100_cell_macro.xacro'}">
+      <xacro:kuka_kr210r3100_cell prefix="$(arg prefix)"/>
     </xacro:if>
   </xacro:if>
 
