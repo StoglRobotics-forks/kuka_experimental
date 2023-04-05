@@ -164,7 +164,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("kuka_common_moveit_config"), "config", "srdf_files", semantic_description_file]
+                [FindPackageShare(robot_description_package), "config", semantic_description_file]
             ),
         ]
     )
