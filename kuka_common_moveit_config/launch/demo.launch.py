@@ -67,7 +67,13 @@ def generate_launch_description():
         have to be updated.",
         )
     )
-
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "package_for_semantic_description_file",
+            default_value="kuka_common_moveit_config",
+            description="Semantic robot description file located in <robot_description_package>/config/ .",
+        )
+    )
 
     declared_arguments.append(
         DeclareLaunchArgument(
@@ -111,6 +117,7 @@ def generate_launch_description():
     robot_description_package = LaunchConfiguration("robot_description_package")
     robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
     robot_name = LaunchConfiguration("robot_name")
+    package_for_semantic_description_file = LaunchConfiguration("package_for_semantic_description_file")
     semantic_description_file = LaunchConfiguration("semantic_description_file")
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
     robot_ip = LaunchConfiguration("robot_ip")
@@ -164,7 +171,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(robot_description_package), "config", semantic_description_file]
+                [FindPackageShare(package_for_semantic_description_file), "config", semantic_description_file]
             ),
         ]
     )
