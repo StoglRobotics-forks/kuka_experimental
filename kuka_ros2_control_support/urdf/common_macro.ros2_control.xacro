@@ -8,7 +8,9 @@
                sim_gazebo_classic:=^|false
                sim_gazebo:=^|false
                simulation_controllers
-               robot_description_package"
+               robot_description_package
+               robot_ip
+               robot_port"
                >
 
     <ros2_control name="${name}" type="system">
@@ -17,6 +19,11 @@
         <xacro:if value="${use_fake_hardware}">
           <plugin>fake_components/GenericSystem</plugin>
         </xacro:if>
+        <xacro:unless value="${use_fake_hardware}">
+            <plugin>kuka_eki_hw_interface/KukaEkiHardwareInterface</plugin>
+            <param name="robot_ip">${robot_ip}</param>
+            <param name="robot_port">${robot_port}</param>
+        </xacro:unless>
         <xacro:if value="${sim_gazebo_classic}">
           <plugin>gazebo_ros2_control/GazeboSystem</plugin>
         </xacro:if>
