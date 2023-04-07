@@ -18,7 +18,7 @@ find_package(controller_manager REQUIRED)
 find_package(rclcpp REQUIRED)
 
 install(
-  DIRECTORY urdf launch
+  DIRECTORY config urdf launch
   DESTINATION share/${PROJECT_NAME}
 )
 
