@@ -65,14 +65,14 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
 
     # importing dependent repos
     cd ~/ws
-    vcs import src < src/kuka_experimental/kuka_experimental.rolling.repos
+    vcs import src < src/kuka_experimental/kuka_experimental.foxy.repos
     ```
 
 1. Install dependencies (this may also install Gazebo):
 
     ```
     cd ~/ws
-    rosdep install -r --from-paths src -i -y --rosdistro rolling
+    rosdep install -r --from-paths src -i -y --rosdistro foxy
     ```
 
 1. Build the workspace:
