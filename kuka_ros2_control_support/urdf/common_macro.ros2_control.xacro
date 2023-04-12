@@ -12,7 +12,7 @@
                robot_ip
                robot_port"
                >
-    <xacro:property name="initial_positions" value="${load_yaml(initial_positions_file)['initial_positions']}"/>
+    <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
     <ros2_control name="${name}" type="system">
 
       <hardware>
