@@ -7,7 +7,7 @@
          <ENVIRONMENT>Program</ENVIRONMENT>   <!-- Server run via robot interpreter -->
          <BUFFERING Limit="512" />            <!-- Allow buffering of up to 512 messages (system max) -->
          <ALIVE Set_Flag="1" />               <!-- Use $flag[1] to indicate alive/good connection status -->
-         <IP>address.of.robot.controller</IP> <!-- IP address for EKI interface on robot controller (KRC) -->
+         <IP>10.181.116.41</IP> <!-- IP address for EKI interface on robot controller (KRC) -->
          <PORT>54600</PORT>                   <!-- Port of EKI interface on robot controller (in [54600, 54615]) -->
          <PROTOCOL>UDP</PROTOCOL>             <!-- Use UDP protocol -->
       </INTERNAL>
