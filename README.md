@@ -151,10 +151,10 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
 ### NOTE:
 if rviz opens with black screen do the following
 
-add-apt-repository ppa:kisak/kisak-mesa
+sudo add-apt-repository ppa:kisak/kisak-mesa
 
-apt update
+sudo apt update
 
-apt upgrade
+sudo apt upgrade
 
 source: https://github.com/ros2/rviz/issues/948
