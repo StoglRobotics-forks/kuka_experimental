@@ -46,7 +46,6 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_description_package",
-            default_value="kuka_kr3_support",
             description="Description package with robot URDF/xacro files.",
         )
     )
@@ -69,7 +68,7 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "package_for_semantic_description_file",
+            "semantic_description_package",
             default_value="kuka_common_moveit_config",
             description="Semantic robot description file located in <robot_description_package>/config/ .",
         )
@@ -78,7 +77,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "semantic_description_file",
-            default_value="kr3r540.srdf",
+            default_value="common_kuka.srdf.xacro",
             description="Semantic robot description file located in <robot_description_package>/config/ .",
         )
     )
@@ -92,14 +91,14 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_name",
-            default_value="kuka_kr3r540",
+            default_value="kuka",
             description="NOTE:robot name and robot description macro name are same",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_ip",
-            default_value="10.181.116.1",
+            default_value="172.0.0.1",
             description="IP address by which the robot can be reached."
         )
     )
@@ -107,25 +106,22 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_port",
-            default_value="54600",
+            default_value="49152",
             description="Port by which the robot can be reached."
         )
     )
-    
+
     # initialize arguments
     controllers_file = LaunchConfiguration("controllers_file")
     robot_description_package = LaunchConfiguration("robot_description_package")
     robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
     robot_name = LaunchConfiguration("robot_name")
-    package_for_semantic_description_file = LaunchConfiguration("package_for_semantic_description_file")
+    semantic_description_package = LaunchConfiguration("semantic_description_package")
     semantic_description_file = LaunchConfiguration("semantic_description_file")
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
     robot_ip = LaunchConfiguration("robot_ip")
     robot_port = LaunchConfiguration("robot_port")
     prefix = LaunchConfiguration("prefix")
-
-
-
 
     robot_description_content = Command(
         [
@@ -171,8 +167,14 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(package_for_semantic_description_file), "config", semantic_description_file]
+                [FindPackageShare(semantic_description_package), "config", semantic_description_file]
             ),
+            " ",
+            "prefix:=",
+            prefix,
+            " ",
+            "robot_name:=",
+            robot_name,
         ]
     )
     robot_description_semantic = {
