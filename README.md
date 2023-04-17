@@ -92,7 +92,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
     # launches only robot model with Joint state publisher GUI
     ros2 launch kuka_kr3_support test_kr3r540.launch.py
 
-    # possible arguments for the following launch file are as follows: 
+    # possible arguments for the following launch file are as follows:
 
     "robot_description_package",
             choices=[
@@ -105,7 +105,7 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kuka_kr150_support",
                 "kuka_kr210_support",
             ]
-    
+
     "robot_description_macro_file",
             choices=[
                 "kr3r540_macro.xacro",
@@ -121,6 +121,8 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kr150_2_macro.xacro",
                 "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
+                "kr210r3100_macro.xacro",
+                "lbr_iiwa_14_r820_macro.xacro",
             ]
     "robot_name",
             choices=[
@@ -137,6 +139,8 @@ ROS2 Distro | Branch | Build status | Documentation | Released packages
                 "kuka_kr150_2",
                 "kuka_kr150r3100_2",
                 "kuka_kr210l150",
+                "kuka_kr210r3100",
+                "kuka_lbr_iiwa_14_r820",
             ]
     "controllers_file",
             choices=[
