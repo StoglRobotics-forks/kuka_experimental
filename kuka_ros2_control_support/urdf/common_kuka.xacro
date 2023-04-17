@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
-<robot name="kuka" xmlns:xacro="http://wiki.ros.org/xacro">
+<robot name="$(arg robot_name)" xmlns:xacro="http://wiki.ros.org/xacro">
 
+  <xacro:arg name="robot_name" default="kuka"/>
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="use_fake_hardware" default="false" />
   <xacro:arg name="sim_gazebo_classic" default="false" />
   <xacro:arg name="sim_gazebo" default="false" />
   <xacro:arg name="simulation_controllers" default="" />
-  <xacro:arg name="robot_description_package" default="kuka_kr3_support"/>
-  <xacro:arg name="robot_description_macro_file" default="kr3r540_macro.xacro"/>
-  <xacro:arg name="robot_name" default="kuka_kr3r540"/>
-  <xacro:arg name="robot_ip" default="10.181.116.41"/>
-  <xacro:arg name="robot_port" default="54600"/>
+  <xacro:arg name="robot_description_package" default="" />
+  <xacro:arg name="robot_description_macro_file" default="" />
+  <xacro:arg name="robot_ip" default="172.0.0.1"/>
+  <xacro:arg name="robot_port" default="49152"/>
 
   <xacro:property name="robot_description_package" value="$(arg robot_description_package)"/>
   <xacro:property name="robot_description_macro_file" value="$(arg robot_description_macro_file)"/>
