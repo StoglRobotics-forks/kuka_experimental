@@ -37,13 +37,16 @@
  * Author: Lars Tingelstad <lars.tingelstad@ntnu.no>
  */
 
-#include <kuka_rsi_hw_interface/kuka_hardware_interface.h>
+#include <kuka_rsi_hw_interface/kuka_hardware_interface.hpp>
 
-int main(int argc, char** argv)
+#include "rclcpp/rclcpp.hpp"
+
+int main(int argc, char ** argv)
 {
-  ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
+  RCLCPP_INFO(rclcpp::get_logger("hardware_interface"), "Starting hardware interface...");
 
-  ros::init(argc, argv, "kuka_rsi_hardware_interface");
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::Node::make_shared("kuka_rsi_hardware_interface");
 
   ros::AsyncSpinner spinner(2);
   spinner.start();
@@ -66,24 +69,30 @@ int main(int argc, char** argv)
   // Get current time and elapsed time since last read
   timestamp = ros::Time::now();
   stopwatch_now = std::chrono::steady_clock::now();
-  period.fromSec(std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch_now - stopwatch_last).count());
+  period.fromSec(
+    std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch_now - stopwatch_last)
+      .count());
   stopwatch_last = stopwatch_now;
 
   // Run as fast as possible
   while (ros::ok())
-  //while (!g_quit)
   {
+    //while (!g_quit)
     // Receive current state from robot
     if (!kuka_rsi_hw_interface.read(timestamp, period))
     {
-      ROS_FATAL_NAMED("kuka_hardware_interface", "Failed to read state from robot. Shutting down!");
+      RCLCPP_FATAL(
+        rclcpp::get_logger("kuka_hardware_interface"),
+        "Failed to read state from robot. Shutting down!")
       ros::shutdown();
     }
 
     // Get current time and elapsed time since last read
     timestamp = ros::Time::now();
     stopwatch_now = std::chrono::steady_clock::now();
-    period.fromSec(std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch_now - stopwatch_last).count());
+    period.fromSec(
+      std::chrono::duration_cast<std::chrono::duration<double>>(stopwatch_now - stopwatch_last)
+        .count());
     stopwatch_last = stopwatch_now;
 
     // Update the controllers
@@ -94,8 +103,7 @@ int main(int argc, char** argv)
   }
 
   spinner.stop();
-  ROS_INFO_STREAM_NAMED("hardware_interface", "Shutting down.");
+  RCLCPP_INFO(rclcpp::get_logger("hardware_interface"), "Shutting down.");
 
   return 0;
-
 }

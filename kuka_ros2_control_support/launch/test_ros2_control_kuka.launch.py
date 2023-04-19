@@ -15,7 +15,12 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -69,13 +74,11 @@ def generate_launch_description():
                 "kr150_2_macro.xacro",
                 "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
-                "kr210r3100_macro.xacro",
                 "lbr_iiwa_14_r820_macro.xacro",
             ],
             description="URDF/XACRO description file with the robot.",
         )
     )
-
     declared_arguments.append(
         DeclareLaunchArgument(
             "prefix",
@@ -87,7 +90,7 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "use_fake_hardware",
+            "use_mock_hardware",
             default_value="true",
             description="Start robot with fake hardware mirroring command to its states.",
         )
@@ -109,7 +112,6 @@ def generate_launch_description():
                 "kuka_kr150_2",
                 "kuka_kr150r3100_2",
                 "kuka_kr210l150",
-                "kuka_kr210r3100",
                 "kuka_lbr_iiwa_14_r820",
             ],
             description="NOTE:robot name and robot description macro name are same",
@@ -117,47 +119,86 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "robot_ip",
-            default_value="10.181.116.1",
-            description="IP address by which the robot can be reached."
+            "listen_ip_address",
+            default_value="127.0.0.1",
+            description="The ip address on of your device on which is listend.",
         )
     )
-
     declared_arguments.append(
         DeclareLaunchArgument(
-            "robot_port",
-            default_value="54600",
-            description="Port by which the robot can be reached."
+            "listen_port",
+            default_value="49152",
+            description="The port on which is listend.",
         )
     )
-    
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "log_level_driver",
+            default_value="info",
+            description="Set the logging level of the loggers of all started nodes.",
+            choices=[
+                "debug",
+                "DEBUG",
+                "info",
+                "INFO",
+                "warn",
+                "WARN",
+                "error",
+                "ERROR",
+                "fatal",
+                "FATAL",
+            ],
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "log_level_all",
+            default_value="info",
+            description="Set the logging level of the loggers of all started nodes.",
+            choices=[
+                "debug",
+                "DEBUG",
+                "info",
+                "INFO",
+                "warn",
+                "WARN",
+                "error",
+                "ERROR",
+                "fatal",
+                "FATAL",
+            ],
+        )
+    )
+
     # initialize arguments
     controllers_file = LaunchConfiguration("controllers_file")
-
     robot_description_package = LaunchConfiguration("robot_description_package")
     robot_description_macro_file = LaunchConfiguration("robot_description_macro_file")
-    robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
-    use_fake_hardware = LaunchConfiguration("use_fake_hardware")
-    robot_ip = LaunchConfiguration("robot_ip")
-    robot_port = LaunchConfiguration("robot_port")
-
-
-
+    use_mock_hardware = LaunchConfiguration("use_mock_hardware")
+    robot_name = LaunchConfiguration("robot_name")
+    listen_ip_address = LaunchConfiguration("listen_ip_address")
+    listen_port = LaunchConfiguration("listen_port")
+    log_level_driver = LaunchConfiguration("log_level_driver")
+    log_level_all = LaunchConfiguration("log_level_all")
 
     robot_description_content = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("kuka_ros2_control_support"), "urdf", "common_kuka.xacro"]
+                [
+                    FindPackageShare("kuka_ros2_control_support"),
+                    "urdf",
+                    "common_kuka.xacro",
+                ]
             ),
             " ",
             "prefix:=",
             prefix,
             " ",
-            "use_fake_hardware:=",
-            use_fake_hardware,
+            "use_mock_hardware:=",
+            use_mock_hardware,
             " ",
             "controllers_file:=",
             controllers_file,
@@ -171,11 +212,12 @@ def generate_launch_description():
             "robot_name:=",
             robot_name,
             " ",
-            "robot_ip:=",
-            robot_ip,
+            "listen_ip_address:=",
+            listen_ip_address,
             " ",
-            "robot_port:=",
-            robot_port,
+            "listen_port:=",
+            listen_port,
+            " ",
         ]
     )
 
@@ -186,9 +228,17 @@ def generate_launch_description():
     )
 
     control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
+        package="kuka_ros2_control_support",
+        executable="ros2_control_node_steady_clock",
         output="both",
+        arguments=[
+            "--ros-args",
+            "--log-level",
+            ["KukaSystemPositionOnlyHardware:=", log_level_driver],
+            "--ros-args",
+            "--log-level",
+            log_level_all,
+        ],
         parameters=[robot_description, robot_controllers],
     )
 
@@ -202,13 +252,17 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "joint_state_broadcaster",
+            "--controller-manager",
+            "/controller_manager",
+        ],
     )
 
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_position_controller", "-c", "/controller_manager"],
+        arguments=["position_trajectory_controller", "-c", "/controller_manager"],
     )
 
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
