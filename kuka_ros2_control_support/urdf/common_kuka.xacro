@@ -2,6 +2,7 @@
 <robot name="kuka" xmlns:xacro="http://wiki.ros.org/xacro">
 
   <xacro:arg name="prefix" default="" />
+  <xacro:arg name="origin" default="0 0 0" />
   <xacro:arg name="use_mock_hardware" default="false" />
   <xacro:arg name="sim_gazebo_classic" default="false" />
   <xacro:arg name="sim_gazebo" default="false" />
@@ -21,7 +22,7 @@
    <!-- using-external-joints-and-links approach -->
   <link name="world" />
   <joint name="$(arg prefix)base_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+    <origin xyz="$(arg origin)" rpy="0 0 0" />          <!-- position robot in the world -->
     <parent link="world" />
     <child link="$(arg prefix)base_link"/>
   </joint>
