@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(kuka_resources LANGUAGES CXX)
+project(kuka_common_moveit LANGUAGES CXX)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra)
@@ -8,9 +8,8 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
-
 install(
-  DIRECTORY config urdf launch
+  DIRECTORY config launch srdf rviz
   DESTINATION share/${PROJECT_NAME}
 )
 

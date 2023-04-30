@@ -4,16 +4,20 @@
   <xacro:macro name="kuka_common_ros2_control_macro" params="
                name
                prefix
-               initial_positions_file
+               use_eki_communication:=^|false
+               eki_robot_ip:=^|127.0.0.1
+               eki_robot_port:=^|54600
+               use_rsi_communication:=^|false
+               rsi_listen_ip:=^|127.0.0.1
+               rsi_listen_port:=^|49152
                use_mock_hardware:=^|false
                sim_gazebo_classic:=^|false
                sim_gazebo:=^|false
                simulation_controllers
-               robot_description_package
-               listen_ip_address:=^|127.0.0.1
-               listen_port:=^|49152"
+               description_package
+               initial_positions:=${dict(joint_a1=0.0,joint_a2=-1.57,joint_a3=1.57,joint_a4=0.0,joint_a5=1.57,joint_a6=0.0)}"
                >
-    <xacro:property name="initial_positions" value="${load_yaml(initial_positions_file)['initial_positions']}"/>
+
     <ros2_control name="${name}" type="system">
 
       <hardware>
@@ -26,11 +30,16 @@
         <xacro:if value="${sim_gazebo}">
           <plugin>ign_ros2_control/IgnitionSystem</plugin>
         </xacro:if>
-        <xacro:unless value="${use_mock_hardware or sim_gazebo_classic or sim_gazebo}">
-          <plugin>kuka_rsi_hw_interface/KukaSystemPositionOnlyHardware</plugin>
-          <param name="listen_address">${listen_ip_address}</param>
-          <param name="listen_port">${listen_port}</param>
-        </xacro:unless>
+        <xacro:if value="${use_eki_communication}">
+          <plugin>kuka_eki_hw_interface/RobotControl</plugin>
+          <param name="robot_ip">${eki_robot_ip}</param>
+          <param name="robot_port">${eki_robot_port}</param>
+        </xacro:if>
+        <xacro:if value="${use_rsi_communication}">
+          <plugin>kuka_rsi_hw_interface/OnlyRobotControl</plugin>
+          <param name="listen_address">${rsi_listen_ip}</param>
+          <param name="listen_port">${rsi_listen_port}</param>
+        </xacro:if>
       </hardware>
 
       <joint name="${prefix}joint_a1">
@@ -39,7 +48,7 @@
           <param name="max">1</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a1']}</param>
         </state_interface>
       </joint>
       <joint name="${prefix}joint_a2">
@@ -48,7 +57,7 @@
           <param name="max">1</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a2']}</param>
         </state_interface>
 	  </joint>
       <joint name="${prefix}joint_a3">
@@ -57,7 +66,7 @@
           <param name="max">0.61</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a3']}</param>
         </state_interface>
 	  </joint>
       <joint name="${prefix}joint_a4">
@@ -66,7 +75,7 @@
           <param name="max">1</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a4']}</param>
         </state_interface>
       </joint>
       <joint name="${prefix}joint_a5">
@@ -75,7 +84,7 @@
           <param name="max">1</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a5']}</param>
         </state_interface>
       </joint>
       <joint name="${prefix}joint_a6">
@@ -84,18 +93,18 @@
           <param name="max">1</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a6']}</param>
         </state_interface>
       </joint>
 
-      <xacro:if value="${robot_description_package == 'kuka_lbr_iiwa_support'}">
+      <xacro:if value="${description_package == 'kuka_lbr_iiwa_support'}">
         <joint name="${prefix}joint_a7">
         <command_interface name="position">
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
         <state_interface name="position">
-          <param name="initial_value">0.0</param>
+          <param name="initial_value">${initial_positions['joint_a7']}</param>
         </state_interface>
         </joint>
       </xacro:if>

@@ -31,6 +31,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "controllers_file",
+            default_value="kuka_6dof_controllers.yaml",
             choices=[
                 "kuka_6dof_controllers.yaml",
                 "kuka_7dof_controllers.yaml",

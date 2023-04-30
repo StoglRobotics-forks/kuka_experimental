@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
   // Required for getting types of controllers to be loaded via service call
   node_options.allow_undeclared_parameters(true);
   node_options.automatically_declare_parameters_from_overrides(true);
-  node_options.clock_type(rcl_clock_type_t::RCL_STEADY_TIME);
+  // node_options.clock_type(rcl_clock_type_t::RCL_STEADY_TIME);
 
   auto cm = std::make_shared<controller_manager::ControllerManager>(
     executor, manager_node_name, "", node_options);
