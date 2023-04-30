@@ -283,9 +283,9 @@ def generate_launch_description():
     )
 
     # Spawn controllers
-    load_controllers = []
+    load_and_activate_controllers = []
     for controller in ["position_trajectory_controller", "joint_state_broadcaster"]:
-        load_controllers += [
+        load_and_activate_controllers += [
             ExecuteProcess(
                 cmd=[f"ros2 run controller_manager spawner {controller}"],
                 shell=True,
@@ -393,5 +393,5 @@ def generate_launch_description():
             moveit_node,
             rviz_node,
         ]
-        + load_controllers
+        + load_and_activate_controllers
     )
