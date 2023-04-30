@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
+  <xacro:include filename="$(find kuka_resources)/urdf/common_colours.xacro"/>
+
   <xacro:macro name="kuka_kr210r3100" params="prefix">
     <!-- links -->
     <link name="${prefix}base_link">
@@ -14,8 +16,8 @@
         <geometry>
           <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/base_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
-        <material name="">
-            <color rgba="0.75294 0.75294 0.75294 1"/>
+        <material name="colour_kuka_black">
+          <color rgba="${colour_kuka_black}"/>
         </material>
       </visual>
       <collision>
@@ -36,9 +38,9 @@
       <geometry>
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l1_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="">
-          <color rgba="0.75294 0.75294 0.75294 1"/>
-           </material>
+      <material name="colour_kuka_orange">
+        <color rgba="${colour_kuka_orange}"/>
+      </material>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -58,9 +60,9 @@
       <geometry>
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l2_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="">
-          <color rgba="0.75294 0.75294 0.75294 1"/>
-           </material>
+      <material name="colour_kuka_orange">
+        <color rgba="${colour_kuka_orange}"/>
+      </material>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -80,9 +82,9 @@
       <geometry>
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l3_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="">
-          <color rgba="0.75294 0.75294 0.75294 1"/>
-           </material>
+      <material name="colour_kuka_orange">
+        <color rgba="${colour_kuka_orange}"/>
+      </material>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -102,9 +104,9 @@
       <geometry>
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l4_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="">
-          <color rgba="0.75294 0.75294 0.75294 1"/>
-           </material>
+      <material name="colour_kuka_orange">
+        <color rgba="${colour_kuka_orange}"/>
+      </material>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -124,9 +126,9 @@
       <geometry>
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l5_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="">
-          <color rgba="0.75294 0.75294 0.75294 1"/>
-           </material>
+      <material name="colour_kuka_orange">
+        <color rgba="${colour_kuka_orange}"/>
+      </material>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -134,8 +136,8 @@
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l5_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
-        </link>
-        <link name="${prefix}link_6">
+  </link>
+  <link name="${prefix}link_6">
     <inertial>
       <origin xyz="0.02169435909842532 -1.3980071648605966e-05 5.2250469270931355e-05" rpy="0 0 0"/>
       <mass value="6.586106550753541"/>
@@ -146,9 +148,9 @@
       <geometry>
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/visual/l6_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="">
-          <color rgba="0.75294 0.75294 0.75294 1"/>
-           </material>
+      <material name="colour_kuka_black">
+        <color rgba="${colour_kuka_black}"/>
+      </material>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -156,7 +158,7 @@
         <mesh filename="file://$(find kuka_kr210_support)/meshes/kr210r3100/collision/l6_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
-        </link>
+  </link>
         <!-- This frame corresponds to the $TOOL coordinate system in KUKA KRC controllers. -->
         <link name="${prefix}flange"/>
 
