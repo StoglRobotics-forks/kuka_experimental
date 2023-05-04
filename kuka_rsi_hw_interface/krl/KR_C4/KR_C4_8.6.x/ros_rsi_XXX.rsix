@@ -14,7 +14,7 @@
             <Input InIdx="5" OutObjId="AxisAct_1" OutIdx="5" />
          </Inputs>
          <Parameters>
-            <Parameter IsRuntime="false" Name="ConfigFile" ParamId="0" ParamValue="RSI_EthernetConfig.xml" />
+            <Parameter IsRuntime="false" Name="ConfigFile" ParamId="0" ParamValue="ros_rsi_XXX.xml" />
             <Parameter Name="Timeout" ParamId="0" ParamValue="100" />
             <Parameter Name="Flag" ParamId="3" ParamValue="1" />
             <Parameter Name="Precision" ParamId="7" ParamValue="4" />
@@ -2387,7 +2387,7 @@
             <Input Name="In6" SourceObject="AxisAct_1" SourcePort="A6" Points="-109.693333333333,79.5;-101.693333333333,79.5;-93.6933333333333,79.5;-93.6933333333333,301.5;20,301.5;36,301.5" />
          </Inputs>
          <Parameters>
-            <StringParameter Name="ConfigFile" Value="RSI_EthernetConfig.xml" />
+            <StringParameter Name="ConfigFile" Value="ros_rsi_XXX.xml" />
             <IntParameter Name="Timeout" Value="100" />
             <IntParameter Name="Flag" Value="1" />
             <IntParameter Name="Precision" Value="4" />

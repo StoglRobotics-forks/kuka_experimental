@@ -6,19 +6,17 @@ This guide highlights the steps needed in order to successfully configure the **
 
 Windows runs behind the SmartHMI on the teach pad. Make sure that the **Windows interface** of the controller and the **PC with ROS** is connected to the same subnet.
 
-
 1. Log in as **Expert** or **Administrator** on the teach pad and navigate to **Network configuration** (**Start-up > Network configuration > Activate advanced configuration**).
 2. There should already be an interface checked out as the **Windows interface**. For example:
    * **IP**: 192.168.250.20
    * **Subnet mask**: 255.255.255.0
    * **Default gateway**: 192.168.250.20
    * **Windows interface checkbox** should be checked.
-> As of 8.6 the network configuration changed: see 
-> [Chapter 1.2](#netzwerk-866)
+> As of 8.6 the next steps have changed: see [Chapter 1.2](#12-network-configurationfor-kss--86)
 1. Minimize the SmartHMI (**Start-up > Service > Minimize HMI**).
 2. Run **RSI-Network** from the Windows Start menu (**All Programs > RSI-Network**).
 3. Check that the **Network - Kuka User Interface** show the Windows interface with the specified IP address.
-4. Add a new IP address on another subnet (e.g. 192.168.1.20) for the **RSI interface**.
+4. Add a new IP address on another subnet (e.g. 172.30.1.1) for the **RSI interface**.
    * Select the entry **New** under **RSI Ethernet** in the tree structure and press **Edit**.
    * Enter the IP address and confirm with **OK**.
    * Close **RSI-Network** and maximize the SmartHMI.
@@ -29,46 +27,37 @@ Windows runs behind the SmartHMI on the teach pad. Make sure that the **Windows 
 If your **PC** has an IP address on the same subnet as the **Windows interface** on the controller, the controller should receive answers from the PC:
 * If this is the case, add another IP address to the current PC connection (e.g. 192.168.1.xx) on the same subnet as the **RSI** interface.
 
------
-## 1.2 Network Configurationfor KSS >= 8.6   {#netzwerk-866}
 
-1. In the main menu, select Startup > Network Configuration. The Network configuration window opens. 
-2. Press Advanced.... The window for the extended network configuration opens. 
-3. Press Add interface. A new entry is automatically created in the Configured Interfaces area. 
-4. Highlight the newly created entry and enter the network name in the Interface name  field, e.g. "Ethernet sensor network"
-5. In the field *Address type*: select the type Mixed IP address.
+### 1.2 Network Configurationfor KSS >= 8.6
+
+1. Press **Add interface**. A new entry is automatically created in the **Configured Interfaces** area.
+2. Highlight the newly created entry and enter the network name in the **Interface name** field, e.g.*Ethernet sensor network*
+3. In the field **Address type**: select the type Mixed IP address.
 By selecting the Mixed IP address type, the necessary receive tasks are automatically created. necessary receive tasks are created automatically:
    - Receive Task:
-      - Receive Filter: Destination Subnet
+      - Receive Filter: Target Subnet
    - Real time Receive task:
       - Receive filter: UDP
 
-1. In the fields below enter the IP address of the robot controller and the subnet mask.
+4. In the fields below enter the IP address of the robot controller and the subnet mask, e.g., IP 172.30.1.1, Mask 255.255.255.0.
+   > This method is creating a virtually assigned interface on the very same ethernet port as for KLI. It's like adding second ip address in another subnet. MAC address stays same.
 
-> This method is creating a virtually assigned interface on the very same ethernet port as for KLI. It's like adding second ip address in another subnet. MAC address stays same. 
 
-### 1.3 Server/ROS 
-Your ros2 server can be connected to a good network switch via two ethernet cables connected to different network interface cards (NIC) on server. One NIC has to stay in the same subnet as the newly assigned virtual interface
-E.g. 
-
-| Device | Interface # | IP | Subnet (cidr) | DNS | comment |
-|:--------|:-----------:|:---: |--------------|:--------------|:------
-| krc4   | virtual 6 |  172.30.1.148       | /24     | same as first virtual IF| rsi connection (client)
-| server | NIC1:     |  172.30.1.101       | /24     | |rsi connection (server)
-| server | NIC2:     | <span style="color:red">**!(172.30.1.0)**</span>      | /24     | | for KLI (debugging and syncronizing)
-
--------
 ## 2. KRL Files
 
 The files included in this folder specifies the data transferred via RSI. Some of the files needs to be modified to work for your specific configuration.
 
 ##### ros_rsi_ethernet.xml
-1. Edit the `IP_NUMBER` tag so that it corresponds to the IP address (192.168.1.xx) previously added for your PC.
+1. Edit the `IP_NUMBER` tag so that it corresponds to the IP address (e.g., 172.30.1.101) previously added for your PC.
 2. Keep the `PORT` tag as it is (49152) or change it if you want to use another port.
 
-Note that the `rsi/listen_address` and `rsi/listen_port` parameters of the `kuka_rsi_hw_interface` must correspond to the `IP_NUMBER`and `PORT` set in these KRL files.
+**KSS >= 8.6** use file `ros_rsi_XXX.xml` from `KR_C4_8.6.x` folder.
 
-##### ros_rsi.rsi.xml
+> It is recommended to rename this file to end up with the IP of the ROS 2 machine because if you can control robot with multiple computers over RSI, you will need multiple files, e.g., `ros_rsi_101.xml`.
+
+Note that the launch file arguments `rsi_listen_ip` and `rsi_listen_port` must correspond to the `IP_NUMBER`and `PORT` set in these KRL files.
+
+##### ros_rsi.rsi.xml (KSS < 8.6) and ros_rsi_XXX.rsix (KSS > 8.6)
 This file may be edited with application specific joint limits in degrees.
 * Edit the parameters within the RSIObject `AXISCORR` to specify joint limits such as **LowerLimA1**, **UpperLimA1** etc. Note that these limits are in reference to the start position of the robot.
 * Edit the parameters within `AXISCORRMON` to specify the overall correction limitation. If this limit is exceeded in either of the joint directions, RSI is stopped. The values of **MaxA1**, **MaxA2** etc. may be large to allow free movement within the specified joint limits in `AXISCORR`.
@@ -79,8 +68,13 @@ If you have problems with the connection to RSI shutting down now and then while
 * Compile and install a [RT-Preempt](https://rt.wiki.kernel.org/index.php/RT_PREEMPT_HOWTO) kernel for your PC.
 * Give **kuka_rsi_hardware_interface** on your PC real-time priority when the RSI connection is established.
 
+
+> It is recommended to rename this file to end up with the IP of the ROS 2 machine, e.g., `ros_rsi_101.rsix`.
+
 ##### ros_rsi.src
 This should only be edited if the start position specified within the file is not desirable for your application.
+
+> It is recommended to rename this file to end up with the IP of the ROS 2 machine, e.g., `ros_rsi_101.src`.
 
 ##### Copy files to controller
 The files **ros_rsi.rsi** and **ros_rsi.rsi.diagram** should not be edited. All files are now ready to be copied to the Kuka controller:
@@ -90,6 +84,7 @@ The files **ros_rsi.rsi** and **ros_rsi.rsi.diagram** should not be edited. All 
 3. Log in as **Expert** or **Administrator**.
 4. Copy the `ros_rsi.src` file to `KRC:\R1\Program`.
 5. Copy the rest of the files to `C:\KRC\ROBOTER\Config\User\Common\SensorInterface`.
+
 
 ## 3. Configure the kuka_rsi_hw_interface
 The **kuka_rsi_hardware_interface** needs to be configured in order to successfully communicate with RSI. Inside `/kuka_rsi_hw_interface/test` and `/kuka_rsi_hw_interface/config` in this repository is a set of `*.yaml` files. These configuration files may be loaded into a launch-file used to start the **kuka_rsi_hardware_interface** with correct parameters, such as:
