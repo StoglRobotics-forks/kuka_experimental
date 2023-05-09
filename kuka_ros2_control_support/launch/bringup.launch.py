@@ -301,7 +301,7 @@ def generate_launch_description():
     )
     control_node = Node(
         package="kuka_ros2_control_support",
-        executable="ros2_control_node"  # optionally use `ros2_control_node_steady_clock`
+        executable="ros2_control_node_steady_clock",  # optionally use `ros2_control_node` from ros2_control
         output="both",
         arguments=[
             "--ros-args",
