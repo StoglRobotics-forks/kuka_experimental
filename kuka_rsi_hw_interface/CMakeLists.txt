@@ -20,9 +20,12 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(backward_ros REQUIRED)
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
 
 add_library(kuka_rsi_hw_interface SHARED
-  src/kuka_system_position_only.cpp
+  src/robot_control_interface.cpp
 )
 target_compile_features(kuka_rsi_hw_interface PUBLIC cxx_std_17)
 target_include_directories(kuka_rsi_hw_interface PUBLIC

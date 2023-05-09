@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.16)
-
 project(kuka_kr120_support LANGUAGES CXX)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
@@ -14,4 +13,4 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
-  ament_package()
+ament_package()

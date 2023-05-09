@@ -5,12 +5,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra)
 endif()
 
-option(
-  KUKA_ROS2_CONTROL_SUPPORT_BUILD_INTEGRATION_TESTS
-  "Build integration tests"
-  OFF
-)
-
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   controller_manager
   rclcpp
@@ -19,6 +13,9 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(backward_ros REQUIRED)
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
 
 add_executable(ros2_control_node_steady_clock src/ros2_control_node_steady_clock.cpp)
 target_include_directories(ros2_control_node_steady_clock PUBLIC
@@ -30,12 +27,8 @@ ament_target_dependencies(ros2_control_node_steady_clock PUBLIC ${THIS_PACKAGE_I
 if(BUILD_TESTING)
   find_package(launch_testing_ament_cmake)
 
-  if(${KUKA_ROS2_CONTROL_SUPPORT_BUILD_INTEGRATION_TESTS})
-    add_launch_test(test/ros2_control_support.py
-      TIMEOUT
-        180
-    )
-  endif()
+  add_launch_test(test/ros2_control_support.py TIMEOUT 180)
+
 endif()
 
 install(

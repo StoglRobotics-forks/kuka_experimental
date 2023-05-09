@@ -1,18 +1,38 @@
-// Copyright 2020 ROS2-Control Development Team
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*********************************************************************
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2023, Stogl Robotics Consulting UG (haftungsbeschränkt)
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the Univ of CO, Boulder nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *********************************************************************/
 
-#include "kuka_rsi_hw_interface/kuka_system_position_only.hpp"
+#include "kuka_rsi_hw_interface/robot_control_interface.hpp"
 
 #include <chrono>
 #include <cmath>
@@ -29,12 +49,8 @@ using namespace std::chrono_literals;
 namespace kuka_rsi_hw_interface
 {
 
-// return_type KukaSystemPositionOnlyHardware::configure(const hardware_interface::HardwareInfo &info)
-CallbackReturn KukaSystemPositionOnlyHardware::on_init(
-  const hardware_interface::HardwareInfo & info)
+CallbackReturn RobotControlnterface::on_init(const hardware_interface::HardwareInfo & info)
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "on_init()");
-
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
@@ -47,33 +63,25 @@ CallbackReturn KukaSystemPositionOnlyHardware::on_init(
   {
     if (joint.command_interfaces.size() != 1)
     {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-        "expecting exactly 1 command interface");
+      RCLCPP_FATAL(rclcpp::get_logger(info_.name), "expecting exactly 1 command interface");
       return CallbackReturn::ERROR;
     }
 
     if (joint.command_interfaces[0].name != hardware_interface::HW_IF_POSITION)
     {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-        "expecting only POSITION command interface");
+      RCLCPP_FATAL(rclcpp::get_logger(info_.name), "expecting only POSITION command interface");
       return CallbackReturn::ERROR;
     }
 
     if (joint.state_interfaces.size() != 1)
     {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-        "expecting exactly 1 state interface");
+      RCLCPP_FATAL(rclcpp::get_logger(info_.name), "expecting exactly 1 state interface");
       return CallbackReturn::ERROR;
     }
 
     if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
     {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("KukaSystemPositionOnlyHardware"),
-        "expecting only POSITION state interface");
+      RCLCPP_FATAL(rclcpp::get_logger(info_.name), "expecting only POSITION state interface");
       return CallbackReturn::ERROR;
     }
   }
@@ -91,8 +99,7 @@ CallbackReturn KukaSystemPositionOnlyHardware::on_init(
   local_port_ = stoi(info_.hardware_parameters["listen_port"]);
 
   RCLCPP_DEBUG(
-    rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "robot location: %s:%d",
-    local_host_.c_str(), local_port_);
+    rclcpp::get_logger(info_.name), "robot location: %s:%d", local_host_.c_str(), local_port_);
 
   // done
   //  status_ = hardware_interface::status::CONFIGURED;
@@ -100,11 +107,9 @@ CallbackReturn KukaSystemPositionOnlyHardware::on_init(
   return CallbackReturn::SUCCESS;
 }
 
-CallbackReturn KukaSystemPositionOnlyHardware::on_configure(
-  const rclcpp_lifecycle::State & previous_state)
+CallbackReturn RobotControlnterface::on_configure(
+  const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "on_configure()");
-
   // just in case - not 100% sure this is the right thing to do . . .
   for (size_t i = 0; i < hw_states_.size(); ++i)
   {
@@ -117,10 +122,9 @@ CallbackReturn KukaSystemPositionOnlyHardware::on_configure(
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface>
-KukaSystemPositionOnlyHardware::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> RobotControlnterface::export_state_interfaces()
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "export_state_interfaces()");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "export_state_interfaces()");
 
   std::vector<hardware_interface::StateInterface> state_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++)
@@ -131,10 +135,9 @@ KukaSystemPositionOnlyHardware::export_state_interfaces()
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface>
-KukaSystemPositionOnlyHardware::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> RobotControlnterface::export_command_interfaces()
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "export_command_interfaces()");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "export_command_interfaces()");
 
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++)
@@ -145,20 +148,17 @@ KukaSystemPositionOnlyHardware::export_command_interfaces()
   return command_interfaces;
 }
 
-// return_type KukaSystemPositionOnlyHardware::start()  // QUESTION: should this be in configure?
-CallbackReturn KukaSystemPositionOnlyHardware::on_activate(
-  const rclcpp_lifecycle::State & previous_state)
+// return_type RobotControlnterface::start()  // QUESTION: should this be in configure?
+CallbackReturn RobotControlnterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "on_activate()");
-
   // Wait for connection from robot
   server_.reset(new UDPServer(local_host_, local_port_));
 
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Connecting to robot . . .");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "Connecting to robot . . .");
 
   int bytes = server_->recv(in_buffer_);
 
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "got some bytes");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "got some bytes");
 
   // Drop empty <rob> frame with RSI <= 2.3
   if (bytes < 100)
@@ -167,7 +167,7 @@ CallbackReturn KukaSystemPositionOnlyHardware::on_activate(
   }
   if (bytes < 100)
   {
-    RCLCPP_FATAL(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "not enough data received");
+    RCLCPP_FATAL(rclcpp::get_logger(info_.name), "not enough data received");
     return CallbackReturn::ERROR;
   }
 
@@ -185,32 +185,28 @@ CallbackReturn KukaSystemPositionOnlyHardware::on_activate(
   server_->send(out_buffer_);
   server_->set_timeout(1000);  // Set receive timeout to 1 second
 
-  RCLCPP_DEBUG(
-    rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "System Successfully started!");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "System Successfully started!");
 
   // status_ = hardware_interface::status::STARTED;
   // return return_type::OK;
   return CallbackReturn::SUCCESS;
 }
 
-// return_type KukaSystemPositionOnlyHardware::stop()
-CallbackReturn KukaSystemPositionOnlyHardware::on_deactivate(
-  const rclcpp_lifecycle::State & previous_state)
+// return_type RobotControlnterface::stop()
+CallbackReturn RobotControlnterface::on_deactivate(
+  const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "on_deactivate()");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "on_deactivate()");
 
-  RCLCPP_DEBUG(
-    rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "System successfully stopped!");
+  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "System successfully stopped!");
 
   return CallbackReturn::SUCCESS;
 }
 
 // WARN: NOT REAL TIME SAFE due to strings/possible allocations
-return_type KukaSystemPositionOnlyHardware::read(
-  const rclcpp::Time & time, const rclcpp::Duration & period)
+return_type RobotControlnterface::read(
+  const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "read()");
-
   in_buffer_.resize(1024);  // FIXME:
   if (server_->recv(in_buffer_) == 0)
   {  // FIXME: server_->recv is probably doing some allocation
@@ -222,27 +218,22 @@ return_type KukaSystemPositionOnlyHardware::read(
   for (size_t i = 0; i < hw_states_.size(); i++)
   {
     hw_states_[i] = rsi_state_.positions[i] * 3.14159 / 180.0;
-    RCLCPP_DEBUG(
-      rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Got state %.5f for joint %ld!",
-      hw_states_[i], i);
+    RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "Got state %.5f for joint %ld!", hw_states_[i], i);
   }
   ipoc_ = rsi_state_.ipoc;
 
   return return_type::OK;
 }
 
-return_type KukaSystemPositionOnlyHardware::write(
-  const rclcpp::Time & time, const rclcpp::Duration & period)
+return_type RobotControlnterface::write(
+  const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  RCLCPP_DEBUG(rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "write()");
-
   out_buffer_.resize(1024);  // FIXME
 
   for (size_t i = 0; i < hw_commands_.size(); i++)
   {
     RCLCPP_DEBUG(
-      rclcpp::get_logger("KukaSystemPositionOnlyHardware"), "Got command %.5f for joint %ld!",
-      hw_commands_[i], i);
+      rclcpp::get_logger(info_.name), "Got command %.5f for joint %ld!", hw_commands_[i], i);
     rsi_joint_position_corrections_[i] =
       (hw_commands_[i] * 180.0 / 3.14159) - rsi_initial_joint_positions_[i];
   }
@@ -257,4 +248,4 @@ return_type KukaSystemPositionOnlyHardware::write(
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-  kuka_rsi_hw_interface::KukaSystemPositionOnlyHardware, hardware_interface::SystemInterface)
+  kuka_rsi_hw_interface::RobotControlnterface, hardware_interface::SystemInterface)

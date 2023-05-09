@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.16)
-
 project(kuka_kr10_support LANGUAGES CXX)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
