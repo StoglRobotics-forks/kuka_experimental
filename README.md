@@ -137,7 +137,18 @@ building might fail occasionally.
 
 ### Starting the driver
 
-Launch possibilities  :
+1. Start *Mock Hardware* first to see how the system is setup (example for `KR5 arc`):
+   ```
+   ros2 launch kuka_ros2_control_support test_bringup.launch.py description_package:=kuka_kr5_support description_macro_file:=kr5_arc_macro.xacro use_mock_hardware:=true
+   ```
+   Now check started nodes, available topics and services.
+
+2. Start test node for joint trajectory controller:
+   ```
+   ros2 launch kuka_ros2_control_support test_joint_trajectory_controller.launch.py
+   ```
+
+3. Launch possibilities  :
 
    - launches only robot model with Joint state publisher GUI
    ```

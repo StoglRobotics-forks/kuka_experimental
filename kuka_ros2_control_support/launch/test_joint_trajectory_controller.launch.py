@@ -23,7 +23,7 @@ def generate_launch_description():
         [
             FindPackageShare("kuka_ros2_control_support"),
             "config/",
-            "kuka_6dof_joint_trajectory_controller_goals.yaml",
+            "6dof_joint_trajectory_controller_goals.yaml",
         ]
     )
 
