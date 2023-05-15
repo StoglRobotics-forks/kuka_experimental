@@ -36,7 +36,7 @@
           <param name="robot_port">${eki_robot_port}</param>
         </xacro:if>
         <xacro:if value="${use_rsi_communication}">
-          <plugin>kuka_rsi_hw_interface/OnlyRobotControl</plugin>
+          <plugin>kuka_rsi_hw_interface/KukaSystemPositionOnlyHardware</plugin>
           <param name="listen_address">${rsi_listen_ip}</param>
           <param name="listen_port">${rsi_listen_port}</param>
         </xacro:if>
