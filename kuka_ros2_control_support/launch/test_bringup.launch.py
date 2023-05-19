@@ -61,7 +61,7 @@ def generate_launch_description():
             description="YAML file with the initial positions when using mock hardware from \
             ros2_control. Robots using '_all_zeros' file are: \
               - kr210l150 \
-              - "
+              - ",
         )
     )
     declared_arguments.append(
@@ -100,7 +100,6 @@ def generate_launch_description():
                 "kr150_2_macro.xacro",
                 "kr150r3100_2_macro.xacro",
                 "kr210l150_macro.xacro",
-                "kr210r3100_macro.xacro",
                 "lbr_iiwa_14_r820_macro.xacro",
             ],
         )
@@ -226,7 +225,10 @@ def generate_launch_description():
 
     ros2_control_setup_bringup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            PathJoinSubstitution([FindPackageShare('kuka_ros2_control_support'), 'launch', 'bringup.launch.py'])),
+            PathJoinSubstitution(
+                [FindPackageShare("kuka_ros2_control_support"), "launch", "bringup.launch.py"]
+            )
+        ),
         launch_arguments={
             "robot_name": "kuka_test_setup",
             "controllers_file": controllers_file,
@@ -241,6 +243,8 @@ def generate_launch_description():
             "rsi_listen_port": rsi_listen_port,
             "use_mock_hardware": use_mock_hardware,
             "start_rviz": start_rviz,
+            "log_level_driver": log_level_driver,
+            "log_level_all": log_level_all,
         }.items(),
     )
 
