@@ -162,7 +162,7 @@ def generate_launch_description():
             "rviz_file",
             default_value="moveit.rviz",
             description="Rviz2 configuration file of the visualization. \
-            The expected location of the file is '<moveit_config_package>/rviz/'.",
+            The expected location of the file is '<configuration_package>/config/'.",
         )
     )
     declared_arguments.append(
@@ -292,7 +292,7 @@ def generate_launch_description():
         executable="robot_state_publisher",
         name="robot_state_publisher_node",
         output="both",
-        parameters=[robot_description]
+        parameters=[robot_description],
     )
 
     # ros2_control_node
@@ -338,7 +338,7 @@ def generate_launch_description():
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare(configuration_package), "rviz", rviz_file]
+        [FindPackageShare(configuration_package), "config", rviz_file]
     )
     rviz_node = Node(
         package="rviz2",

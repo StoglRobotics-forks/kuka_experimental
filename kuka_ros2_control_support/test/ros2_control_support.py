@@ -34,12 +34,12 @@
 
 
 import time
+from typing import List
 import unittest
 from dataclasses import dataclass
 import pytest
 import rclpy
 from rclpy.node import Node
-import subprocess
 
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
@@ -54,83 +54,86 @@ from launch_testing.actions import ReadyToTest
 class KukaArgCombination:
     """Class for keeping track of arguments for testing ros2 control support package."""
 
-    robot_description_package: str
-    robot_description_macro_file: str
+    description_package: str
+    description_macro_file: str
     robot_name: str
     controllers_file: str
 
 
-def get_possible_combinations(get_combinations_cmd, robot_names_7dof=[]):
-    def arg_str_to_values_array(arg_str):
-        values = arg_str.split("[")[1].split("]")[0].split(",")
-        return [v.strip().strip("'") for v in values]
+def get_launch_arg_choices(package_name: str, launch_file_name: str) -> dict:
+    launch_description_source = PythonLaunchDescriptionSource(
+        PathJoinSubstitution([FindPackageShare(package_name), "launch", launch_file_name])
+    )
+    launch_description = launch_description_source.try_get_launch_description_without_context()
+    return {arg.name: arg.choices for arg in launch_description.get_launch_arguments()}
 
-    # Get available options for launch file
-    process = subprocess.Popen(get_combinations_cmd, stdout=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    args_str = stdout.decode("utf-8").split("\n")[1:-1]
 
-    # Extract available options for controllers_file, robot_description_package, robot_description_macro_file, and robot_name
-    controllers_files = []
-    robot_description_packages = []
-    robot_description_macro_files = []
-    robot_names = []
-    for i, arg in enumerate(args_str):
-        if "controllers_file" in arg:
-            controllers_files = arg_str_to_values_array(args_str[i + 1])
-        elif "robot_description_package" in arg:
-            robot_description_packages = arg_str_to_values_array(args_str[i + 1])
-        elif "robot_description_macro_file" in arg:
-            robot_description_macro_files = arg_str_to_values_array(args_str[i + 1])
-        elif "robot_name" in arg:
-            robot_names = arg_str_to_values_array(args_str[i + 1])
+def get_possible_combinations(
+    package_name: str,
+    launch_file_name: str,
+    robot_names_7dof: List[str],
+    description_package_arg_name: str,
+    description_macro_file_arg_name: str,
+    controllers_file_arg_name: str,
+) -> List[KukaArgCombination]:
+    launch_arg_choices = get_launch_arg_choices(package_name, launch_file_name)
+    description_package_choices = launch_arg_choices[description_package_arg_name]
+    description_macro_file_choices = launch_arg_choices[description_macro_file_arg_name]
+    controllers_file_choices = launch_arg_choices[controllers_file_arg_name]
 
-    if len(controllers_files) != 2:
+    if len(controllers_file_choices) != 2:
         raise ValueError("this script accepts exactly 2 controller files")
 
-    if "6dof" in controllers_files[0]:
-        controller_file_6dof = controllers_files[0]
-        controller_file_7dof = controllers_files[1]
+    if "6dof" in controllers_file_choices[0]:
+        controllers_file_6dof, controllers_file_7dof = controllers_file_choices
     else:
-        controller_file_6dof = controllers_files[1]
-        controller_file_7dof = controllers_files[0]
+        controllers_file_7dof, controllers_file_6dof = controllers_file_choices
 
-    # Create all possible combinations
     possible_combinations = []
-    for robot_description_package in robot_description_packages:
-        package_prefix = robot_description_package.split("_")[1]
-        for macro_file in robot_description_macro_files:
-            char_after_prefix = macro_file[len(package_prefix)]
-            if macro_file.startswith(package_prefix) and not char_after_prefix.isnumeric():
-                robot_name = "kuka_" + macro_file.split("_macro")[0]
-                if robot_name in robot_names:
-                    arg_combination = KukaArgCombination(
-                        robot_description_package=robot_description_package,
-                        robot_description_macro_file=macro_file,
+    for description_package in description_package_choices:
+        package_prefix = description_package.split("_")[1]
+        for description_macro_file in description_macro_file_choices:
+            char_after_prefix = description_macro_file[len(package_prefix)]
+            if (
+                description_macro_file.startswith(package_prefix)
+                and not char_after_prefix.isnumeric()
+            ):
+                robot_name = description_macro_file.split("_macro")[0]
+                possible_combinations.append(
+                    KukaArgCombination(
+                        description_package=description_package,
+                        description_macro_file=description_macro_file,
                         robot_name=robot_name,
-                        controllers_file=controller_file_7dof
+                        controllers_file=controllers_file_7dof
                         if robot_name in robot_names_7dof
-                        else controller_file_6dof,
+                        else controllers_file_6dof,
                     )
-                    possible_combinations.append(arg_combination)
-
+                )
     return possible_combinations
 
 
-robot_names_7dof = ["kuka_lbr_iiwa_14_r820"]
 package_name = "kuka_ros2_control_support"
 launch_file_name = "test_bringup.launch.py"
-get_combinations_cmd = ["ros2", "launch", package_name, launch_file_name, "--show-args"]
+robot_names_7dof = ["lbr_iiwa_14_r820"]
+description_package_arg_name = "description_package"
+description_macro_file_arg_name = "description_macro_file"
+controllers_file_arg_name = "controllers_file"
+extra_launch_args = {"use_mock_hardware": "true", "rviz_file": "view_robot.rviz"}
+
 possible_combinations = get_possible_combinations(
-    get_combinations_cmd, robot_names_7dof=robot_names_7dof
+    package_name=package_name,
+    launch_file_name=launch_file_name,
+    robot_names_7dof=robot_names_7dof,
+    description_package_arg_name=description_package_arg_name,
+    description_macro_file_arg_name=description_macro_file_arg_name,
+    controllers_file_arg_name=controllers_file_arg_name,
 )
 
 launch_testing_params = [
     (
-        f"robot_description_package={combination.robot_description_package} "
-        f"robot_description_macro_file={combination.robot_description_macro_file} "
-        f"robot_name={combination.robot_name} "
-        f"controllers_file={combination.controllers_file}"
+        f"{description_package_arg_name}={combination.description_package} "
+        f"{description_macro_file_arg_name}={combination.description_macro_file} "
+        f"{controllers_file_arg_name}={combination.controllers_file}"
     )
     for combination in possible_combinations
 ]
@@ -148,7 +151,8 @@ def generate_test_description(launch_testing_params):
             launch_args[key] = value
         return launch_args
 
-    global current_combination, possible_combinations, package_name, launch_file_name
+    global current_combination, possible_combinations, package_name, launch_file_name, extra_launch_args
+    global description_package_arg_name, description_macro_file_arg_name, controllers_file_arg_name
     current_combination += 1
 
     print("-" * 20)
@@ -164,10 +168,10 @@ def generate_test_description(launch_testing_params):
             PathJoinSubstitution([FindPackageShare(package_name), "launch", launch_file_name])
         ),
         launch_arguments={
-            "robot_description_package": launch_args["robot_description_package"],
-            "robot_description_macro_file": launch_args["robot_description_macro_file"],
-            "robot_name": launch_args["robot_name"],
-            "controllers_file": launch_args["controllers_file"],
+            f"{description_package_arg_name}": launch_args[description_package_arg_name],
+            f"{description_macro_file_arg_name}": launch_args[description_macro_file_arg_name],
+            f"{controllers_file_arg_name}": launch_args[controllers_file_arg_name],
+            **extra_launch_args,
         }.items(),
     )
 
