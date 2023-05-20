@@ -34,20 +34,24 @@
 
 
 import time
-from typing import List
 import unittest
 from dataclasses import dataclass
+from typing import List
+
+import launch_testing
 import pytest
 import rclpy
-from rclpy.node import Node
-
+from builtin_interfaces.msg import Duration
+from control_msgs.msg import JointTrajectoryControllerState
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
-import launch_testing
 from launch_testing.actions import ReadyToTest
+from rclpy.node import Node
+from rclpy.wait_for_message import wait_for_message
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 
 @dataclass
@@ -183,15 +187,44 @@ class RobotDriverTest(unittest.TestCase):
     def setUpClass(cls):
         # Initialize the ROS context
         rclpy.init()
+
         cls.node_name = "ros2_control_support_test"
         cls.node = Node(cls.node_name)
-        time.sleep(1)
+        cls.executor = rclpy.executors.SingleThreadedExecutor()
+        cls.trajectory_publisher = cls.node.create_publisher(
+            JointTrajectory, "/position_trajectory_controller/joint_trajectory", 10
+        )
+        cls.node.get_logger().info("Setup complete")
+
+    @classmethod
+    def wait_for_trajectory_state(cls, time_to_wait=3.0):
+        ret, msg = wait_for_message(
+            JointTrajectoryControllerState,
+            cls.node,
+            "/position_trajectory_controller/state",
+            time_to_wait=time_to_wait,
+        )
+        cls.assertTrue(cls, ret)
+        cls.joint_states = dict(zip(msg.joint_names, msg.actual.positions))
 
     @classmethod
     def tearDownClass(cls):
         # Shutdown the ROS context
+        cls.node.get_logger().info("Tearing down")
         cls.node.destroy_node()
         rclpy.shutdown()
+
+    #
+    # Callback functions
+    #
+
+    @classmethod
+    def trajectory_state_callback(cls, msg):
+        # Save the joint names and their current positions
+        cls.joint_states = dict(zip(msg.joint_names, msg.actual.positions))
+        print(f"joint_state_future done: {cls.joint_state_future.done()}")
+        cls.joint_state_future.set_result(True)
+        cls.node.get_logger().info(f"Received joint states: {cls.joint_states}")
 
     #
     # Test functions
@@ -201,3 +234,34 @@ class RobotDriverTest(unittest.TestCase):
         # Verify that the node started successfully
         node_names = self.node.get_node_names()
         self.assertIn(self.node_name, node_names)
+        self.node.get_logger().info("Node started successfully")
+
+    def test_trajectory_following(
+        self, position_change=0.2, time_from_start=1, almost_equal_places=2
+    ):
+        # Spin until the joint_state_future is complete (i.e., until a state message is received)
+        self.node.get_logger().info("Waiting for initial joint states")
+        self.wait_for_trajectory_state()
+
+        # Create a trajectory based on the initial joint states
+        self.node.get_logger().info("Creating trajectory")
+        trajectory = JointTrajectory()
+        trajectory.joint_names = list(self.joint_states.keys())
+        point = JointTrajectoryPoint()
+        point.positions = [pos + position_change for pos in self.joint_states.values()]
+        point.time_from_start = Duration(sec=time_from_start)
+        trajectory.points.append(point)
+
+        self.node.get_logger().info(f"Publishing trajectory: {trajectory}")
+        self.trajectory_publisher.publish(trajectory)
+        time.sleep(2 * time_from_start)
+
+        self.wait_for_trajectory_state()
+
+        # Check if the actual joint positions match the target ones
+        self.node.get_logger().info("Checking joint positions")
+        for joint_name, target_position in zip(trajectory.joint_names, point.positions):
+            self.assertAlmostEqual(
+                self.joint_states[joint_name], target_position, places=almost_equal_places
+            )
+        self.node.get_logger().info("Checking joint positions is done")
