@@ -21,7 +21,7 @@ and / or functional.
 KUKA is one the major robot manufacturers in the world. Therefore, KUKA robots can be found in many industrial applications and research labs.
 
 This branch contains ROS 2 version of the driver supporting new features enabled by ROS 2, such as decreased latency, improved security, and more flexibility regarding middleware configuration.
-The repository containes descriptions for many KUKA manipulators, ros2_control support for RSI and EKI Protocols to control the robot, as well as generic MoveIt2 setup to get you started.
+The repository contains descriptions for many KUKA manipulators, ros2_control support for RSI and EKI Protocols to control the robot, as well as generic MoveIt2 setup to get you started.
 
 [//]: <> (TODO: I you want to learn more check the videos and presentation about the repository:)
 
@@ -215,7 +215,7 @@ Launch possibilities  :
 ### Running tests for kuka_ros2_control_support
 ```
 cd $COLCON_WS;\
-colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo --packages-select kuka_ros2_control_support;\
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo;\
 colcon test --packages-select kuka_ros2_control_support;\
 colcon test-result --all --verbose
 ```
