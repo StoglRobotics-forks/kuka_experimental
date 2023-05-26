@@ -204,7 +204,7 @@ class RobotDriverTest(unittest.TestCase):
             "/position_trajectory_controller/state",
             time_to_wait=time_to_wait,
         )
-        cls.assertTrue(cls, ret)
+        cls.assertTrue(ret, "failed to receive a trajectory state message")
         cls.joint_states = dict(zip(msg.joint_names, msg.actual.positions))
 
     @classmethod
