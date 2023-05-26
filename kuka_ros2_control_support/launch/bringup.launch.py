@@ -160,7 +160,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "rviz_file",
-            default_value="moveit.rviz",
+            default_value="view_robot.rviz",
             description="Rviz2 configuration file of the visualization. \
             The expected location of the file is '<configuration_package>/config/'.",
         )
