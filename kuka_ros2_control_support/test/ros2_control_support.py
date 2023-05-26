@@ -51,6 +51,7 @@ from launch_ros.substitutions import FindPackageShare
 from launch_testing.actions import ReadyToTest
 from rclpy.node import Node
 from rclpy.wait_for_message import wait_for_message
+from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 
@@ -62,6 +63,7 @@ class KukaArgCombination:
     description_macro_file: str
     robot_name: str
     controllers_file: str
+    init_pos_file: str
 
 
 def get_launch_arg_choices(package_name: str, launch_file_name: str) -> dict:
@@ -79,11 +81,14 @@ def get_possible_combinations(
     description_package_arg_name: str,
     description_macro_file_arg_name: str,
     controllers_file_arg_name: str,
+    initial_positions_file_arg_name: str,
+    robot_names_init_pos_all_zeros: str,
 ) -> List[KukaArgCombination]:
     launch_arg_choices = get_launch_arg_choices(package_name, launch_file_name)
     description_package_choices = launch_arg_choices[description_package_arg_name]
     description_macro_file_choices = launch_arg_choices[description_macro_file_arg_name]
     controllers_file_choices = launch_arg_choices[controllers_file_arg_name]
+    initial_positions_file_choices = launch_arg_choices[initial_positions_file_arg_name]
 
     if len(controllers_file_choices) != 2:
         raise ValueError("this script accepts exactly 2 controller files")
@@ -92,6 +97,14 @@ def get_possible_combinations(
         controllers_file_6dof, controllers_file_7dof = controllers_file_choices
     else:
         controllers_file_7dof, controllers_file_6dof = controllers_file_choices
+
+    if len(initial_positions_file_choices) != 2:
+        raise ValueError("this script accepts exactly 2 initial positions files")
+
+    if "all_zeros" in initial_positions_file_choices[0]:
+        init_pos_all_zeros, init_pos_default = initial_positions_file_choices
+    else:
+        init_pos_default, init_pos_all_zeros = initial_positions_file_choices
 
     possible_combinations = []
     for description_package in description_package_choices:
@@ -111,10 +124,18 @@ def get_possible_combinations(
                         controllers_file=controllers_file_7dof
                         if robot_name in robot_names_7dof
                         else controllers_file_6dof,
+                        init_pos_file=init_pos_all_zeros
+                        if robot_name in robot_names_init_pos_all_zeros
+                        else init_pos_default,
                     )
                 )
     return possible_combinations
 
+
+### For test debugging ###
+test_only_these_robot_names = None  # e.g. ["lbr_iiwa_14_r820"]
+start_rviz = False
+### For test debugging ###
 
 package_name = "kuka_ros2_control_support"
 launch_file_name = "test_bringup.launch.py"
@@ -122,7 +143,9 @@ robot_names_7dof = ["lbr_iiwa_14_r820"]
 description_package_arg_name = "description_package"
 description_macro_file_arg_name = "description_macro_file"
 controllers_file_arg_name = "controllers_file"
-extra_launch_args = {"use_mock_hardware": "true", "rviz_file": "view_robot.rviz"}
+extra_launch_args = {"use_mock_hardware": "true", "start_rviz": "true" if start_rviz else "false"}
+initial_positions_file_arg_name = "initial_positions_file"
+robot_names_init_pos_all_zeros = ["kr210l150", "lbr_iiwa_14_r820"]
 
 possible_combinations = get_possible_combinations(
     package_name=package_name,
@@ -131,15 +154,19 @@ possible_combinations = get_possible_combinations(
     description_package_arg_name=description_package_arg_name,
     description_macro_file_arg_name=description_macro_file_arg_name,
     controllers_file_arg_name=controllers_file_arg_name,
+    initial_positions_file_arg_name=initial_positions_file_arg_name,
+    robot_names_init_pos_all_zeros=robot_names_init_pos_all_zeros,
 )
 
 launch_testing_params = [
     (
         f"{description_package_arg_name}={combination.description_package} "
         f"{description_macro_file_arg_name}={combination.description_macro_file} "
-        f"{controllers_file_arg_name}={combination.controllers_file}"
+        f"{controllers_file_arg_name}={combination.controllers_file} "
+        f"{initial_positions_file_arg_name}={combination.init_pos_file}"
     )
     for combination in possible_combinations
+    if not test_only_these_robot_names or combination.robot_name in test_only_these_robot_names
 ]
 
 current_combination = -1
@@ -157,6 +184,7 @@ def generate_test_description(launch_testing_params):
 
     global current_combination, possible_combinations, package_name, launch_file_name, extra_launch_args
     global description_package_arg_name, description_macro_file_arg_name, controllers_file_arg_name
+    global initial_positions_file_arg_name
     current_combination += 1
 
     print("-" * 20)
@@ -175,6 +203,7 @@ def generate_test_description(launch_testing_params):
             f"{description_package_arg_name}": launch_args[description_package_arg_name],
             f"{description_macro_file_arg_name}": launch_args[description_macro_file_arg_name],
             f"{controllers_file_arg_name}": launch_args[controllers_file_arg_name],
+            f"{initial_positions_file_arg_name}": launch_args[initial_positions_file_arg_name],
             **extra_launch_args,
         }.items(),
     )
@@ -191,21 +220,13 @@ class RobotDriverTest(unittest.TestCase):
         cls.node_name = "ros2_control_support_test"
         cls.node = Node(cls.node_name)
         cls.executor = rclpy.executors.SingleThreadedExecutor()
+        cls.traj_state_topic = "/position_trajectory_controller/state"
+        cls.joint_trajectory_topic = "/position_trajectory_controller/joint_trajectory"
         cls.trajectory_publisher = cls.node.create_publisher(
-            JointTrajectory, "/position_trajectory_controller/joint_trajectory", 10
+            JointTrajectory, cls.joint_trajectory_topic, 10
         )
+        cls.joint_state_topic = "/joint_states"
         cls.node.get_logger().info("Setup complete")
-
-    @classmethod
-    def wait_for_trajectory_state(cls, time_to_wait=3.0):
-        ret, msg = wait_for_message(
-            JointTrajectoryControllerState,
-            cls.node,
-            "/position_trajectory_controller/state",
-            time_to_wait=time_to_wait,
-        )
-        cls.assertTrue(ret, "failed to receive a trajectory state message")
-        cls.joint_states = dict(zip(msg.joint_names, msg.actual.positions))
 
     @classmethod
     def tearDownClass(cls):
@@ -213,18 +234,6 @@ class RobotDriverTest(unittest.TestCase):
         cls.node.get_logger().info("Tearing down")
         cls.node.destroy_node()
         rclpy.shutdown()
-
-    #
-    # Callback functions
-    #
-
-    @classmethod
-    def trajectory_state_callback(cls, msg):
-        # Save the joint names and their current positions
-        cls.joint_states = dict(zip(msg.joint_names, msg.actual.positions))
-        print(f"joint_state_future done: {cls.joint_state_future.done()}")
-        cls.joint_state_future.set_result(True)
-        cls.node.get_logger().info(f"Received joint states: {cls.joint_states}")
 
     #
     # Test functions
@@ -236,32 +245,66 @@ class RobotDriverTest(unittest.TestCase):
         self.assertIn(self.node_name, node_names)
         self.node.get_logger().info("Node started successfully")
 
+    def test_joint_state_msg_retrieval(self, time_to_wait=3.0):
+        ret, _ = wait_for_message(
+            JointState,
+            self.node,
+            self.joint_state_topic,
+            time_to_wait=time_to_wait,
+        )
+        self.assertTrue(
+            ret, f"failed to receive a joint state message from topic '{self.joint_state_topic}'"
+        )
+
+    def test_trajectory_state_retrieval(self):
+        ret, _ = self.get_trajectory_state()
+        self.assertTrue(
+            ret,
+            f"failed to receive a trajectory state message from topic '{self.traj_state_topic}'",
+        )
+
     def test_trajectory_following(
         self, position_change=0.2, time_from_start=1, almost_equal_places=2
     ):
-        # Spin until the joint_state_future is complete (i.e., until a state message is received)
+        def get_joint_states_from_trajectory_state():
+            _, msg = self.get_trajectory_state()
+            return dict(zip(msg.joint_names, msg.actual.positions))
+
         self.node.get_logger().info("Waiting for initial joint states")
-        self.wait_for_trajectory_state()
+        joint_states = get_joint_states_from_trajectory_state()
 
         # Create a trajectory based on the initial joint states
         self.node.get_logger().info("Creating trajectory")
         trajectory = JointTrajectory()
-        trajectory.joint_names = list(self.joint_states.keys())
+        trajectory.joint_names = list(joint_states.keys())
         point = JointTrajectoryPoint()
-        point.positions = [pos + position_change for pos in self.joint_states.values()]
+        point.positions = [pos + position_change for pos in joint_states.values()]
         point.time_from_start = Duration(sec=time_from_start)
         trajectory.points.append(point)
 
-        self.node.get_logger().info(f"Publishing trajectory: {trajectory}")
+        self.node.get_logger().info(f"Publishing trajectory")
         self.trajectory_publisher.publish(trajectory)
         time.sleep(2 * time_from_start)
 
-        self.wait_for_trajectory_state()
+        self.node.get_logger().info("Waiting for joint states after executed trajectory")
+        joint_states = get_joint_states_from_trajectory_state()
 
         # Check if the actual joint positions match the target ones
         self.node.get_logger().info("Checking joint positions")
         for joint_name, target_position in zip(trajectory.joint_names, point.positions):
             self.assertAlmostEqual(
-                self.joint_states[joint_name], target_position, places=almost_equal_places
+                joint_states[joint_name], target_position, places=almost_equal_places
             )
         self.node.get_logger().info("Checking joint positions is done")
+
+    #
+    # Utility functions
+    #
+
+    def get_trajectory_state(self, time_to_wait=3.0):
+        return wait_for_message(
+            JointTrajectoryControllerState,
+            self.node,
+            self.traj_state_topic,
+            time_to_wait=time_to_wait,
+        )
