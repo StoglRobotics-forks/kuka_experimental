@@ -26,7 +26,7 @@ The files included in the `kuka_eki_hw_interface/krl` folder provide the KRL int
 Note that the `eki/robot_address` and `eki/robot_port` parameters of the `kuka_eki_hw_interface` must correspond to the `IP`and `PORT` set in this XML file.
 
 ##### Copy files to controller
-The files `kuka_eki_hw_interface.dat` and `kuke_eki_hw_interface.src` should not be edited. All files are now ready to be copied to the Kuka controller.  Using WorkVisual or a USB drive (with appropriate privleges):
+The files `kuka_eki_hw_interface.dat` and `kuke_eki_hw_interface.src` should not be edited. All files are now ready to be copied to the Kuka controller.  Using WorkVisual or a USB drive (with appropriate privileges):
 
 1. Copy `kuka_eki_hw_interface.dat` and `kuka_eki_hw_interface.src` files to `KRC:\R1\Program`.
 2. Copy `EkiHwInterface.xml` to `C:\KRC\ROBOTER\Config\User\Common\EthernetKRL\`.
@@ -90,4 +90,3 @@ $ rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 Choose **controller manager ns** and **controller** and you should be able to move each robot joint.
 
 * Note that T1-mode limits the robot movement velocity and is intended for testing purposes.
-
