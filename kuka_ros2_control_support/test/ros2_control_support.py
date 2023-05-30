@@ -231,17 +231,11 @@ class RobotDriverTest(unittest.TestCase):
         )
         cls.joint_state_topic = "/joint_states"
         cls.node.get_logger().info("Setup complete")
-        cls.tf_buffer = Buffer()
-        # spinner thread must be true to get the transforms
-        cls.tf_listener = TransformListener(
-            buffer=cls.tf_buffer, node=cls.node, spin_thread=True)
 
     @classmethod
     def tearDownClass(cls):
         # Shutdown the ROS context
         cls.node.get_logger().info("Tearing down")
-        # required to avoid rclpy.executors.ExternalShutdownException
-        cls.tf_listener.__del__()
         cls.node.destroy_node()
         rclpy.shutdown()
 
@@ -330,19 +324,29 @@ class RobotDriverTest(unittest.TestCase):
         )
 
     def get_tcp_transform(self, time_to_wait=5.0, base_link="base_link", tool_link="tool0"):
+        tf_buffer = Buffer()
+        # spinner thread must be true to get the transforms
+        tf_listener = TransformListener(
+            buffer=tf_buffer, node=self.node, spin_thread=True)
+        t = None
         try:
-            ret = self.tf_buffer.can_transform(
+            ret = tf_buffer.can_transform(
                 tool_link,
                 base_link,
                 rclpy.time.Time(),
                 timeout=rclpy.duration.Duration(seconds=time_to_wait))
             if ret:
-                t = self.tf_buffer.lookup_transform(
+                t = tf_buffer.lookup_transform(
                     tool_link,
                     base_link,
                     rclpy.time.Time())
-                return (True, t)
         except TransformException as ex:
             self.node.get_logger().info(
                 f'Could not transform {base_link} to {tool_link}: {ex}')
-        return (False, None)
+
+        # required to avoid rclpy.executors.ExternalShutdownException
+        tf_listener.__del__()
+        if t is not None:
+            return (True, t)
+        else:
+            return (False, None)
