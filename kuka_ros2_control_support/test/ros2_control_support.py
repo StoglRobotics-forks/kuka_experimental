@@ -49,6 +49,10 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_testing.actions import ReadyToTest
+from tf2_ros import TransformException
+from tf2_ros.buffer import Buffer
+from tf2_ros.transform_listener import TransformListener
+from geometry_msgs.msg import Vector3
 from rclpy.node import Node
 from rclpy.wait_for_message import wait_for_message
 from sensor_msgs.msg import JointState
@@ -227,11 +231,17 @@ class RobotDriverTest(unittest.TestCase):
         )
         cls.joint_state_topic = "/joint_states"
         cls.node.get_logger().info("Setup complete")
+        cls.tf_buffer = Buffer()
+        # spinner thread must be true to get the transforms
+        cls.tf_listener = TransformListener(
+            buffer=cls.tf_buffer, node=cls.node, spin_thread=True)
 
     @classmethod
     def tearDownClass(cls):
         # Shutdown the ROS context
         cls.node.get_logger().info("Tearing down")
+        # required to avoid rclpy.executors.ExternalShutdownException
+        cls.tf_listener.__del__()
         cls.node.destroy_node()
         rclpy.shutdown()
 
@@ -262,6 +272,16 @@ class RobotDriverTest(unittest.TestCase):
             ret,
             f"failed to receive a trajectory state message from topic '{self.traj_state_topic}'",
         )
+
+    def test_tcp_tf(self):
+        self.node.get_logger().info("Checking TF for TCP availability and consistency")
+        ret, tcp_tf = self.get_tcp_transform()
+        self.assertTrue(
+            ret,
+            f"failed to lookup the tcp transform, is robot_state_publisher running ?")
+        self.assertTrue(tcp_tf.transform.translation != Vector3(),
+                        f"tcp transform translation should not be null")
+        self.node.get_logger().info("Checking TF for TCP availability and consistency done")
 
     def test_trajectory_following(
         self, position_change=0.2, time_from_start=1, almost_equal_places=2
@@ -308,3 +328,21 @@ class RobotDriverTest(unittest.TestCase):
             self.traj_state_topic,
             time_to_wait=time_to_wait,
         )
+
+    def get_tcp_transform(self, time_to_wait=5.0, base_link="base_link", tool_link="tool0"):
+        try:
+            ret = self.tf_buffer.can_transform(
+                tool_link,
+                base_link,
+                rclpy.time.Time(),
+                timeout=rclpy.duration.Duration(seconds=time_to_wait))
+            if ret:
+                t = self.tf_buffer.lookup_transform(
+                    tool_link,
+                    base_link,
+                    rclpy.time.Time())
+                return (True, t)
+        except TransformException as ex:
+            self.node.get_logger().info(
+                f'Could not transform {base_link} to {tool_link}: {ex}')
+        return (False, None)
