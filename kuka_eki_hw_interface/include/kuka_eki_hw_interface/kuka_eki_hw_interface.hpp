@@ -1,7 +1,7 @@
 // Copyright (c) 2018, 3M
 // All rights reserved.
 //
-// Software License Agreement (BSD License 2.0)
+// Software License Agreement (3-Clause BSD License)
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -13,7 +13,7 @@
 //    copyright notice, this list of conditions and the following
 //    disclaimer in the documentation and/or other materials provided
 //    with the distribution.
-//  * Neither the name of 3M nor the names of its
+//  * Neither the name of the the copyright holder nor the names of its
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
