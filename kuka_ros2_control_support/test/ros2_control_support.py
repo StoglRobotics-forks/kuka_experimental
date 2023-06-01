@@ -224,6 +224,7 @@ class RobotDriverTest(unittest.TestCase):
         cls.node_name = "ros2_control_support_test"
         cls.node = Node(cls.node_name)
         cls.executor = rclpy.executors.SingleThreadedExecutor()
+        cls.executor.add_node(cls.node)
         cls.traj_state_topic = "/position_trajectory_controller/state"
         cls.joint_trajectory_topic = "/position_trajectory_controller/joint_trajectory"
         cls.trajectory_publisher = cls.node.create_publisher(
