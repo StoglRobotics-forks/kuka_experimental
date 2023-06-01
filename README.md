@@ -148,85 +148,55 @@ building might fail occasionally.
    ros2 launch kuka_ros2_control_support test_joint_trajectory_controller.launch.py
    ```
 
-3. Launch possibilities  :
+3. To start other robot type use the following arguments:
+    ```
+    "description_package",
+        choices=[
+            "kuka_kr3_support",
+            "kuka_kr5_support",
+            "kuka_kr6_support",
+            "kuka_kr10_support",
+            "kuka_kr16_support",
+            "kuka_kr120_support",
+            "kuka_kr150_support",
+            "kuka_kr210_support",
+            "kuka_lbr_iiwa_support",
+        ]
 
-   - launches only robot model with Joint state publisher GUI
-   ```
-   ros2 launch kuka_kr3_support test_kr3r540.launch.py
-   ```
+    "description_macro_file",
+        choices=[
+            "kr3r540_macro.xacro",
+            "kr5_arc_macro.xacro",
+            "kr6r700sixx_macro.xacro",
+            "kr6r900_2_macro.xacro",
+            "kr6r900sixx_macro.xacro",
+            "kr10r900_2_macro.xacro",
+            "kr10r1100sixx_macro.xacro",
+            "kr10r1420_macro.xacro",
+            "kr16_2_macro.xacro",
+            "kr120r2500pro_macro.xacro",
+            "kr150_2_macro.xacro",
+            "kr150r3100_2_macro.xacro",
+            "kr210l150_macro.xacro",
+            "lbr_iiwa_14_r820_macro.xacro",
+        ]
 
-   - launches robot model with ros2_control support for "kuka_kr16_2" robot
-   ```
-   ros2 launch kuka_ros2_control_support test_bringup.launch.py\
-      description_package:=kuka_kr16_support\
-      description_macro_file:=kr16_2_macro.xacro\
-      controllers_file:=kuka_6dof_controllers.yaml\
-      use_mock_hardware:=true\
-      rviz_file:=view_robot.rviz
-   ```
+    "controllers_file",
+        choices=[
+            "kuka_6dof_controllers.yaml",
+            "kuka_7dof_controllers.yaml",
+            # Note: for the robot kuka_lbr_iiwa_14_r820, kuka_7dof_controllers.yaml should be used
+            # and the rest use kuka_6dof_controllers.yaml
+        ]
 
-   - possible arguments for the following launch file to test ros2 control support are as follows:
-   ```
-   ros2 launch kuka_ros2_control_support test_bringup.launch.py\
-      description_package:=<description_package>\
-      description_macro_file:=<description_macro_file>\
-      controllers_file:=<controllers_file>\
-      use_mock_hardware:=true\
-      rviz_file:=view_robot.rviz
+    ```
+    **NOTE: Please choose only the related combination of the various parameters.**
 
-   "description_package",
-         choices=[
-               "kuka_kr3_support",
-               "kuka_kr5_support",
-               "kuka_kr6_support",
-               "kuka_kr10_support",
-               "kuka_kr16_support",
-               "kuka_kr120_support",
-               "kuka_kr150_support",
-               "kuka_kr210_support",
-               "kuka_lbr_iiwa_support",
-         ]
-   "description_macro_file",
-         choices=[
-               "kr3r540_macro.xacro",
-               "kr5_arc_macro.xacro",
-               "kr6r700sixx_macro.xacro",
-               "kr6r900_2_macro.xacro",
-               "kr6r900sixx_macro.xacro",
-               "kr10r900_2_macro.xacro",
-               "kr10r1100sixx_macro.xacro",
-               "kr10r1420_macro.xacro",
-               "kr16_2_macro.xacro",
-               "kr120r2500pro_macro.xacro",
-               "kr150_2_macro.xacro",
-               "kr150r3100_2_macro.xacro",
-               "kr210l150_macro.xacro",
-               "lbr_iiwa_14_r820_macro.xacro",
-         ]
-   "controllers_file",
-         choices=[
-               "kuka_6dof_controllers.yaml",
-               "kuka_7dof_controllers.yaml",
-               # Note: for the robot kuka_lbr_iiwa_14_r820, kuka_7dof_controllers.yaml should be used
-               # and the rest use kuka_6dof_controllers.yaml
-         ]
-
-   NOTE: Please choose only the related combination of the various parameters.
+4. Start the real hardware using the following arguments on `test_bringup.launch.py`:
    ```
-
-   You can set the ip address and the port the robot sensor interface (rsi) udp server should listen on with:
+   use_rsi_communication:=true rsi_listen_ip:=<IP_OF_PC_IN_RSI_Network> rsi_listen_port:=49152
    ```
-   ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py listen_ip_address:=<address> listen_port:=<port>
+   You can omit `rsi_listen_port` if you didn't change it in the robots configuration.
+   For example:
    ```
-   Additionally if you need to debug the driver you can pass the:
    ```
-   ros2 launch kuka_ros2_control_support test_ros2_control_kuka.launch.py log_level_driver:=<log_level>
-   ```
-
-### Running tests for kuka_ros2_control_support
-```
-cd $COLCON_WS;\
-colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo;\
-colcon test --packages-select kuka_ros2_control_support;\
-colcon test-result --all --verbose
-```

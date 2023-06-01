@@ -64,8 +64,6 @@ namespace kuka_rsi_hw_interface
 class RobotControlnterface : public hardware_interface::SystemInterface
 {
 public:
-  RCLCPP_SHARED_PTR_DEFINITIONS(RobotControlnterface);
-
   ROS2_CONTROL_DRIVER_PUBLIC
   CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override;
   // return_type configure(const hardware_interface::HardwareInfo & info) override;
