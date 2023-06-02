@@ -43,6 +43,9 @@ int main(int argc, char ** argv)
 
   auto cm = std::make_shared<controller_manager::ControllerManager>(executor, manager_node_name);
 
+  RCLCPP_INFO_STREAM(
+    rclcpp::get_logger("Clock_Info"), "Clock type:" << cm->get_clock()->get_clock_type());
+
   RCLCPP_WARN(cm->get_logger(), "Update rate not used! Updating with maximum possible rate.");
 
   std::thread cm_thread(

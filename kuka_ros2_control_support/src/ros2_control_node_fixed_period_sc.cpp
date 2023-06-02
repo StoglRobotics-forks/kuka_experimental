@@ -24,6 +24,10 @@ int main(int argc, char ** argv)
   auto controller_manager = std::make_shared<controller_manager::ControllerManager>(
     e, "controller_manager", "", node_options);
 
+  RCLCPP_INFO_STREAM(
+    rclcpp::get_logger("Clock_Info"),
+    "Clock type:" << controller_manager->get_clock()->get_clock_type());
+
   RCLCPP_WARN_STREAM(
     controller_manager->get_logger(),
     "Using a fixed period of:" << controller_manager->get_update_rate());
