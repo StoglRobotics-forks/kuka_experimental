@@ -5,7 +5,7 @@
       <PROTOCOL>UDP</PROTOCOL>            <!-- TCP or UDP, Protocol of the socket !-->
       <SENTYPE>ImFree</SENTYPE>           <!-- The name of your system send in <Sen Type="" > !-->
       <ONLYSEND>FALSE</ONLYSEND>          <!-- TRUE means the client don't expect answers. Do not send anything to robot !-->
-   </CONFIG> 
+   </CONFIG>
    <SEND>
       <ELEMENTS>
          <ELEMENT TAG="DEF_RIst" TYPE="DOUBLE" INDX="INTERNAL" UNIT="0" />
