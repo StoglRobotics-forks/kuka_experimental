@@ -62,7 +62,7 @@ def  kuka_eki_hw_interface()
    eki_hw_iface_init()
 
    ; BCO (Block COincidence) run to current position
-   ; (requied for below loop continue before first incoming command)
+   ; (required for below loop continue before first incoming command)
    joint_pos_tgt = $axis_act_meas
    ptp joint_pos_tgt
 
@@ -157,7 +157,7 @@ endfct
 
 
 ; eki_hw_iface_get
-; Tries to read most recent elemnt from buffer. q left unchanged if empty.
+; Tries to read most recent element from buffer. q left unchanged if empty.
 ; Returns number of elements read.
 deffct int eki_hw_iface_get(joint_pos_cmd :out)
    decl eki_status eki_ret

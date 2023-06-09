@@ -112,4 +112,3 @@ $ rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 Choose **controller manager ns** and **controller** and you should be able to move each robot joint.
 
 * Note that T1-mode limits the robot movement velocity and is intended for testing purposes.
-
