@@ -12,7 +12,7 @@ jobs:
           linter: [cppcheck, copyright, lint_cmake]
     steps:
     - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@v0.2
+    - uses: ros-tooling/setup-ros@0.6.2
     - uses: ros-tooling/action-ros-lint@v0.1
       with:
         distribution: rolling
@@ -29,6 +29,10 @@ jobs:
           kuka_kr5_support
           kuka_kr3_support
           kuka_experimental
+          kuka_ros2_control_support
+          kuka_rsi_hw_interface
+          kuka_rsi_simulator
+          kuka_eki_hw_interface
 
 
   ament_lint_100:
@@ -40,7 +44,7 @@ jobs:
           linter: [cpplint]
     steps:
     - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@v0.2
+    - uses: ros-tooling/setup-ros@0.6.2
     - uses: ros-tooling/action-ros-lint@v0.1
       with:
         distribution: rolling
@@ -58,3 +62,7 @@ jobs:
           kuka_kr5_support
           kuka_kr3_support
           kuka_experimental
+          kuka_ros2_control_support
+          kuka_rsi_hw_interface
+          kuka_rsi_simulator
+          kuka_eki_hw_interface
