@@ -1,8 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 2  # Hz
-    distributed: false
-    sub_controller_manager: false
+    update_rate: 250
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster

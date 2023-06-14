@@ -1,66 +1,75 @@
-cmake_minimum_required(VERSION 3.1.0)
-project(kuka_rsi_hw_interface)
+cmake_minimum_required(VERSION 3.16)
+project(kuka_rsi_hw_interface LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+  add_compile_options(-Wall -Wextra)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  cmake_modules
-  controller_manager
+option(
+  KUKA_ROS2_CONTROL_SUPPORT_BUILD_INTEGRATION_TESTS
+  "Build integration tests"
+  OFF
+)
+
+set(THIS_PACKAGE_INCLUDE_DEPENDS
   hardware_interface
-  joint_limits_interface
-  realtime_tools
-  roscpp
-  std_msgs
+  pluginlib
+  rclcpp
 )
 
-find_package(Boost REQUIRED COMPONENTS system)
-find_package(TinyXML REQUIRED)
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(backward_ros REQUIRED)
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
 
-
-catkin_package(
-  CATKIN_DEPENDS
-    controller_manager
-    hardware_interface
-    joint_limits_interface
-    roscpp
-    std_msgs
-  DEPENDS
-    TinyXML
+add_library(kuka_rsi_hw_interface SHARED
+  src/robot_control_interface.cpp
 )
-
-
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  ${TinyXML_INCLUDE_DIRS}
+target_compile_features(kuka_rsi_hw_interface PUBLIC cxx_std_17)
+target_include_directories(kuka_rsi_hw_interface PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/kuka_rsi_hw_interface>
 )
+# target_link_libraries(kuka_rsi_hw_interface
+#   tinyxml
+# )
+ament_target_dependencies(kuka_rsi_hw_interface PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
-add_library(kuka_hardware_interface
-  src/kuka_hardware_interface.cpp
-)
 
-target_link_libraries(kuka_hardware_interface
-  ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${TinyXML_LIBRARIES}
-)
+pluginlib_export_plugin_description_file(hardware_interface kuka_rsi_hw_interface.xml)
 
-add_executable(kuka_hardware_interface_node
-  src/kuka_hardware_interface_node.cpp
-)
 
-target_link_libraries(kuka_hardware_interface_node
-  kuka_hardware_interface
+if(BUILD_TESTING)
+  # find_package(launch_testing_ament_cmake)
+
+  # if(${KUKA_ROS2_CONTROL_SUPPORT_BUILD_INTEGRATION_TESTS})
+  #   add_launch_test(test/test_rsi_hw_interface.py
+  #     TIMEOUT
+  #       180
+  #   )
+  # endif()
+endif()
+
+install(
+  DIRECTORY include/
+  DESTINATION include/kuka_rsi_hw_interface
 )
 
 install(
-  TARGETS kuka_hardware_interface
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+  TARGETS kuka_rsi_hw_interface
+  EXPORT export_kuka_rsi_hw_interface
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
 
 install(
-  TARGETS kuka_hardware_interface_node
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  DIRECTORY config krl
+  DESTINATION share/kuka_rsi_hw_interface
+)
+
+ament_export_targets(export_kuka_rsi_hw_interface HAS_LIBRARY_TARGET)
+ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
+ament_package()

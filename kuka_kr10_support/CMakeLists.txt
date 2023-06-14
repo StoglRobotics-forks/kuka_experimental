@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.16)
-
 project(kuka_kr10_support LANGUAGES CXX)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
@@ -10,7 +9,7 @@ find_package(ament_cmake REQUIRED)
 
 
 install(
-  DIRECTORY config launch meshes urdf
+  DIRECTORY launch meshes urdf
   DESTINATION share/${PROJECT_NAME}
 )
 

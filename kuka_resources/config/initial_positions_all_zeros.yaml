@@ -1,0 +1,9 @@
+# Initial positions for kuka manipulators when using ros2_control mock hardware
+
+joint_a1: 0
+joint_a2: 0
+joint_a3: 0
+joint_a4: 0
+joint_a5: 0
+joint_a6: 0
+joint_a7: 0 # for 7dof robots: lbr_iiwa_14_r820
