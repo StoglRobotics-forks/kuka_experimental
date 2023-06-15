@@ -25,7 +25,7 @@ DEF ros_rsi( )
 ;    Technology, nor the names of its contributors may be used to
 ;    endorse or promote products derived from this software without
 ;    specific prior written permission.
-; 
+;
 ; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -54,7 +54,7 @@ DEF ros_rsi( )
 ;FOLD INI
   ;FOLD BASISTECH INI
     GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
-    INTERRUPT ON 3 
+    INTERRUPT ON 3
     BAS (#INITMOV,0 )
   ;ENDFOLD (BASISTECH INI)
   ;FOLD USER INI
@@ -154,10 +154,10 @@ IF (err <> #RSIOK) THEN
   HALT
 ENDIF
 
-; Runs untill RSI break
+; Runs until RSI break
 ST_SKIPSENS()
 
-; Turn off RSI 
+; Turn off RSI
 err = ST_OFF()
 IF (err <> #RSIOK) THEN
   HALT

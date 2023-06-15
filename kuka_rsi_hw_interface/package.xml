@@ -2,7 +2,7 @@
 <package format="3">
   <name>kuka_rsi_hw_interface</name>
   <version>0.1.0</version>
-  <description>A ros2_Control hardware interface for use with KUKA RSI</description>
+  <description>A ros2_control hardware interface for use with KUKA RSI communication protocol.</description>
   <author>Lars Tingelstad</author>
   <maintainer email="denis@stoglrobotics.de">Dr. Denis Štogl</maintainer>
   <maintainer email="g.a.vanderhoorn@tudelft.nl">G.A. vd. Hoorn (TU Delft Robotics Institute)</maintainer>

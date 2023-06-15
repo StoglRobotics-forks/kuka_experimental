@@ -3,14 +3,14 @@
 <package format="3">
   <name>kuka_ros2_control_support</name>
   <version>0.0.0</version>
-  <description>ros2_control support package for kuka</description>
+  <description>File needed to run KUKA robots with ros2_control.</description>
+  <author>Giridhar Bukka</author>
   <maintainer email="denis.stogl@stoglrobotics.de">Dr.-Ing. Denis Štogl</maintainer>
-  <maintainer email="giridhar.bukka@stoglrobotics.de">Giridhar Bukka</maintainer>
   <license>Apache2</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <test_depend>roslaunch</test_depend>
+  <test_depend>ros2launch</test_depend>
 
   <depend>controller_manager</depend>
   <depend>rclcpp</depend>
@@ -19,11 +19,12 @@
   <exec_depend>forward_command_controller</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
-  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>joint_trajectory_controller</exec_depend>
+  <exec_depend>kuka_resources</exec_depend>
+  <exec_depend>kuka_rsi_hw_interface</exec_depend>
+<!--   <exec_depend>kuka_eki_hw_interface</exec_depend> -->
   <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>ros2_control</exec_depend>
-  <exec_depend>ros2_controllers</exec_depend>
-  <exec_depend>rviz</exec_depend>
+  <exec_depend>rviz2</exec_depend>
   <exec_depend>xacro</exec_depend>
 
   <export>
