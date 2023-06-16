@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:macro name="kr3_cell" params="prefix">
+        <link name="${prefix}cell_link">
+            <visual>
+<!--                TODO rearrange origins, so that only this link has non-zero origin-->
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://kuka_ready2_educate_support/meshes/whole_cell_binary.stl"/>
+                </geometry>
+                <material name="gray">
+                    <color rgba="0.5 0.5 0.5 1"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-0.0875 -0.052527 1" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.9 1.215 0.03"/>
+                </geometry>
+            </collision>
+        </link>
+        <link name="${prefix}wall_1">
+            <collision>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.03 1.215 0.84"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}wall_1_joint" type="fixed">
+            <origin xyz="0.405 0 0.42" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}wall_1"/>
+        </joint>
+
+        <link name="${prefix}wall_2">
+            <collision>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.03 1.215 0.84"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}wall_2_joint" type="fixed">
+            <origin xyz="-0.405 0 0.42" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}wall_2"/>
+        </joint>
+        <link name="${prefix}wall_3">
+            <collision>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.9 0.03 0.84"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}wall_3_joint" type="fixed">
+            <origin xyz="0 0.58 0.42" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}wall_3"/>
+        </joint>
+        <link name="${prefix}wall_4">
+            <collision>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.9 0.03 0.84"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}wall_4_joint" type="fixed">
+            <origin xyz="0 -0.58 0.42" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}wall_4"/>
+        </joint>
+        <link name="${prefix}roof">
+            <collision>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.9 1.215 0.03"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}roof_joint" type="fixed">
+            <origin xyz="0 0 0.84" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}roof"/>
+        </joint>
+        <link name="${prefix}camera">
+            <visual>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.045 0.053 0.195"/>
+                </geometry>
+                <material name="gray">
+                    <color rgba="0.5 0.5 0.5 1"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-0.0875 -0.052527 0.995" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.045 0.053 0.195"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}camera_joint" type="fixed">
+            <origin xyz="-0.0325 0.264 0.7325" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}camera"/>
+        </joint>
+    </xacro:macro>
+</robot>

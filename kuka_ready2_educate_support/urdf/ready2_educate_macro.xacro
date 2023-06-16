@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:include filename="$(find kuka_kr3_support)/urdf/kr3r540_macro.xacro"/>
+    <xacro:arg name="initial_positions_file" default="$(find kuka_ready2_educate_support)/config/initial_positions.yaml"/>
+    <xacro:include filename="$(find kuka_ready2_educate_support)/urdf/ready2_educate_cell_macro.xacro"/>
+    <xacro:arg name="use_fake_hardware" default="true"/>
+
+    <xacro:macro name="ready2_educate" params="prefix connected_to xyz rpy">
+        <xacro:kuka_kr3r540 prefix="${prefix}" />
+    
+        <xacro:kr3_cell prefix="${prefix}"/>
+
+        <joint name="${prefix}world_to_cell" type="fixed">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="world"/>
+            <child link="${prefix}cell_link"/>
+        </joint>
+
+        <joint name="${prefix}cell_to_base" type="fixed">
+            <origin xyz="-0.25 -0.0525 0.835" rpy="0 0 0"/>
+            <parent link="${prefix}cell_link"/>
+            <child link="${prefix}base_link"/>
+        </joint>
+
+    </xacro:macro>
+
+</robot>
