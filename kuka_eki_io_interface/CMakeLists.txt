@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(kuka_eki_hw_interface)
+project(kuka_eki_io_interface)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -20,11 +20,9 @@ find_package(ament_cmake REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(tinyxml_vendor REQUIRED)
 find_package(TinyXML REQUIRED)
-find_package(hardware_interface REQUIRED)
-find_package(angles REQUIRED)
-find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(std_msgs REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -44,7 +42,7 @@ endif()
 add_library(
   ${PROJECT_NAME}
   SHARED
-  src/kuka_eki_hw_interface.cpp
+  src/kuka_eki_io_interface.cpp
 )
 target_include_directories(
   ${PROJECT_NAME}
@@ -53,14 +51,10 @@ target_include_directories(
 )
 ament_target_dependencies(
   ${PROJECT_NAME}
-  hardware_interface
-  pluginlib
   rclcpp
   rclcpp_lifecycle
   TinyXML
-  angles
 )
-pluginlib_export_plugin_description_file(hardware_interface ros2_control_kuka_eki.xml)
 
 ament_export_include_directories(
   include
@@ -69,11 +63,10 @@ ament_export_libraries(
   ${PROJECT_NAME}
 )
 ament_export_dependencies(
-  hardware_interface
-  pluginlib
   rclcpp
   rclcpp_lifecycle
 )
+
 
 ### ros2 control hardware plugin
 install(
@@ -84,4 +77,21 @@ install(
   DIRECTORY include/
   DESTINATION include
 )
+
+add_executable(eki_io_node src/kuka_eki_io_interface_node.cpp src/kuka_eki_io_interface.cpp)
+target_include_directories(
+  eki_io_node
+  PRIVATE
+  include)
+ament_target_dependencies(eki_io_node ${${PROJECT_NAME}_EXPORTED_TARGETS} rclcpp std_msgs rclcpp_lifecycle TinyXML)
+install(TARGETS
+  eki_io_node
+  DESTINATION lib/${PROJECT_NAME})
+
+
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 ament_package()

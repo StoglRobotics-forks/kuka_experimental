@@ -31,9 +31,9 @@
           <plugin>ign_ros2_control/IgnitionSystem</plugin>
         </xacro:if>
         <xacro:if value="${use_eki_communication}">
-          <plugin>kuka_eki_hw_interface/RobotControlInterface</plugin>
+          <plugin>kuka_eki_hw_interface/KukaEkiHardwareInterface</plugin>
           <param name="robot_ip">${eki_robot_ip}</param>
-          <param name="robot_port">${eki_robot_port}</param>
+          <param name="eki_robot_port">${eki_robot_port}</param>
         </xacro:if>
         <xacro:if value="${use_rsi_communication}">
           <plugin>kuka_rsi_hw_interface/RobotControlInterface</plugin>
