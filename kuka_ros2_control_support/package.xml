@@ -25,7 +25,7 @@
 <!--   <exec_depend>kuka_eki_hw_interface</exec_depend> -->
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>rviz2</exec_depend>
-  <exec_depend>xacro</exec_depend>
+  <exec_depend>tinyxml_vendor</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

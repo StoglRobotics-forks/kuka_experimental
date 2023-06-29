@@ -15,6 +15,8 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   hardware_interface
   pluginlib
   rclcpp
+  tinyxml_vendor
+  TinyXML
 )
 
 # find dependencies
@@ -32,9 +34,6 @@ target_include_directories(kuka_rsi_hw_interface PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/kuka_rsi_hw_interface>
 )
-# target_link_libraries(kuka_rsi_hw_interface
-#   tinyxml
-# )
 ament_target_dependencies(kuka_rsi_hw_interface PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 
