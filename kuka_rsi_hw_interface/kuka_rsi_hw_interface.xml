@@ -1,6 +1,6 @@
 <library path="kuka_rsi_hw_interface">
-  <class name="kuka_rsi_hw_interface/RobotControlnterface"
-         type="kuka_rsi_hw_interface::RobotControlnterface"
+  <class name="kuka_rsi_hw_interface/RobotControlInterface"
+         type="kuka_rsi_hw_interface::RobotControlInterface"
          base_class_type="hardware_interface::SystemInterface">
     <description>
       Driver-plugin for ros2_control using RSI communication to KUKA robots.
