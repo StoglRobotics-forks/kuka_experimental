@@ -186,6 +186,15 @@ def generate_launch_description():
         )
     )
 
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "activate_ros2_control",
+            default_value="true",
+            description="Decide if this file should also start ros2_control stack and activate\
+            controllers. This is useful for testing, but nor advised in production."
+        )
+    )
+
     # initialize arguments
     robot_name = LaunchConfiguration("robot_name")
     prefix = LaunchConfiguration("prefix")
@@ -207,6 +216,8 @@ def generate_launch_description():
     moveit_config_package = LaunchConfiguration("moveit_config_package")
     semantic_description_file = LaunchConfiguration("semantic_description_file")
     rviz_file = LaunchConfiguration("rviz_file")
+
+    activate_ros2_control = LaunchConfiguration("activate_ros2_control")
 
     initial_positions_file = PathJoinSubstitution(
         [FindPackageShare(configuration_package), "config", initial_positions_file]
@@ -280,6 +291,7 @@ def generate_launch_description():
             "stdout": "screen",
             "stderr": "screen",
         },
+        condition=IfCondition(activate_ros2_control),
     )
 
     # Spawn controllers
@@ -290,6 +302,7 @@ def generate_launch_description():
                 cmd=[f"ros2 run controller_manager spawner {controller}"],
                 shell=True,
                 output="screen",
+                condition=IfCondition(activate_ros2_control),
             )
         ]
 

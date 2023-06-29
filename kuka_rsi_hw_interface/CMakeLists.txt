@@ -43,7 +43,7 @@ pluginlib_export_plugin_description_file(hardware_interface kuka_rsi_hw_interfac
 if(BUILD_TESTING)
   # find_package(launch_testing_ament_cmake)
 
-  # if(${KUKA_ROS2_CONTROL_SUPPORT_BUILD_INTEGRATION_TESTS})
+  # if(KUKA_ROS2_CONTROL_SUPPORT_BUILD_INTEGRATION_TESTS)
   #   add_launch_test(test/test_rsi_hw_interface.py
   #     TIMEOUT
   #       180

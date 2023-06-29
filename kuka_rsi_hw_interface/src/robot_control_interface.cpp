@@ -49,7 +49,7 @@ using namespace std::chrono_literals;
 namespace kuka_rsi_hw_interface
 {
 
-CallbackReturn RobotControlnterface::on_init(const hardware_interface::HardwareInfo & info)
+CallbackReturn RobotControlInterface::on_init(const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
   {
@@ -107,7 +107,7 @@ CallbackReturn RobotControlnterface::on_init(const hardware_interface::HardwareI
   return CallbackReturn::SUCCESS;
 }
 
-CallbackReturn RobotControlnterface::on_configure(
+CallbackReturn RobotControlInterface::on_configure(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // just in case - not 100% sure this is the right thing to do . . .
@@ -122,7 +122,7 @@ CallbackReturn RobotControlnterface::on_configure(
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> RobotControlnterface::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> RobotControlInterface::export_state_interfaces()
 {
   RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "export_state_interfaces()");
 
@@ -135,7 +135,7 @@ std::vector<hardware_interface::StateInterface> RobotControlnterface::export_sta
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> RobotControlnterface::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> RobotControlInterface::export_command_interfaces()
 {
   RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "export_command_interfaces()");
 
@@ -148,8 +148,8 @@ std::vector<hardware_interface::CommandInterface> RobotControlnterface::export_c
   return command_interfaces;
 }
 
-// return_type RobotControlnterface::start()  // QUESTION: should this be in configure?
-CallbackReturn RobotControlnterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
+// return_type RobotControlInterface::start()  // QUESTION: should this be in configure?
+CallbackReturn RobotControlInterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // Wait for connection from robot
   server_.reset(new UDPServer(local_host_, local_port_));
@@ -192,8 +192,8 @@ CallbackReturn RobotControlnterface::on_activate(const rclcpp_lifecycle::State &
   return CallbackReturn::SUCCESS;
 }
 
-// return_type RobotControlnterface::stop()
-CallbackReturn RobotControlnterface::on_deactivate(
+// return_type RobotControlInterface::stop()
+CallbackReturn RobotControlInterface::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "on_deactivate()");
@@ -204,7 +204,7 @@ CallbackReturn RobotControlnterface::on_deactivate(
 }
 
 // WARN: NOT REAL TIME SAFE due to strings/possible allocations
-return_type RobotControlnterface::read(
+return_type RobotControlInterface::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
   in_buffer_.resize(1024);  // FIXME:
@@ -225,7 +225,7 @@ return_type RobotControlnterface::read(
   return return_type::OK;
 }
 
-return_type RobotControlnterface::write(
+return_type RobotControlInterface::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
   out_buffer_.resize(1024);  // FIXME
@@ -248,4 +248,4 @@ return_type RobotControlnterface::write(
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-  kuka_rsi_hw_interface::RobotControlnterface, hardware_interface::SystemInterface)
+  kuka_rsi_hw_interface::RobotControlInterface, hardware_interface::SystemInterface)

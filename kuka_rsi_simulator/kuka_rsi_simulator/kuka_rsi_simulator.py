@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+import argparse
 import sys
 import socket
 import numpy as np
 import time
 import xml.etree.ElementTree as ET
+
 
 import errno
 import rclpy
@@ -35,17 +37,8 @@ def parse_rsi_xml_sen(data):
     return desired_joint_correction, int(IPOC)
 
 
-node_name = 'kuka_rsi_simulation'
-
-cycle_time = 0.004
-act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
-cmd_joint_pos = act_joint_pos.copy()
-des_joint_correction_absolute = np.zeros(6)
-timeout_count = 0
-ipoc = 0
-
-if __name__ == '__main__':
-    import argparse
+def main(args=None):
+    rclpy.init(args=args)
     parser = argparse.ArgumentParser(description='KUKA RSI Simulation')
     parser.add_argument('--rsi_hw_iface_ip', default="127.0.0.1", help='The ip address of the RSI control interface (default=127.0.0.1)')
     parser.add_argument('--rsi_hw_iface_port', default=49152, help='The port of the RSI control interface (default=49152)')
@@ -56,13 +49,21 @@ if __name__ == '__main__':
     port = int(args.rsi_hw_iface_port)
     sen_type = args.sen
 
-    rclpy.init(args=args)
+    # Configuration
+    node_name = 'kuka_rsi_simulation'
+    cycle_time = 0.004
+    act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
+    cmd_joint_pos = act_joint_pos.copy()
+    des_joint_correction_absolute = np.zeros(6)
+    timeout_count = 0
+    ipoc = 0
+
     node = rclpy.create_node(node_name)
 
     node.get_logger().info(f"Started '{node_name}'")
 
-    rsi_act_pub = node.create_publisher(String, '~/rsi/state')
-    rsi_cmd_pub = node.create_publisher(String, '~/rsi/command')
+    rsi_act_pub = node.create_publisher(String, '~/rsi/state', 1)
+    rsi_cmd_pub = node.create_publisher(String, '~/rsi/command', 1)
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -75,11 +76,15 @@ if __name__ == '__main__':
     while rclpy.ok():
         time.sleep(0.001)  # this is a hack, make this a ros2 node
         try:
-            msg = create_rsi_xml_rob(act_joint_pos, cmd_joint_pos, timeout_count, ipoc)
-            rsi_act_pub.publish(str(msg))
-            s.sendto(msg, (host, port))
+            str_data = create_rsi_xml_rob(act_joint_pos, cmd_joint_pos, timeout_count, ipoc)
+            msg = String();
+            msg.data = str(str_data)
+            rsi_act_pub.publish(msg)
+            s.sendto(str_data, (host, port))
             recv_msg, addr = s.recvfrom(1024)
-            rsi_cmd_pub.publish(str(recv_msg))
+            msg = String();
+            msg.data = str(recv_msg)
+            rsi_cmd_pub.publish(msg)
             des_joint_correction_absolute, ipoc_recv = parse_rsi_xml_sen(recv_msg)
             act_joint_pos = cmd_joint_pos + des_joint_correction_absolute
             ipoc += 1
