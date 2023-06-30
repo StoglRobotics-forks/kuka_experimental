@@ -60,21 +60,21 @@ def main(args=None):
 
     node = rclpy.create_node(node_name)
 
-    node.get_logger().info(f"Started '{node_name}'")
+    node.get_logger().info(f"Started '{node_name}' node.")
 
     rsi_act_pub = node.create_publisher(String, '~/rsi/state', 1)
     rsi_cmd_pub = node.create_publisher(String, '~/rsi/command', 1)
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        node.get_logger().info(f"[{node_name}] Successfully created socket.")
+        node.get_logger().info(f"Successfully created socket.")
         s.settimeout(1)
     except socket.error as e:
-        node.get_logger().fatal(f"[{node_name}] Could not create socket.")
+        node.get_logger().fatal(f"Could not create socket.")
         sys.exit()
 
     while rclpy.ok():
-        time.sleep(0.001)  # this is a hack, make this a ros2 node
+        time.sleep(0.001)  # FIXME: make this a ros2 node
         try:
             str_data = create_rsi_xml_rob(act_joint_pos, cmd_joint_pos, timeout_count, ipoc)
             msg = String();
@@ -88,16 +88,15 @@ def main(args=None):
             des_joint_correction_absolute, ipoc_recv = parse_rsi_xml_sen(recv_msg)
             act_joint_pos = cmd_joint_pos + des_joint_correction_absolute
             ipoc += 1
-            rclpy.spin_once(node)
             time.sleep(cycle_time / 2)
         except socket.timeout:
-            node.get_logger().warn(f"[{node_name}] Socket timed out.")
+            node.get_logger().warn(f"Socket timed out.")
             timeout_count += 1
         except socket.error as e:
             if e.errno != errno.EINTR:
                 raise
 
-    node.get_logger().info(f"Shutting down '{node_name}'")
+    node.get_logger().info(f"Shutting down '{node_name}' node.")
     node.destroy_node()
     rclpy.shutdown()
     s.close()

@@ -194,9 +194,9 @@ CallbackReturn RobotControlInterface::on_deactivate(
 return_type RobotControlInterface::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  in_buffer_.resize(1024);  // FIXME:
   if (server_->recv(in_buffer_) == 0)
   {  // FIXME: server_->recv is probably doing some allocation
+    RCLCPP_ERROR(rclcpp::get_logger(info_.name), "Got 0 bytes from server");
     return return_type::ERROR;
   }
 
