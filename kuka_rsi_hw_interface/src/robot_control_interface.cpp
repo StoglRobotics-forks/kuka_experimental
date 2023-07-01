@@ -215,8 +215,6 @@ return_type RobotControlInterface::read(
 return_type RobotControlInterface::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  out_buffer_.resize(1024);  // FIXME
-
   for (size_t i = 0; i < hw_commands_.size(); i++)
   {
     RCLCPP_DEBUG(
