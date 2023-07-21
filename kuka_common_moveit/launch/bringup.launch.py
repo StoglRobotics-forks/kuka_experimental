@@ -317,18 +317,49 @@ def generate_launch_description():
         "kuka_common_moveit", "config/kinematics.yaml"
     )
 
+    move_group_config = {
+        "planning_pipelines": ["ompl", "pilz"],
+    }
     # Planning Functionality
     ompl_planning_pipeline_config = {
-        "move_group": {
+        "ompl": {
             "planning_plugin": "ompl_interface/OMPLPlanner",
             "request_adapters": """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/ResolveConstraintFrames default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
             "start_state_max_bounds_error": 0.1,
         }
     }
+
+    pilz_planning_pipeline_config = {
+        "pilz": {
+            "planning_plugin": "pilz_industrial_motion_planner/CommandPlanner",
+            "default_planner_config": "PTP"
+        },
+        #"pilz_lin": {
+        #    "planning_plugin": "pilz_industrial_motion_planner/CommandPlanner",
+        #    "default_planner_config": "LIN",
+        #}
+    }
     ompl_planning_yaml = load_yaml(
         "kuka_common_moveit", "config/ompl_planning.yaml"
     )
-    ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
+    ompl_planning_pipeline_config["ompl"].update(ompl_planning_yaml)
+
+    pilz_planning_yaml = load_yaml(
+        "kuka_common_moveit", "config/pilz_planning.yaml"
+    )
+    pilz_planning_pipeline_config["pilz"].update(pilz_planning_yaml)
+    
+    pilz_limits_yaml = load_yaml(
+        "kuka_common_moveit", "config/pilz_cartesian_limits.yaml"
+    )
+    robot_description_planning_config = {
+        "robot_description_planning" : pilz_limits_yaml
+    }
+
+    joint_limits_yaml = load_yaml(
+        "kuka_common_moveit", "config/joint_limits.yaml"
+    )
+    robot_description_planning_config["robot_description_planning"].update(joint_limits_yaml)
 
     # Trajectory Execution Functionality
     moveit_simple_controllers_yaml = load_yaml(
@@ -362,7 +393,10 @@ def generate_launch_description():
             robot_description,
             robot_description_semantic,
             kinematics_yaml,
+            move_group_config,
             ompl_planning_pipeline_config,
+            pilz_planning_pipeline_config,
+            robot_description_planning_config,
             trajectory_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
