@@ -318,7 +318,7 @@ def generate_launch_description():
     )
 
     move_group_config = {
-        "planning_pipelines": ["ompl", "pilz"],
+        "planning_pipelines": ["ompl", "pilz", "stomp"],
     }
     # Planning Functionality
     ompl_planning_pipeline_config = {
@@ -355,10 +355,22 @@ def generate_launch_description():
     robot_description_planning_config = {
         "robot_description_planning" : pilz_limits_yaml
     }
-
     joint_limits_yaml = load_yaml(
         "kuka_common_moveit", "config/joint_limits.yaml"
     )
+
+    stomp_planning_pipeline_config = {
+            "stomp": {
+                "planning_plugin": "stomp_moveit/StompPlanner",
+            }
+    }
+
+    stomp_planning_yaml = load_yaml(
+        "kuka_common_moveit", "config/stomp_planning.yaml"
+    )
+    stomp_planning_pipeline_config["stomp"].update(stomp_planning_yaml)
+
+
     robot_description_planning_config["robot_description_planning"].update(joint_limits_yaml)
 
     # Trajectory Execution Functionality
@@ -396,6 +408,7 @@ def generate_launch_description():
             move_group_config,
             ompl_planning_pipeline_config,
             pilz_planning_pipeline_config,
+            stomp_planning_pipeline_config,
             robot_description_planning_config,
             trajectory_execution,
             moveit_controllers,
