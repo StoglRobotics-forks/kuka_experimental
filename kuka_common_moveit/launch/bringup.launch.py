@@ -319,6 +319,7 @@ def generate_launch_description():
 
     move_group_config = {
         "planning_pipelines": ["ompl", "pilz", "stomp"],
+        "capabilities": [],
     }
     # Planning Functionality
     ompl_planning_pipeline_config = {
@@ -349,6 +350,11 @@ def generate_launch_description():
     )
     pilz_planning_pipeline_config["pilz"].update(pilz_planning_yaml)
     
+    pilz_capabilities_yaml = load_yaml(
+        "kuka_common_moveit", "config/pilz_capabilities.yaml"
+    )
+    move_group_config.update(pilz_capabilities_yaml)
+
     pilz_limits_yaml = load_yaml(
         "kuka_common_moveit", "config/pilz_cartesian_limits.yaml"
     )
