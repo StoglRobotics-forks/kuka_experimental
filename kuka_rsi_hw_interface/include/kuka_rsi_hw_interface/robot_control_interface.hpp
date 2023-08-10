@@ -61,7 +61,7 @@ using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface
 
 namespace kuka_rsi_hw_interface
 {
-class RobotControlnterface : public hardware_interface::SystemInterface
+class RobotControlInterface : public hardware_interface::SystemInterface
 {
 public:
   ROS2_CONTROL_DRIVER_PUBLIC

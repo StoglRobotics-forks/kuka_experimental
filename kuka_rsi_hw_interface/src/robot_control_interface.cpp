@@ -49,7 +49,7 @@ using namespace std::chrono_literals;
 namespace kuka_rsi_hw_interface
 {
 
-CallbackReturn RobotControlnterface::on_init(const hardware_interface::HardwareInfo & info)
+CallbackReturn RobotControlInterface::on_init(const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
   {
@@ -107,58 +107,15 @@ CallbackReturn RobotControlnterface::on_init(const hardware_interface::HardwareI
   return CallbackReturn::SUCCESS;
 }
 
-CallbackReturn RobotControlnterface::on_configure(
+CallbackReturn RobotControlInterface::on_configure(
   const rclcpp_lifecycle::State & /*previous_state*/)
-{
-  // just in case - not 100% sure this is the right thing to do . . .
-  for (size_t i = 0; i < hw_states_.size(); ++i)
-  {
-    hw_states_[i] = std::numeric_limits<double>::quiet_NaN();
-    hw_commands_[i] = std::numeric_limits<double>::quiet_NaN();
-    rsi_initial_joint_positions_[i] = 0.0;
-    rsi_joint_position_corrections_[i] = 0.0;
-  }
-
-  return CallbackReturn::SUCCESS;
-}
-
-std::vector<hardware_interface::StateInterface> RobotControlnterface::export_state_interfaces()
-{
-  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "export_state_interfaces()");
-
-  std::vector<hardware_interface::StateInterface> state_interfaces;
-  for (size_t i = 0; i < info_.joints.size(); i++)
-  {
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_states_[i]));
-  }
-  return state_interfaces;
-}
-
-std::vector<hardware_interface::CommandInterface> RobotControlnterface::export_command_interfaces()
-{
-  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "export_command_interfaces()");
-
-  std::vector<hardware_interface::CommandInterface> command_interfaces;
-  for (size_t i = 0; i < info_.joints.size(); i++)
-  {
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_commands_[i]));
-  }
-  return command_interfaces;
-}
-
-// return_type RobotControlnterface::start()  // QUESTION: should this be in configure?
-CallbackReturn RobotControlnterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
   // Wait for connection from robot
   server_.reset(new UDPServer(local_host_, local_port_));
 
-  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "Connecting to robot . . .");
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "Connecting to robot . . .");
 
   int bytes = server_->recv(in_buffer_);
-
-  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "got some bytes");
 
   // Drop empty <rob> frame with RSI <= 2.3
   if (bytes < 100)
@@ -167,7 +124,7 @@ CallbackReturn RobotControlnterface::on_activate(const rclcpp_lifecycle::State &
   }
   if (bytes < 100)
   {
-    RCLCPP_FATAL(rclcpp::get_logger(info_.name), "not enough data received");
+    RCLCPP_FATAL(rclcpp::get_logger(info_.name), "Connection has failed: Not enough data received!");
     return CallbackReturn::ERROR;
   }
 
@@ -185,15 +142,45 @@ CallbackReturn RobotControlnterface::on_activate(const rclcpp_lifecycle::State &
   server_->send(out_buffer_);
   server_->set_timeout(1000);  // Set receive timeout to 1 second
 
-  RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "System Successfully started!");
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "Successfully connected with the robot!");
 
-  // status_ = hardware_interface::status::STARTED;
-  // return return_type::OK;
   return CallbackReturn::SUCCESS;
 }
 
-// return_type RobotControlnterface::stop()
-CallbackReturn RobotControlnterface::on_deactivate(
+std::vector<hardware_interface::StateInterface> RobotControlInterface::export_state_interfaces()
+{
+  std::vector<hardware_interface::StateInterface> state_interfaces;
+  for (size_t i = 0; i < info_.joints.size(); i++)
+  {
+    state_interfaces.emplace_back(hardware_interface::StateInterface(
+      info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_states_[i]));
+  }
+  return state_interfaces;
+}
+
+std::vector<hardware_interface::CommandInterface> RobotControlInterface::export_command_interfaces()
+{
+  std::vector<hardware_interface::CommandInterface> command_interfaces;
+  for (size_t i = 0; i < info_.joints.size(); i++)
+  {
+    command_interfaces.emplace_back(hardware_interface::CommandInterface(
+      info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_commands_[i]));
+  }
+  return command_interfaces;
+}
+
+CallbackReturn RobotControlInterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
+{
+  for (size_t i = 0; i < hw_states_.size(); ++i)
+  {
+    hw_commands_[i] = hw_states_[i];
+  }
+
+  return CallbackReturn::SUCCESS;
+}
+
+// return_type RobotControlInterface::stop()
+CallbackReturn RobotControlInterface::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "on_deactivate()");
@@ -204,12 +191,12 @@ CallbackReturn RobotControlnterface::on_deactivate(
 }
 
 // WARN: NOT REAL TIME SAFE due to strings/possible allocations
-return_type RobotControlnterface::read(
+return_type RobotControlInterface::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  in_buffer_.resize(1024);  // FIXME:
   if (server_->recv(in_buffer_) == 0)
   {  // FIXME: server_->recv is probably doing some allocation
+    RCLCPP_ERROR(rclcpp::get_logger(info_.name), "Got 0 bytes from server");
     return return_type::ERROR;
   }
 
@@ -225,11 +212,9 @@ return_type RobotControlnterface::read(
   return return_type::OK;
 }
 
-return_type RobotControlnterface::write(
+return_type RobotControlInterface::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  out_buffer_.resize(1024);  // FIXME
-
   for (size_t i = 0; i < hw_commands_.size(); i++)
   {
     RCLCPP_DEBUG(
@@ -248,4 +233,4 @@ return_type RobotControlnterface::write(
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-  kuka_rsi_hw_interface::RobotControlnterface, hardware_interface::SystemInterface)
+  kuka_rsi_hw_interface::RobotControlInterface, hardware_interface::SystemInterface)
