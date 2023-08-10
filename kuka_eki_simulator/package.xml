@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>kuka_eki_simulator</name>
+  <version>0.1.0</version>
+  <description>Python node that implements a minimal EKI interface simulator.</description>
+  <author>Lars Tingelstad</author>
+  <author>Guillaume Walck</author>
+  <maintainer email="denis@stoglrobotics.de">Dr. Denis Štogl</maintainer>
+  <license>BSD</license>
+
+  <url type="website">http://wiki.ros.org/kuka_eki_simulator</url>
+  <url type="bugtracker">https://github.com/ros-industrial/kuka_experimental/issues</url>
+  <url type="repository">https://github.com/ros-industrial/kuka_experimental</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
