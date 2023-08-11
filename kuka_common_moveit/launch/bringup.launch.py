@@ -335,10 +335,12 @@ def generate_launch_description():
         "capabilities": [],
     }
     # Planning Functionality
+    # WARNING default_planner_request_adapters/FixStartStateCollision might cause jumps if the robot is in a slight collision at start, deactivating it for now
+    # see https://github.com/ros-planning/moveit/issues/2268
     ompl_planning_pipeline_config = {
         "ompl": {
             "planning_plugin": "ompl_interface/OMPLPlanner",
-            "request_adapters": """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/ResolveConstraintFrames default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+            "request_adapters": """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/ResolveConstraintFrames default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStatePathConstraints""",
             "start_state_max_bounds_error": 0.1,
         }
     }
@@ -358,6 +360,8 @@ def generate_launch_description():
     )
     ompl_planning_pipeline_config["ompl"].update(ompl_planning_yaml)
 
+    # WARNING default_planner_request_adapters/FixStartStateCollision might cause jumps if the robot is in a slight collision at start, deactivating it for now
+    # see https://github.com/ros-planning/moveit/issues/2268
     pilz_planning_yaml = load_yaml(
         "kuka_common_moveit", "config/pilz_planning.yaml"
     )
