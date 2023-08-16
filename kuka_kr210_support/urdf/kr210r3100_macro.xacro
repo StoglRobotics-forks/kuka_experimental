@@ -189,7 +189,7 @@
           <parent link="${prefix}link_3"/>
           <child link="${prefix}link_4"/>
           <axis xyz="1 0 0"/>
-          <limit lower="${radians(-350)}" upper="${radians(350)}" effort="0" velocity="${radians(136)}"/>
+          <limit lower="${radians(-60)}" upper="${radians(60)}" effort="0" velocity="${radians(136)}"/>
       </joint>
       <joint name="${prefix}joint_a5" type="revolute">
           <origin xyz="0.3515 0.059 0.0" rpy="0 0 0"/>
@@ -203,7 +203,7 @@
           <parent link="${prefix}link_5"/>
           <child link="${prefix}link_6"/>
           <axis xyz="-1 0 0"/>
-          <limit lower="${radians(-350)}" upper="${radians(350)}" effort="0" velocity="${radians(206)}"/>
+          <limit lower="${radians(-215)}" upper="${radians(250)}" effort="0" velocity="${radians(206)}"/>
       </joint>
       <joint name="${prefix}link_6-flange" type="fixed">
           <parent link="${prefix}link_6"/>
