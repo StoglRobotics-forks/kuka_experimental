@@ -31,7 +31,7 @@
 #  POSSIBILITY OF SUCH DAMAGE.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, ExecuteProcess
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
@@ -65,8 +65,44 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            "controllers_file",
+            default_value="kuka_6dof_controllers.yaml",
+            choices=[
+                "kuka_6dof_controllers.yaml",
+                "kuka_7dof_controllers.yaml",
+            ],
+            description="YAML file with the controllers configuration. Only LBR IIWA 14 has 7 dofs.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "initial_positions_file",
+            default_value="initial_positions.yaml",
+            choices=[
+                "initial_positions.yaml",
+                "initial_positions_all_zeros.yaml",
+            ],
+            description="YAML file with the initial positions when using mock hardware from \
+            ros2_control. Robots using '_all_zeros' file are: \
+              - kr210l150 \
+              - ",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             "description_package",
             description="Description package with robot URDF/xacro files.",
+            choices=[
+                "kuka_kr3_support",
+                "kuka_kr5_support",
+                "kuka_kr6_support",
+                "kuka_kr10_support",
+                "kuka_kr16_support",
+                "kuka_kr120_support",
+                "kuka_kr150_support",
+                "kuka_kr210_support",
+                "kuka_lbr_iiwa_support",
+            ],
         )
     )
     declared_arguments.append(
@@ -74,6 +110,22 @@ def generate_launch_description():
             "description_macro_file",
             description="URDF/XACRO description file with of the robot or application. \
             The expected location of the file is '<description_package>/urdf/'.",
+            choices=[
+                "kr3r540_macro.xacro",
+                "kr5_arc_macro.xacro",
+                "kr6r700sixx_macro.xacro",
+                "kr6r900_2_macro.xacro",
+                "kr6r900sixx_macro.xacro",
+                "kr10r900_2_macro.xacro",
+                "kr10r1100sixx_macro.xacro",
+                "kr10r1420_macro.xacro",
+                "kr16_2_macro.xacro",
+                "kr120r2500pro_macro.xacro",
+                "kr150_2_macro.xacro",
+                "kr150r3100_2_macro.xacro",
+                "kr210l150_macro.xacro",
+                "lbr_iiwa_14_r820_macro.xacro",
+            ],
         )
     )
     declared_arguments.append(
@@ -159,6 +211,15 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            "activate_ros2_control",
+            default_value="true",
+            description="Decide if this file should also start ros2_control stack and activate\
+            controllers. This is useful for testing, but nor advised in production.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
             "rviz_file",
             default_value="view_robot.rviz",
             description="Rviz2 configuration file of the visualization. \
@@ -172,6 +233,7 @@ def generate_launch_description():
             description="Start vizualization in Rviz2.",
         )
     )
+
     declared_arguments.append(
         DeclareLaunchArgument(
             "log_level_driver",
@@ -228,6 +290,7 @@ def generate_launch_description():
     rsi_listen_port = LaunchConfiguration("rsi_listen_port")
 
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
+    activate_ros2_control = LaunchConfiguration("activate_ros2_control")
 
     rviz_file = LaunchConfiguration("rviz_file")
     start_rviz = LaunchConfiguration("start_rviz")
@@ -312,30 +375,20 @@ def generate_launch_description():
             log_level_all,
         ],
         parameters=[robot_description, robot_controllers],
+        condition=IfCondition(activate_ros2_control),
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-    )
-
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["position_trajectory_controller", "-c", "/controller_manager"],
-    )
-
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
-        )
-    )
+    # Spawn controllers
+    load_and_activate_controllers = []
+    for controller in ["position_trajectory_controller", "joint_state_broadcaster"]:
+        load_and_activate_controllers += [
+            ExecuteProcess(
+                cmd=[f"ros2 run controller_manager spawner {controller}"],
+                shell=True,
+                output="screen",
+                condition=IfCondition(activate_ros2_control),
+            )
+        ]
 
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare(configuration_package), "config", rviz_file]
@@ -349,19 +402,6 @@ def generate_launch_description():
         condition=IfCondition(start_rviz),
     )
 
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
-    )
+    nodes = [control_node, robot_state_publisher_node, rviz_node]
 
-    nodes = [
-        control_node,
-        robot_state_publisher_node,
-        joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-    ]
-
-    return LaunchDescription(declared_arguments + nodes)
+    return LaunchDescription(declared_arguments + nodes + load_and_activate_controllers)
