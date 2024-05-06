@@ -49,6 +49,8 @@ joint_limits:
     has_deceleration_limits: true
     max_deceleration: -5.0
   joint_a6:
+    min_position: 0.785
+    max_postion: 6.25
     has_velocity_limits: true
 #    max_velocity: 3.595378
     max_velocity: 1.396263401595464
