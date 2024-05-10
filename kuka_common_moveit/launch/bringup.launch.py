@@ -102,6 +102,13 @@ def generate_launch_description():
             ros2_control. The expected location of the file is '<configuration_package>/config/'.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "joint_limits_file",
+            default_value="joint_limits.yaml",
+            description="YAML file with the joint limits for the robot cell.",
+        )
+    )
 
     declared_arguments.append(
         DeclareLaunchArgument(
@@ -203,6 +210,7 @@ def generate_launch_description():
     configuration_package = LaunchConfiguration("configuration_package")
     controllers_file = LaunchConfiguration("controllers_file")
     initial_positions_file = LaunchConfiguration("initial_positions_file")
+    joint_limits_file = LaunchConfiguration("joint_limits_file")
 
     use_eki_communication = LaunchConfiguration("use_eki_communication")
     eki_robot_ip = LaunchConfiguration("eki_robot_ip")
@@ -221,6 +229,9 @@ def generate_launch_description():
 
     initial_positions_file = PathJoinSubstitution(
         [FindPackageShare(configuration_package), "config", initial_positions_file]
+    )
+    joint_limits_file = PathJoinSubstitution(
+        [FindPackageShare(configuration_package), "config", joint_limits_file]
     )
 
     robot_description_content = Command(
@@ -349,16 +360,10 @@ def generate_launch_description():
         "pilz": {
             "planning_plugin": "pilz_industrial_motion_planner/CommandPlanner",
             "default_planner_config": "PTP"
-        },
-        #"pilz_lin": {
-        #    "planning_plugin": "pilz_industrial_motion_planner/CommandPlanner",
-        #    "default_planner_config": "LIN",
-        #}
+        }
     }
-    ompl_planning_yaml = load_yaml(
-        "kuka_common_moveit", "config/ompl_planning.yaml"
-    )
-    ompl_planning_pipeline_config["ompl"].update(ompl_planning_yaml)
+    joint_limits_yaml = load_yaml(joint_limits_file)
+    ompl_planning_pipeline_config["ompl"].update(joint_limits_yaml)
 
     # WARNING default_planner_request_adapters/FixStartStateCollision might cause jumps if the robot is in a slight collision at start, deactivating it for now
     # see https://github.com/ros-planning/moveit/issues/2268
@@ -378,9 +383,6 @@ def generate_launch_description():
     robot_description_planning_config = {
         "robot_description_planning" : pilz_limits_yaml
     }
-    joint_limits_yaml = load_yaml(
-        "kuka_common_moveit", "config/joint_limits.yaml"
-    )
 
     stomp_planning_pipeline_config = {
             "stomp": {
