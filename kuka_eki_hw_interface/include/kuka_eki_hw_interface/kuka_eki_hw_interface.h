@@ -98,7 +98,7 @@ namespace kuka_eki_hw_interface
             int eki_max_cmd_buff_len_ = 5;  // by default, limit command buffer to 5 (size of advance run in KRL)
 //
 //            // EKI socket read/write
-            int eki_read_state_timeout_ = 10;  // [s]; settable by parameter (default = 5)
+            int eki_read_state_timeout_ = 100;  // [s]; settable by parameter (default = 5)
             boost::asio::io_service ios_;
             std::unique_ptr<boost::asio::deadline_timer> deadline_;
             boost::asio::ip::udp::endpoint eki_server_endpoint_;
