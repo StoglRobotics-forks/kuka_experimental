@@ -188,7 +188,7 @@
           <origin xyz="1.0685 0.105 0.115" rpy="0 0 0"/>
           <parent link="${prefix}link_3"/>
           <child link="${prefix}link_4"/>
-          <axis xyz="1 0 0"/>
+          <axis xyz="-1 0 0"/>
           <limit lower="${radians(-350)}" upper="${radians(350)}" effort="0" velocity="${radians(136)}"/>
       </joint>
       <joint name="${prefix}joint_a5" type="revolute">
