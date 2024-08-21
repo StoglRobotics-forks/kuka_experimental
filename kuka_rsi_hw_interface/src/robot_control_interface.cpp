@@ -98,7 +98,7 @@ CallbackReturn RobotControlInterface::on_init(const hardware_interface::Hardware
   local_host_ = info_.hardware_parameters["listen_address"];
   local_port_ = stoi(info_.hardware_parameters["listen_port"]);
 
-  RCLCPP_DEBUG(
+  RCLCPP_INFO(
     rclcpp::get_logger(info_.name), "robot location: %s:%d", local_host_.c_str(), local_port_);
 
   // done

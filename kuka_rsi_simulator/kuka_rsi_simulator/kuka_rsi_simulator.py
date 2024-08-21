@@ -4,7 +4,6 @@ import argparse
 import sys
 import socket
 import numpy as np
-import time
 import xml.etree.ElementTree as ET
 
 
@@ -42,16 +41,21 @@ def main(args=None):
     parser = argparse.ArgumentParser(description='KUKA RSI Simulation')
     parser.add_argument('--rsi_hw_iface_ip', default="127.0.0.1", help='The ip address of the RSI control interface (default=127.0.0.1)')
     parser.add_argument('--rsi_hw_iface_port', default=49152, help='The port of the RSI control interface (default=49152)')
-    parser.add_argument('--sen', default='ImFree', help='Type attribute in RSI XML doc. E.g. <Sen Type:"ImFree">')
+    parser.add_argument('--timeout', default=1.0, type=float, help='Set the timeout of the socket.If zero or negativ number is set, socket will be non-blocking')
+    
     # Only parse known arguments
     args, _ = parser.parse_known_args()
     host = args.rsi_hw_iface_ip
     port = int(args.rsi_hw_iface_port)
-    sen_type = args.sen
+    timeout = args.timeout
+    blocking = True
+    if timeout <= 0.0:
+        timeout = None
+        blocking = False
+        
 
     # Configuration
     node_name = 'kuka_rsi_simulation'
-    cycle_time = 0.004
     act_joint_pos = np.array([0, -90, 90, 0, 90, 0]).astype(np.float64)
     cmd_joint_pos = act_joint_pos.copy()
     des_joint_correction_absolute = np.zeros(6)
@@ -67,28 +71,33 @@ def main(args=None):
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        node.get_logger().info(f"Successfully created socket.")
-        s.settimeout(1)
+        # if timout > 0.0 socket is blocking -> using this as for synchronization
+        s.settimeout(timeout)
+        node.get_logger().info(f"Successfully created socket with timeout={timeout}s and blocking={blocking}.")
     except socket.error as e:
         node.get_logger().fatal(f"Could not create socket.")
         sys.exit()
-
+        
+    node.get_logger().info(f"Server address set {host}:{port}. This is used to sent data to.")
+    
     while rclpy.ok():
-        time.sleep(0.001)  # FIXME: make this a ros2 node
         try:
             str_data = create_rsi_xml_rob(act_joint_pos, cmd_joint_pos, timeout_count, ipoc)
-            msg = String();
+            msg = String()
             msg.data = str(str_data)
             rsi_act_pub.publish(msg)
             s.sendto(str_data, (host, port))
             recv_msg, addr = s.recvfrom(1024)
-            msg = String();
+            recv_host, recv_port = addr
+            if recv_host != host or recv_port != port:
+                node.get_logger().info(f"Server receive data from wrong address/port {host}:{port}.")
+                continue
+            msg = String()
             msg.data = str(recv_msg)
             rsi_cmd_pub.publish(msg)
-            des_joint_correction_absolute, ipoc_recv = parse_rsi_xml_sen(recv_msg)
+            des_joint_correction_absolute, _ = parse_rsi_xml_sen(recv_msg)
             act_joint_pos = cmd_joint_pos + des_joint_correction_absolute
             ipoc += 1
-            time.sleep(cycle_time / 2)
         except socket.timeout:
             node.get_logger().warn(f"Socket timed out.")
             timeout_count += 1
