@@ -31,9 +31,8 @@
 #  POSSIBILITY OF SUCH DAMAGE.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
     FindExecutable,
@@ -167,6 +166,23 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            "activate_ros2_control",
+            default_value="true",
+            description="Decide if this file should also start ros2_control stack and activate\
+            controllers. This is useful for testing, but nor advised in production.",
+        )
+    )
+    
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "controller_manager_name",
+            default_value="controller_manager",
+            description="Name of the controller manager (controller manager node) with namespace.",
+        )
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
             "start_rviz",
             default_value="true",
             description="Start vizualization in Rviz2.",
@@ -235,6 +251,9 @@ def generate_launch_description():
     log_level_driver = LaunchConfiguration("log_level_driver")
     log_level_all = LaunchConfiguration("log_level_all")
 
+    activate_ros2_control = LaunchConfiguration("activate_ros2_control")
+    controller_manager_name = LaunchConfiguration("controller_manager_name")
+
     initial_positions_file = PathJoinSubstitution(
         [FindPackageShare(configuration_package), "config", initial_positions_file]
     )
@@ -299,6 +318,7 @@ def generate_launch_description():
     robot_controllers = PathJoinSubstitution(
         [FindPackageShare(configuration_package), "config", controllers_file]
     )
+
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",  # optionally use `ros2_control_node` from ros2_control
@@ -312,30 +332,20 @@ def generate_launch_description():
             log_level_all,
         ],
         parameters=[robot_description, robot_controllers],
+        condition=IfCondition(activate_ros2_control),
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-    )
 
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["position_trajectory_controller", "-c", "/controller_manager"],
-    )
-
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
-        )
-    )
+    load_and_activate_controllers = []
+    for controller in ["position_trajectory_controller", "joint_state_broadcaster"]:
+        load_and_activate_controllers += [
+            ExecuteProcess(
+                cmd=[f"ros2 run controller_manager spawner {controller} -c {controller_manager_name}"],
+                shell=True,
+                output="screen",
+                condition=IfCondition(activate_ros2_control),
+            )
+        ]
 
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare(configuration_package), "config", rviz_file]
@@ -349,19 +359,10 @@ def generate_launch_description():
         condition=IfCondition(start_rviz),
     )
 
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
-    )
-
     nodes = [
         control_node,
         robot_state_publisher_node,
-        joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        rviz_node
     ]
 
-    return LaunchDescription(declared_arguments + nodes)
+    return LaunchDescription(declared_arguments + nodes + load_and_activate_controllers)
