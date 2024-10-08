@@ -24,8 +24,8 @@ publisher_joint_trajectory_controller:
     check_starting_point: true
     starting_point_limits:
       joint_a1: [-0.1,0.1]
-      joint_a2: [-1.57,1.57]
-      joint_a3: [-1.57,1.57]
+      joint_a2: [-1.58,1.58]
+      joint_a3: [-1.58,1.58]
       joint_a4: [-0.1,0.1]
       joint_a5: [-2.0,2.0]
       joint_a6: [-0.1,0.1]
