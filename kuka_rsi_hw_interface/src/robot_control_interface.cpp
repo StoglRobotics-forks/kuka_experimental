@@ -56,6 +56,9 @@ CallbackReturn RobotControlInterface::on_init(const hardware_interface::Hardware
     return CallbackReturn::ERROR;
   }
 
+  RCLCPP_INFO(
+    rclcpp::get_logger(info_.name), "robot connection to robot is_async = %s", info.is_async ? "true" : "false");
+
   hw_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   hw_commands_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
 

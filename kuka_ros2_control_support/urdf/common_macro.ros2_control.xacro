@@ -4,6 +4,7 @@
   <xacro:macro name="kuka_common_ros2_control_macro" params="
                name
                prefix
+               is_async:=^|true
                use_eki_communication:=^|false
                eki_robot_ip:=^|127.0.0.1
                eki_robot_port:=^|54600
@@ -18,7 +19,7 @@
                initial_positions:=${dict(joint_a1=0.0,joint_a2=-1.57,joint_a3=1.57,joint_a4=0.0,joint_a5=1.57,joint_a6=0.0)}"
                >
 
-    <ros2_control name="${name}" type="system">
+    <ros2_control name="${name}" type="system" is_async="${is_async}">
 
       <hardware>
         <xacro:if value="${use_mock_hardware}">
