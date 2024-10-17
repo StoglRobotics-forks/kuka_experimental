@@ -24,6 +24,13 @@ target_include_directories(ros2_control_node_steady_clock PUBLIC
 )
 ament_target_dependencies(ros2_control_node_steady_clock PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
+add_executable(ros2_control_node_max_update_rate_sc src/ros2_control_node_max_update_rate_sc.cpp)
+target_include_directories(ros2_control_node_max_update_rate_sc PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/kuka_ros2_control_support>
+)
+ament_target_dependencies(ros2_control_node_max_update_rate_sc PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
 if(BUILD_TESTING)
   find_package(launch_testing_ament_cmake)
 
@@ -32,7 +39,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  TARGETS ros2_control_node_steady_clock
+  TARGETS ros2_control_node_steady_clock ros2_control_node_max_update_rate_sc
   RUNTIME DESTINATION lib/kuka_ros2_control_support
 )
 
