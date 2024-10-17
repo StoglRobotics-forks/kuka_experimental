@@ -62,8 +62,8 @@
 class UDPServer
 {
 public:
-  UDPServer(std::string host, unsigned short port)
-  : local_host_(host), local_port_(port), timeout_(false)
+  UDPServer(std::string host, unsigned short port, bool timeout = false)
+  : local_host_(host), local_port_(port), timeout_(timeout)
   {
     sockfd_ = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd_ < 0)

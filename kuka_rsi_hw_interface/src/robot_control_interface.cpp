@@ -51,6 +51,7 @@ namespace kuka_rsi_hw_interface
 
 CallbackReturn RobotControlInterface::on_init(const hardware_interface::HardwareInfo & info)
 {
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "on_init");
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
   {
     return CallbackReturn::ERROR;
@@ -113,6 +114,7 @@ CallbackReturn RobotControlInterface::on_init(const hardware_interface::Hardware
 CallbackReturn RobotControlInterface::on_configure(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "on_configure");
   // Wait for connection from robot
   server_.reset(new UDPServer(local_host_, local_port_));
 
@@ -152,6 +154,7 @@ CallbackReturn RobotControlInterface::on_configure(
 
 std::vector<hardware_interface::StateInterface> RobotControlInterface::export_state_interfaces()
 {
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "export_state_interfaces");
   std::vector<hardware_interface::StateInterface> state_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++)
   {
@@ -163,6 +166,7 @@ std::vector<hardware_interface::StateInterface> RobotControlInterface::export_st
 
 std::vector<hardware_interface::CommandInterface> RobotControlInterface::export_command_interfaces()
 {
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "export_command_interfaces");
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++)
   {
@@ -174,6 +178,7 @@ std::vector<hardware_interface::CommandInterface> RobotControlInterface::export_
 
 CallbackReturn RobotControlInterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "on_activate");
   for (size_t i = 0; i < hw_states_.size(); ++i)
   {
     hw_commands_[i] = hw_states_[i];
@@ -186,6 +191,7 @@ CallbackReturn RobotControlInterface::on_activate(const rclcpp_lifecycle::State 
 CallbackReturn RobotControlInterface::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
+  RCLCPP_INFO(rclcpp::get_logger(info_.name), "on_deactivate");
   RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "on_deactivate()");
 
   RCLCPP_DEBUG(rclcpp::get_logger(info_.name), "System successfully stopped!");
