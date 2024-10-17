@@ -148,6 +148,14 @@ def generate_launch_description():
             communication using RSI protocol.",
         )
     )
+    
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "hardware_is_async",
+            default_value="true",
+            description="start hw in async mode",
+        )
+    )
 
     declared_arguments.append(
         DeclareLaunchArgument(
@@ -242,6 +250,7 @@ def generate_launch_description():
     use_rsi_communication = LaunchConfiguration("use_rsi_communication")
     rsi_listen_ip = LaunchConfiguration("rsi_listen_ip")
     rsi_listen_port = LaunchConfiguration("rsi_listen_port")
+    hardware_is_async = LaunchConfiguration("hardware_is_async")
 
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
 
@@ -271,6 +280,9 @@ def generate_launch_description():
             " ",
             "prefix:=",
             prefix,
+            " ",
+            "is_async:=",
+            hardware_is_async,
             " ",
             "description_package:=",
             description_package,
